@@ -1,0 +1,48 @@
+{
+    "name": "elbowspaceuk/origin-engine",
+    "description": "A site manager for local development",
+    "type": "library",
+    "license": "MIT",
+    "support": {
+        "issues": "https://github.com/ElbowSpaceUK/origin/issues",
+        "source": "https://github.com/ElbowSpaceUK/origin"
+    },
+    "authors": [
+        {
+            "name": "Toby Twigger",
+            "email": "tobytwigger1@gmail.com"
+        }
+    ],
+    "require": {
+        "php": "^7.4|^8.0",
+        "czproject/git-php": "^3.18",
+        "illuminate/database": "^8.0",
+        "intonate/tinker-zero": "^1.2",
+        "laravel-zero/framework": "^8.4",
+        "symfony/filesystem": "^5.2",
+        "ext-json": "*"
+    },
+    "require-dev": {
+        "fakerphp/faker": "^1.9.1",
+        "mockery/mockery": "^1.4.2",
+        "phpunit/phpunit": "^11.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Origin\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Origin\\Tests": "tests/"
+        }
+    },
+    "config": {
+        "preferred-install": "dist",
+        "sort-packages": true,
+        "optimize-autoloader": true
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "bin": ["origin"]
+}
