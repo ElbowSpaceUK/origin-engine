@@ -29,12 +29,12 @@
     },
     "autoload": {
         "psr-4": {
-            "Origin\\": "src/"
+            "OriginEngine\\": "src/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "Origin\\Tests": "tests/"
+            "OriginEngine\\Tests\\": "tests/"
         }
     },
     "config": {
@@ -43,6 +43,5 @@
         "optimize-autoloader": true
     },
     "minimum-stability": "dev",
-    "prefer-stable": true,
-    "bin": ["origin"]
+    "prefer-stable": true
 }

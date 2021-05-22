@@ -1,9 +1,0 @@
-<?php
-
-Route::get('/', fn() => 'This is a test through the API');
-
-[[if($extraRoute) {]]
-Route::get('/test', fn() => '[[{{ $extraRouteText }}]]');
-[[}]]
-
-?>

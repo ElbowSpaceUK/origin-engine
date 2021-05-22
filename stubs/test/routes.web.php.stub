@@ -1,9 +1,0 @@
-<?php
-
-Route::get('/', fn() => 'This is a test through the web ui');
-
-Route::get('/[[{{ $path }}]]', fn() => 'Some route');
-
-[[ foreach($models as $model) { ]]
-Route::post('/[[{{$model}}]]', fn() => 'Model [[{{$model}}]]');
-[[ } ]]

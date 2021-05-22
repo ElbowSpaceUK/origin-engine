@@ -81,7 +81,7 @@ In a similar way, you can iterate through arrays using `foreach`.
 
 ### Registering a stub file
 
-For your stub to be usable, you need to register it. Registration is normally done with the `\App\Core\Stubs\Stubs` class.
+For your stub to be usable, you need to register it. Registration is normally done with the `\OriginEngine\Stubs\Stubs` class.
 
 For now, this can be done in the stubs folder in this directory, and registered in the `AppServiceProvider`.
 // TODO Where this should be done
@@ -114,7 +114,7 @@ would like to make use of this feature, register a function as the file name. Th
 should return the filename.
 
 ```php
-public function boot(\App\Core\Stubs\Stubs $stubs)
+public function boot(\OriginEngine\Stubs\Stubs $stubs)
 {
     $stubs->newStub(...)
         ->addFile(
@@ -155,4 +155,4 @@ array of replacements to ask only if the user wants the section.
 
 ##### Database Schema
 This is a special type, created with the `newTableColumnReplacement` variable. It will ask the user for a name for the
-column, a type for the column, and whether the column can be null. This is then passed as an instance of `\App\Core\Stubs\Replacements\TableColumn` to the stub files.
+column, a type for the column, and whether the column can be null. This is then passed as an instance of `\OriginEngine\Stubs\Replacements\TableColumn` to the stub files.

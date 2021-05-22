@@ -13,7 +13,7 @@ return [
     |
     */
 
-    'name' => 'Atlas',
+    'name' => 'Origin',
 
     /*
     |--------------------------------------------------------------------------
@@ -54,16 +54,16 @@ return [
     */
 
     'providers' => [
-        App\AppServiceProvider::class,
-        Intonate\TinkerZero\TinkerZeroServiceProvider::class
+        \OriginEngine\OriginEngineServiceProvider::class,
+        Intonate\TinkerZero\TinkerZeroServiceProvider::class,
     ],
 
     'setup' => [
         'steps' => [
-            \App\Core\Setup\Steps\CreateDatabaseDirectory::class,
-            \App\Core\Setup\Steps\CreateDatabase::class,
-            \App\Core\Setup\Steps\MigrateDatabase::class,
-            \App\Core\Setup\Steps\SetProjectDirectory::class
-        ]
-    ],
+            \OriginEngine\Setup\Steps\CreateDatabaseDirectory::class,
+            \OriginEngine\Setup\Steps\CreateDatabase::class,
+            \OriginEngine\Setup\Steps\MigrateDatabase::class,
+            \OriginEngine\Setup\Steps\SetProjectDirectory::class
+    ]
+    ]
 ];

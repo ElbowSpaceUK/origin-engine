@@ -1,0 +1,24 @@
+<?php
+
+namespace OriginEngine\Site;
+
+use OriginEngine\Helpers\Env\EnvRepository;
+use OriginEngine\Helpers\WorkingDirectory\WorkingDirectory;
+
+class UrlCalculator
+{
+
+    public static function calculate(string $instanceId, string $envFile = '.env'): string
+    {
+        $directory = WorkingDirectory::fromInstanceId($instanceId);
+
+        $envRepository = new EnvRepository($directory);
+        $env = $envRepository->get($envFile);
+
+        $url = $env->getVariable('APP_URL');
+        $port = $env->getVariable('APP_PORT');
+
+        return sprintf('%s:%s', $url, $port);
+    }
+
+}
