@@ -1,6 +1,6 @@
 <?php
 
-namespace OriginEngine\Site;
+namespace OriginEngine\Helpers\LaravelSail;
 
 use OriginEngine\Helpers\Env\EnvRepository;
 use OriginEngine\Helpers\WorkingDirectory\WorkingDirectory;

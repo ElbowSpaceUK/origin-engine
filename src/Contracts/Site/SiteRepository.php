@@ -10,7 +10,7 @@ interface SiteRepository
 
     public function all(): Collection;
 
-    public function create(string $instanceId, string $name, string $description, string $installer): Site;
+    public function create(string $instanceId, string $name, string $description, string $blueprint): Site;
 
     public function exists(int $id): bool;
 

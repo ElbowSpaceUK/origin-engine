@@ -18,7 +18,7 @@ class CreateSitesTable extends Migration
             $table->string('instance_id');
             $table->string('name');
             $table->string('description')->nullable();
-            $table->string('installer');
+            $table->string('blueprint');
             $table->unsignedBigInteger('current_feature_id')->nullable();
             $table->timestamps();
             $table->softDeletes();

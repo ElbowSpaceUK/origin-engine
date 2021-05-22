@@ -1,8 +1,9 @@
 <?php
 
-namespace OriginEngine\Site;
+namespace OriginEngine\Helpers\LaravelSail;
 
 use OriginEngine\Helpers\Terminal\Executor;
+use OriginEngine\Site\Site;
 
 class Sail
 {

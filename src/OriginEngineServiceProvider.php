@@ -28,6 +28,7 @@ use OriginEngine\Contracts\Helpers\Composer\OperationManager as OperationManager
 use OriginEngine\Contracts\Helpers\Port\PortChecker;
 use OriginEngine\Contracts\Helpers\Terminal\Executor;
 use OriginEngine\Contracts\Instance\InstanceRepository as InstanceManagerContract;
+use OriginEngine\Contracts\Site\SiteBlueprintStore as SiteBlueprintStoreContract;
 use OriginEngine\Contracts\Site\SiteRepository as SiteRepositoryContract;
 use OriginEngine\Contracts\Helpers\Settings\SettingRepository as SettingRepositoryContract;
 use OriginEngine\Contracts\Site\SiteResolver;
@@ -41,6 +42,7 @@ use OriginEngine\Pipeline\PipelineManager;
 use OriginEngine\Instance\InstanceRepository;
 use OriginEngine\Helpers\Settings\SettingRepository;
 use OriginEngine\Site\SettingsSiteResolver;
+use OriginEngine\Site\SiteBlueprintStore;
 use OriginEngine\Site\SiteRepository;
 use OriginEngine\Stubs\Stubs;
 use OriginEngine\Stubs\StubStore;
@@ -164,6 +166,8 @@ class OriginEngineServiceProvider extends ServiceProvider
 
         $this->app->bind(FeatureResolver::class, SiteFeatureResolver::class);
         $this->app->bind(SiteResolver::class, SettingsSiteResolver::class);
+
+        $this->app->bind(SiteBlueprintStoreContract::class, SiteBlueprintStore::class);
 
     }
 }

@@ -4,76 +4,95 @@ namespace OriginEngine\Site;
 
 use OriginEngine\Contracts\Site\SiteResolver;
 use OriginEngine\Feature\Feature;
+use OriginEngine\Helpers\Env\EnvRepository;
 use OriginEngine\Helpers\WorkingDirectory\WorkingDirectory;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Site extends Model
+class Site
 {
-    use SoftDeletes;
 
-    const STATUS_MISSING = 'missing';
+    private InstalledSite $installedSite;
 
-    const STATUS_READY = 'ready';
-
-    const STATUS_DOWN = 'down';
-
-    protected $table = 'sites';
-
-    protected static function booted()
+    public function __construct(InstalledSite $installedSite)
     {
-        static::deleting(fn(Site $site) => $site->getFeatures()->each(fn($feature) => $feature->delete()));
+        $this->installedSite = $installedSite;
     }
 
-    public function getId(): int
+    protected function getModel(): InstalledSite
     {
-        return $this->id;
+        return $this->installedSite;
     }
 
-    public function getInstanceId(): string
+    public function getBlueprint(): SiteBlueprint
     {
-        return $this->instance_id;
+        return app(\OriginEngine\Contracts\Site\SiteBlueprintStore::class)->get(
+            $this->getModel()->getBlueprint()
+        );
     }
 
-    public function getName(): string
+    public static function current(): ?Site
     {
-        return $this->name;
-    }
-
-    public function getDescription(): string
-    {
-        return $this->description;
-    }
-
-    public function getUrl(string $envFile = '.env')
-    {
-        return (new UrlCalculator())->calculate($this->getInstanceId(), $envFile);
-    }
-
-    public function getStatus()
-    {
-        return (new Sail())->calculate($this->getInstanceId());
-    }
-
-    public function getInstaller(): string
-    {
-        return $this->installer;
-    }
-
-    public function getCurrentFeature(): ?Feature
-    {
-        return $this->currentFeature;
+        if (app(SiteResolver::class)->hasSite()) {
+            return app(SiteResolver::class)->getSite();
+        }
+        return null;
     }
 
     public function getFeatures(): Collection
     {
-        return $this->features;
+        return $this->getModel()->getFeatures();
+    }
+
+    public function getId(): int
+    {
+        return $this->getModel()->getId();
+    }
+
+    public function getInstanceId(): string
+    {
+        return $this->getModel()->getInstanceId();
+    }
+
+    public function getName(): string
+    {
+        return $this->getModel()->getName();
+    }
+
+    public function getDescription(): string
+    {
+        return $this->getModel()->getDescription();
+    }
+
+    public function getUrl()
+    {
+        $this->getBlueprint()->getUrl($this);
+    }
+
+    public function getWorkingDirectory()
+    {
+        return WorkingDirectory::fromSite($this);
+    }
+
+    public function getStatus()
+    {
+        $this->getBlueprint()->getStatus($this);
+    }
+
+    public function getBlueprintAlias(): string
+    {
+        return $this->getModel()->getBlueprint();
     }
 
     public function hasCurrentFeature(): bool
     {
         return $this->getCurrentFeature() !== null;
+    }
+
+    public function getCurrentFeature(): ?Feature
+    {
+        return $this->currentFeature;
     }
 
     public function features()
@@ -84,19 +103,6 @@ class Site extends Model
     public function currentFeature()
     {
         return $this->hasOne(Feature::class, 'id', 'current_feature_id');
-    }
-
-    public function getWorkingDirectory()
-    {
-        return WorkingDirectory::fromSite($this);
-    }
-
-    public static function current(): ?Site
-    {
-        if(app(SiteResolver::class)->hasSite()) {
-            return app(SiteResolver::class)->getSite();
-        }
-        return null;
     }
 
 }

@@ -2,6 +2,7 @@
 
 namespace OriginEngine\Site;
 
+use Illuminate\Database\Eloquent\Model;
 use OriginEngine\Contracts\Feature\FeatureRepository;
 use OriginEngine\Feature\Feature;
 use Illuminate\Database\Eloquent\Collection;
@@ -12,27 +13,27 @@ class SiteRepository implements \OriginEngine\Contracts\Site\SiteRepository
 
     public function all(): Collection
     {
-       return Site::all();
+       return InstalledSite::all()->map(fn(InstalledSite $installedSite) => SiteFactory::fromInstalledSite($installedSite));
     }
 
-    public function create(string $instanceId, string $name, string $description, string $installer): Site
+    public function create(string $instanceId, string $name, string $description, string $blueprint): Site
     {
-        $site = new Site();
+        $site = new InstalledSite();
 
         $site->instance_id = $instanceId;
         $site->name = $name;
         $site->description = $description;
-        $site->installer = $installer;
+        $site->blueprint = $blueprint;
 
         $site->save();
 
-        return $site;
+        return SiteFactory::fromInstalledSite($site);
     }
 
     public function exists(int $id): bool
     {
         try {
-            Site::findOrFail($id);
+            InstalledSite::findOrFail($id);
             return true;
         } catch (ModelNotFoundException $e) {
             return false;
@@ -41,32 +42,31 @@ class SiteRepository implements \OriginEngine\Contracts\Site\SiteRepository
 
     public function count(): int
     {
-        return Site::count();
+        return InstalledSite::count();
     }
 
     public function getById(int $id): Site
     {
-        return Site::findOrFail($id);
+        return SiteFactory::fromInstalledSite(
+            InstalledSite::findOrFail($id)
+        );
     }
 
     public function getByInstanceId(string $instanceId): Site
     {
-        return Site::where('instance_id', $instanceId)->firstOrFail();
+        return SiteFactory::fromInstalledSite(
+            InstalledSite::where('instance_id', $instanceId)->firstOrFail()
+        );
     }
 
     public function delete(int $id): void
     {
-        $site = $this->getById($id);
+        $site = InstalledSite::findOrFail($id);
         $site->delete();
     }
 
     public function instanceIdExists(string $instanceId): bool
     {
-        try {
-            Site::where('instance_id', $instanceId)->firstOrfail();
-            return true;
-        } catch (ModelNotFoundException $e) {
-            return false;
-        }
+        return InstalledSite::where('instance_id', $instanceId)->count() > 0;
     }
 }
