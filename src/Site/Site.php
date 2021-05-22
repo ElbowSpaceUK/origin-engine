@@ -53,7 +53,7 @@ class Site extends Model
 
     public function getStatus()
     {
-        return (new StatusCalculator())->calculate($this->getInstanceId());
+        return (new Sail())->calculate($this->getInstanceId());
     }
 
     public function getInstaller(): string
