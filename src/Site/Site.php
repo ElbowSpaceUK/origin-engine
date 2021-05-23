@@ -13,6 +13,12 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Site
 {
 
+    const STATUS_MISSING = 'missing';
+
+    const STATUS_READY = 'ready';
+
+    const STATUS_DOWN = 'down';
+
     private InstalledSite $installedSite;
 
     public function __construct(InstalledSite $installedSite)
@@ -67,7 +73,7 @@ class Site
 
     public function getUrl()
     {
-        $this->getBlueprint()->getUrl($this);
+        return $this->getBlueprint()->getUrl($this);
     }
 
     public function getWorkingDirectory()
@@ -77,7 +83,7 @@ class Site
 
     public function getStatus()
     {
-        $this->getBlueprint()->getStatus($this);
+        return $this->getBlueprint()->getStatus($this);
     }
 
     public function getBlueprintAlias(): string

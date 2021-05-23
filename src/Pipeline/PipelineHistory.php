@@ -44,17 +44,17 @@ class PipelineHistory
 
     public function getOutput(string $taskKey): Collection
     {
-        return $this->getTaskHistory($taskKey)['output'];
+        return collect($this->getTaskHistory($taskKey)['output']);
     }
 
     public function getConfig(string $taskKey): Collection
     {
-        return $this->getTaskHistory($taskKey)['config'];
+        return collect($this->getTaskHistory($taskKey)['config']);
     }
 
     public function getMessages(string $taskKey): Collection
     {
-        return $this->getTaskHistory($taskKey)['messages'];
+        return collect($this->getTaskHistory($taskKey)['messages']);
     }
 
     public function getRunTasks(): array

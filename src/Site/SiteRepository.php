@@ -2,18 +2,15 @@
 
 namespace OriginEngine\Site;
 
-use Illuminate\Database\Eloquent\Model;
-use OriginEngine\Contracts\Feature\FeatureRepository;
-use OriginEngine\Feature\Feature;
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Support\Collection;
 
 class SiteRepository implements \OriginEngine\Contracts\Site\SiteRepository
 {
 
     public function all(): Collection
     {
-       return InstalledSite::all()->map(fn(InstalledSite $installedSite) => SiteFactory::fromInstalledSite($installedSite));
+       return InstalledSite::all()->map(fn(InstalledSite $installedSite) => new Site($installedSite));
     }
 
     public function create(string $instanceId, string $name, string $description, string $blueprint): Site
@@ -27,7 +24,7 @@ class SiteRepository implements \OriginEngine\Contracts\Site\SiteRepository
 
         $site->save();
 
-        return SiteFactory::fromInstalledSite($site);
+        return new Site($site);
     }
 
     public function exists(int $id): bool
@@ -47,14 +44,14 @@ class SiteRepository implements \OriginEngine\Contracts\Site\SiteRepository
 
     public function getById(int $id): Site
     {
-        return SiteFactory::fromInstalledSite(
+        return new Site(
             InstalledSite::findOrFail($id)
         );
     }
 
     public function getByInstanceId(string $instanceId): Site
     {
-        return SiteFactory::fromInstalledSite(
+        return new Site(
             InstalledSite::where('instance_id', $instanceId)->firstOrFail()
         );
     }

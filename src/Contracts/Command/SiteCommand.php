@@ -13,7 +13,7 @@ use Symfony\Component\Console\Input\InputOption;
 /**
  * A command that runs on a single site
  */
-class SiteCommand extends Command#
+class SiteCommand extends Command
 {
 
     private Site $site;
@@ -21,13 +21,12 @@ class SiteCommand extends Command#
     private SiteRepository $siteRepository;
 
     private SiteResolver $siteResolver;
-    private \Illuminate\Database\Eloquent\Collection $allSites;
+    private \Illuminate\Support\Collection $allSites;
 
     protected function configure()
     {
         parent::configure();
         $this->addOption('site', 'S', InputOption::VALUE_OPTIONAL, 'The ID of the site', null);
-
     }
 
     /**
@@ -59,9 +58,8 @@ class SiteCommand extends Command#
 
         $siteId = $this->option('site') ?? $this->promptUserForSite($message, $siteFilter);
 
-        $site = $this->getSiteRepository()->getById($siteId);
+        $this->site = $this->getSiteRepository()->getById($siteId);
 
-        $this->site = $site;
         return $this->site;
     }
 

@@ -4,6 +4,7 @@ namespace OriginEngine\Pipeline\Tasks\LaravelSail;
 
 use Illuminate\Support\Collection;
 use OriginEngine\Helpers\Env\EnvRepository;
+use OriginEngine\Helpers\Terminal\Executor;
 use OriginEngine\Helpers\WorkingDirectory\WorkingDirectory;
 use OriginEngine\Pipeline\Task;
 use OriginEngine\Pipeline\TaskResponse;
@@ -11,27 +12,33 @@ use OriginEngine\Pipeline\TaskResponse;
 class GenerateApplicationKey extends Task
 {
 
-    public function __construct(string $environment)
+    public function __construct(string $environment, string $environmentFile = '.env')
     {
         parent::__construct([
-            'environment' => $environment
+            'environment' => $environment,
+            'environmentFile' => $environmentFile
         ]);
     }
 
     protected function execute(WorkingDirectory $workingDirectory, Collection $config): TaskResponse
     {
-        $filename = '.'  .$config->get('environment') . '.env';
+        $filename = $config->get('environmentFile') ?? '.env';
+
+        $this->writeInfo('Editing ' . $filename);
+
         $envRepository = new EnvRepository($workingDirectory);
         $env = $envRepository->get($filename);
-        $oldAppKey = $env->getVariable('APP_KEY');
+        $this->export('old_app_key', $env->getVariable('APP_KEY'));
+        $this->writeInfo('Old app key backed up');
 
-        Executor::cd($workingDirectory)->execute(
+        $output = Executor::cd($workingDirectory)->execute(
             sprintf('./vendor/bin/sail artisan key:generate --env=%s', $config->get('environment'))
         );
 
-        return $this->succeeded([
-            'old_app_key' => $oldAppKey
-        ]);
+        $this->writeSuccess('Generated a new key');
+        $this->writeDebug('key:generate output: ' . $output);
+
+        return $this->succeeded();
     }
 
     protected function undo(WorkingDirectory $workingDirectory, bool $status, Collection $config, Collection $output): void

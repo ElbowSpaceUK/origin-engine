@@ -3,6 +3,7 @@
 namespace OriginEngine\Pipeline\Tasks\LaravelSail;
 
 use Illuminate\Support\Collection;
+use OriginEngine\Helpers\Storage\Filesystem;
 use OriginEngine\Helpers\WorkingDirectory\WorkingDirectory;
 use OriginEngine\Pipeline\Task;
 use OriginEngine\Helpers\Terminal\Executor;
@@ -31,16 +32,17 @@ class InstallYarnDependencies extends Task
 
         $command .= ' install --non-interactive --no-progress';
 
+        $this->writeInfo('Running command ' . $command);
+
         $output = Executor::cd($workingDirectory)->execute($command);
-        if($output) {
-            $this->writeDebug($output);
-        }
+        $this->writeDebug('yarn install output: ' . $output);
+
         return $this->succeeded();
     }
 
     protected function undo(WorkingDirectory $workingDirectory, bool $status, Collection $config, Collection $output): void
     {
-        Executor::cd($workingDirectory)->execute('rm -r node_modules');
+        Executor::cd($workingDirectory)->execute(sprintf('rm -r %s', Filesystem::append($config->get('cwd', $workingDirectory->path()), 'node_modules')));
     }
 
     protected function upName(Collection $config): string

@@ -32,6 +32,6 @@ class CreateSitesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('instances');
+        Schema::dropIfExists('sites');
     }
 }

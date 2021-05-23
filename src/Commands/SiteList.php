@@ -36,7 +36,7 @@ class SiteList extends Command
             ['', 'ID', 'Name', 'Description', 'Status', 'URL'],
             $sites->map(function(Site $site) use ($currentSite){
                 return [
-                    ($currentSite !== null && $currentSite->is($site) ? '*' : ''),
+                    (($currentSite !== null && $currentSite->getId() === $site->getId()) ? '*' : ''),
                     $site->getId(),
                     $site->getName(),
                     $site->getDescription(),

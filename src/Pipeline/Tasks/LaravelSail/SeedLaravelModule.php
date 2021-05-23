@@ -32,14 +32,9 @@ class SeedLaravelModule extends Task
             $config->get('class'),
             $config->get('environment'),
         ));
+        $this->writeDebug(sprintf('module:seed output: %s', $output));
 
-        if($output) {
-            $this->writeDebug($output);
-        }
-
-        return $this->succeeded([
-            'output' => $output
-        ]);
+        return $this->succeeded();
     }
 
     protected function undo(WorkingDirectory $workingDirectory, bool $status, Collection $config, Collection $output): void

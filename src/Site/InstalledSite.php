@@ -15,12 +15,12 @@ class InstalledSite extends Model
 
     protected static function booted()
     {
-        static::deleting(fn(Site $site) => $site->getFeatures()->each(fn($feature) => $feature->delete()));
+        static::deleting(fn(InstalledSite $site) => $site->getFeatures()->each(fn($feature) => $feature->delete()));
     }
 
     public function getFeatures(): Collection
     {
-        return $this->features;
+        return $this->features ?? new Collection();
     }
 
     public function getId(): int

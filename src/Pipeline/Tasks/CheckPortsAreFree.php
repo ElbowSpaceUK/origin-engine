@@ -84,14 +84,17 @@ class CheckPortsAreFree extends Task
         $oldPorts = [];
         foreach ($ports as $variablePortName => $humanPortName) {
             $port = (int) $env->getVariable($variablePortName, null);
-
+            $this->writeInfo(sprintf('Checking if port %u is free', $port));
             $oldPorts[$variablePortName] = $port;
 
             while (!$port || $this->isPortTaken($port)) {
+                $this->writeInfo(sprintf('Port %s is taken', $port));
                 $port = $this->getNewPort($humanPortName, $port, $config->get('promptForPortOverride'));
+                $this->writeInfo(sprintf('Using port %s as the next free port', $port));
             }
 
             $env = $this->savePort($variablePortName, $port, $env);
+            $this->writeInfo(sprintf('Updated the environment variable [%s] to [%s]', $variablePortName, $port));
         }
         $envRepository->update($env, $config->get('environmentFile'));
         return $this->succeeded([

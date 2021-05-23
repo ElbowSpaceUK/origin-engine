@@ -147,6 +147,7 @@ class OriginEngineServiceProvider extends ServiceProvider
                 'root' => $_SERVER['HOME'] . '/.atlas-cli'
             ]);
         }
+
     }
 
     /**
@@ -176,5 +177,6 @@ class OriginEngineServiceProvider extends ServiceProvider
         $this->app->bind(PipelineRunnerContract::class, PipelineRunner::class);
         $this->app->bind(PipelineDownRunnerContract::class, PipelineDownRunner::class);
 
+        $this->loadMigrationsFrom(__DIR__ . '/../database/migrations');
     }
 }

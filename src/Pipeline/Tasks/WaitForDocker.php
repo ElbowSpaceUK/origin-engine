@@ -13,14 +13,20 @@ class WaitForDocker extends Task
 
     protected function execute(WorkingDirectory $workingDirectory, Collection $config): TaskResponse
     {
-        $output = '';
-        while(!$output) {
+        $startTime = microtime(true);
+
+        $output = 'not-empty';
+        while($output !== '') {
             $output = Executor::cd($workingDirectory)
                 ->execute('docker ps -q --filter health=starting');
-            if(!$output) {
+            if($output !== '') {
                 sleep(2);
             }
         }
+        return $this->succeeded([
+            'waiting_time' => microtime(true) - $startTime,
+            'output' => $output
+        ]);
     }
 
     protected function undo(WorkingDirectory $workingDirectory, bool $status, Collection $config, Collection $output): void

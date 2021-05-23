@@ -3,6 +3,7 @@
 namespace OriginEngine\Pipeline;
 
 use Illuminate\Support\Collection;
+use OriginEngine\Helpers\IO\IO;
 use OriginEngine\Helpers\WorkingDirectory\WorkingDirectory;
 
 abstract class Task
@@ -33,7 +34,11 @@ abstract class Task
 
     public function reverse(WorkingDirectory $workingDirectory, bool $status, Collection $config, Collection $output): void
     {
-        $this->undo($workingDirectory, $status, $config, $output);
+        try {
+            $this->undo($workingDirectory, $status, $config, $output);
+        } catch (\Exception $e) {
+            IO::error($e->getMessage());
+        }
     }
 
     public function getDefaultConfiguration(): array

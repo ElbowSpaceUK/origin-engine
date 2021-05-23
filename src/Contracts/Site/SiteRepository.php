@@ -3,7 +3,7 @@
 namespace OriginEngine\Contracts\Site;
 
 use OriginEngine\Site\Site;
-use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Collection;
 
 interface SiteRepository
 {

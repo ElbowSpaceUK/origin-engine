@@ -4,6 +4,7 @@ namespace OriginEngine\Commands;
 
 use OriginEngine\Contracts\Command\Command;
 use OriginEngine\Contracts\Command\SiteCommand;
+use OriginEngine\Contracts\Pipeline\PipelineRunner;
 use OriginEngine\Helpers\IO\IO;
 use OriginEngine\Helpers\Terminal\Executor;
 use OriginEngine\Helpers\WorkingDirectory\WorkingDirectory;
@@ -25,23 +26,23 @@ class SiteUp extends SiteCommand
      */
     protected $description = 'Turn on the given site';
 
+    protected bool $usePipelines = true;
+
     /**
      * Execute the console command.
      *
      * @return mixed
      */
-    public function handle()
+    public function handle(PipelineRunner $pipelineRunner)
     {
         $site = $this->getSite(
             'Which site would you like to turn on?',
             fn(Site $site) => $site->getStatus() === Site::STATUS_DOWN
         );
 
-        $workingDirectory = WorkingDirectory::fromSite($site);
-
         IO::info('Turning on site.');
 
-        Executor::cd($workingDirectory)->execute('./vendor/bin/sail up -d');
+        $pipelineRunner->run($site->getBlueprint()->getSiteUpPipeline(), $this->getPipelineConfig(), $site->getWorkingDirectory());
 
         IO::success('Turned on site.');
 

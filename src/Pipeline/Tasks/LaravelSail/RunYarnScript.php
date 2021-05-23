@@ -32,10 +32,11 @@ class RunYarnScript extends Task
 
         $command .= sprintf(' run %s --non-interactive', $config->get('script'));
 
+        $this->writeInfo('Running command ' . $command);
+
         $output = Executor::cd($workingDirectory)->execute($command);
-        if ($output) {
-            $this->writeDebug($output);
-        }
+        $this->writeDebug(sprintf('yarn run %s output: %s', $config->get('script'), $output));
+
         return $this->succeeded();
     }
 

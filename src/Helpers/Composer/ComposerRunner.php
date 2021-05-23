@@ -31,9 +31,9 @@ class ComposerRunner
         );
     }
 
-    public function install()
+    public function install(): string
     {
-        $this->composer(
+        return $this->composer(
             sprintf(
                 'install --working-dir %s --quiet --no-interaction --ansi',
                 $this->workingDirectory->path()

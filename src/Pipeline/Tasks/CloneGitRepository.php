@@ -29,7 +29,7 @@ class CloneGitRepository extends Task
                 '--branch' => $config->get('branch')
             ]
         );
-        $this->writeSuccess(sprintf('Installed repository %s', $config->get('repository')));
+        $this->writeSuccess(sprintf('Cloned repository %s', $config->get('repository')));
 
         return $this->succeeded();
     }

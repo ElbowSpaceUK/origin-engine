@@ -34,14 +34,17 @@ class EditEnvironmentFile extends Task
         $currentData = [];
         foreach ($config->get('replace') as $name => $value) {
             $currentData[$name] = $env->getVariable($name, null);
+            $this->writeInfo(
+                sprintf('Replacing %s with %s. ', $name, $value) .
+                ($currentData[$name] === null ?: sprintf('Old value was %s. ', $currentData[$name]))
+            );
             $env->setVariable($name, $value);
         }
+        $this->export('replaced', $currentData);
 
         $envRepository->update($env, $config->get('fileName'));
 
-        return $this->succeeded([
-            'replaced' => $currentData
-        ]);
+        return $this->succeeded();
     }
 
     protected function undo(WorkingDirectory $workingDirectory, bool $status, Collection $config, Collection $output): void

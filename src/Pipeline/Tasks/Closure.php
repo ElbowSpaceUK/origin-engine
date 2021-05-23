@@ -20,16 +20,14 @@ class Closure extends Task
 
     protected function execute(WorkingDirectory $workingDirectory, Collection $config): TaskResponse
     {
-        $this->writeInfo('Working directory is ' . $workingDirectory->path());
-        $this->writeInfo('Config is ' . $config->toJson());
+        $this->writeInfo('Calling closure');
 
-        // TODO Use reflection to determine what to pass to the callback?
-        $config->get('closure')($config, $workingDirectory);
+        $output = $config->get('closure')($config, $workingDirectory);
 
-        return $this->succeeded([
-            'id' => 12,
-            'output' => 743
-        ]);
+        $this->writeDebug('Closure returns ' . $output);
+        $this->export('output', $output);
+
+        return $this->succeeded();
     }
 
     protected function upName(Collection $config): string

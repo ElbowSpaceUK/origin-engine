@@ -10,14 +10,40 @@ use OriginEngine\Feature\Feature;
 use OriginEngine\Helpers\IO\IO;
 use OriginEngine\Helpers\IO\Proxy;
 use OriginEngine\Helpers\WorkingDirectory\WorkingDirectory;
+use OriginEngine\Pipeline\PipelineConfig;
 use OriginEngine\Site\Site;
 use Illuminate\Console\OutputStyle;
 use Illuminate\Support\Str;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 abstract class Command extends \LaravelZero\Framework\Commands\Command
 {
+
+    protected bool $usePipelines = false;
+
+    protected function configure()
+    {
+        parent::configure();
+        if($this->usePipelines) {
+            $this->addOption('config', 'C', InputOption::VALUE_IS_ARRAY|InputOption::VALUE_OPTIONAL, 'Data to pass to the installation pipeline. Separate the variable and value with an equals.', []);
+        }
+    }
+
+    public function getPipelineConfig(): PipelineConfig
+    {
+        if($this->usePipelines) {
+            return new PipelineConfig(collect($this->option('config'))->mapWithKeys(function($data) {
+                $parts = explode('=', $data);
+                if(count($parts) !== 2) {
+                    throw new \Exception(sprintf('Data [%s] could not be parsed, please ensure you include both the variable name and value separated with an =.', $data));
+                }
+                return [$parts[0] => $parts[1]];
+            })->toArray());
+        }
+        return new PipelineConfig([]);
+    }
 
     protected function initialize(InputInterface $input, OutputInterface $output)
     {

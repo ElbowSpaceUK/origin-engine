@@ -28,9 +28,7 @@ class MigrateDatabase extends Task
             sprintf('./vendor/bin/sail artisan migrate --env=%s', $config->get('environment'))
         );
 
-        if($output) {
-            $this->writeDebug($output);
-        }
+        $this->writeDebug('artisan migrate output: ' . $output);
 
         return $this->succeeded([
             'output' => $output
@@ -39,7 +37,7 @@ class MigrateDatabase extends Task
 
     protected function undo(WorkingDirectory $workingDirectory, bool $status, Collection $config, Collection $output): void
     {
-        $output = Executor::cd($workingDirectory)->execute(
+        Executor::cd($workingDirectory)->execute(
             sprintf('./vendor/bin/sail artisan migrate:rollback --env=%s', $config->get('environment'))
         );
 

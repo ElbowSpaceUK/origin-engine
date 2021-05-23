@@ -5,10 +5,13 @@ namespace OriginEngine\Commands;
 use OriginEngine\Contracts\Command\Command;
 use OriginEngine\Contracts\Command\SiteCommand;
 use OriginEngine\Contracts\Instance\InstanceRepository;
+use OriginEngine\Contracts\Pipeline\PipelineRunner;
 use OriginEngine\Contracts\Site\SiteRepository;
 use OriginEngine\Helpers\IO\IO;
 use OriginEngine\Helpers\WorkingDirectory\WorkingDirectory;
+use OriginEngine\Pipeline\PipelineConfig;
 use OriginEngine\Pipeline\PipelineManager;
+use OriginEngine\Site\Site;
 
 class SiteDelete extends SiteCommand
 {
@@ -26,21 +29,25 @@ class SiteDelete extends SiteCommand
      */
     protected $description = 'Delete the given site';
 
+    protected bool $usePipelines = true;
+
     /**
      * Execute the console command.
      *
-     * @return mixed
+     * @param PipelineRunner $pipelineRunner
+     * @param SiteRepository $siteRepository
+     * @param InstanceRepository $instanceRepository
+     * @return void
+     * @throws \Exception
      */
-    public function handle(PipelineManager $installManager, SiteRepository $siteRepository, InstanceRepository $instanceRepository)
+    public function handle(PipelineRunner $pipelineRunner, SiteRepository $siteRepository, InstanceRepository $instanceRepository)
     {
         $site = $this->getSite('Which sites would you like to delete?', null, true);
 
         if(!$instanceRepository->exists($site->getInstanceId())) {
             IO::warning('The site was not found on the filesystem');
         } else {
-            $installManager->driver($site->getInstaller())->uninstall(
-                WorkingDirectory::fromSite($site)
-            );
+            $pipelineRunner->run($site->getBlueprint()->getUninstallationPipeline(), $this->getPipelineConfig(), $site->getWorkingDirectory());
             IO::success('Removed the site from your filesystem');
         }
 

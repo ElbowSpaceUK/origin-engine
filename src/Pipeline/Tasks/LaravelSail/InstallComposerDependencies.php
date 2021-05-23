@@ -15,7 +15,10 @@ class InstallComposerDependencies extends Task
     protected function execute(WorkingDirectory $workingDirectory, Collection $config): TaskResponse
     {
         $composer = new ComposerRunner($workingDirectory);
-        $composer->install();
+        $output = $composer->install();
+
+        $this->writeSuccess('Ran composer install');
+        $this->writeDebug('Composer install output: ' . $output);
 
         return $this->succeeded();
     }

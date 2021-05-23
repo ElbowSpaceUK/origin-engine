@@ -30,6 +30,8 @@ class CopyFile extends Task
         $source = Filesystem::append($workingDirectory->path(), $config->get('source'));
         $destination = Filesystem::append($workingDirectory->path(), $config->get('destination'));
 
+        $this->writeInfo(sprintf('Copying %s to %s', $source, $destination));
+
         Filesystem::create()->copy(
             $source,
             $destination
