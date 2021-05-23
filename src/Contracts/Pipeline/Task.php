@@ -4,7 +4,7 @@ namespace OriginEngine\Contracts\Pipeline;
 
 use OriginEngine\Helpers\WorkingDirectory\WorkingDirectory;
 use OriginEngine\Pipeline\ProvisionedTask;
-use OriginEngine\Pipeline\TaskConfig;
+use OriginEngine\Pipeline\PipelineConfig;
 
 /**
  * @method static ProvisionedTask provision() Provision the task to be used in a pipeline
@@ -13,11 +13,11 @@ abstract class Task
 {
 
     /**
-     * @var TaskConfig
+     * @var PipelineConfig
      */
-    protected TaskConfig $config;
+    protected PipelineConfig $config;
 
-    public function __construct(TaskConfig $config)
+    public function __construct(PipelineConfig $config)
     {
         $this->config = $config;
     }

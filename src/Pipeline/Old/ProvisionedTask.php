@@ -11,7 +11,7 @@ class ProvisionedTask
 {
     // TODO Make it possible to 'warn' from a task, maybe by throwing a specific exception. Could then catch and show message on CLI.
 
-    private TaskConfig $config;
+    private PipelineConfig $config;
 
     private string $taskClass;
 
@@ -22,7 +22,7 @@ class ProvisionedTask
     public function __construct(string $taskClass)
     {
         $this->taskClass = $taskClass;
-        $this->config = new TaskConfig();
+        $this->config = new PipelineConfig();
     }
 
     public static function provision(string $taskClass): ProvisionedTask
@@ -32,7 +32,7 @@ class ProvisionedTask
 
     public function dependencies($config)
     {
-        $this->config = TaskConfig::parse($config);
+        $this->config = PipelineConfig::parse($config);
 
         return $this;
     }

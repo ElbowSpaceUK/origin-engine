@@ -2,8 +2,9 @@
 
 namespace OriginEngine\Pipeline;
 
-class TaskConfig
+class PipelineConfig
 {
+
     /**
      * Configuration for the task
      *
@@ -11,9 +12,9 @@ class TaskConfig
      */
     private array $config;
 
-    public static function parse($config): TaskConfig
+    public static function parse($config): PipelineConfig
     {
-        if($config instanceof TaskConfig) {
+        if($config instanceof PipelineConfig) {
             return $config;
         }
         if(is_array($config)) {
