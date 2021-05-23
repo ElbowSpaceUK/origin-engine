@@ -27,8 +27,8 @@ class CopyFile extends Task
 
     protected function execute(WorkingDirectory $workingDirectory, Collection $config): TaskResponse
     {
-        $source = Filesystem::append($workingDirectory, $config->get('source'));
-        $destination = Filesystem::append($workingDirectory, $config->get('destination'));
+        $source = Filesystem::append($workingDirectory->path(), $config->get('source'));
+        $destination = Filesystem::append($workingDirectory->path(), $config->get('destination'));
 
         Filesystem::create()->copy(
             $source,
@@ -44,7 +44,7 @@ class CopyFile extends Task
     protected function undo(WorkingDirectory $workingDirectory, bool $status, Collection $config, Collection $output): void
     {
         Filesystem::create()->remove(
-            Filesystem::append($workingDirectory, $config->get('destination'))
+            Filesystem::append($workingDirectory->path(), $config->get('destination'))
         );
     }
 

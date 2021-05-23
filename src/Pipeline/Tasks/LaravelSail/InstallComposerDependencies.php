@@ -1,6 +1,6 @@
 <?php
 
-namespace OriginEngine\Pipeline\Tasks;
+namespace OriginEngine\Pipeline\Tasks\LaravelSail;
 
 use Illuminate\Support\Collection;
 use OriginEngine\Helpers\WorkingDirectory\WorkingDirectory;

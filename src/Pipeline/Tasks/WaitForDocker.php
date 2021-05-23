@@ -2,15 +2,16 @@
 
 namespace OriginEngine\Pipeline\Tasks;
 
-use OriginEngine\Contracts\Pipeline\Task;
-use OriginEngine\Helpers\IO\IO;
+use Illuminate\Support\Collection;
+use OriginEngine\Pipeline\Task;
 use OriginEngine\Helpers\Terminal\Executor;
 use OriginEngine\Helpers\WorkingDirectory\WorkingDirectory;
+use OriginEngine\Pipeline\TaskResponse;
 
 class WaitForDocker extends Task
 {
 
-    public function up(WorkingDirectory $workingDirectory): void
+    protected function execute(WorkingDirectory $workingDirectory, Collection $config): TaskResponse
     {
         $output = '';
         while(!$output) {
@@ -22,8 +23,18 @@ class WaitForDocker extends Task
         }
     }
 
-    public function down(WorkingDirectory $workingDirectory): void
+    protected function undo(WorkingDirectory $workingDirectory, bool $status, Collection $config, Collection $output): void
     {
-        // No down tasks
+        // No down method
+    }
+
+    protected function upName(Collection $config): string
+    {
+        return 'Waiting for Docker';
+    }
+
+    protected function downName(Collection $config): string
+    {
+        return 'Waiting for Docker';
     }
 }

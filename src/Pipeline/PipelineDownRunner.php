@@ -14,7 +14,7 @@ class PipelineDownRunner implements \OriginEngine\Contracts\Pipeline\PipelineDow
 
         $skip = true;
         foreach($tasks as $key => $task) {
-            if($task === $startFrom) {
+            if($key === $startFrom) {
                 $skip = false;
             }
             if($skip === true) {
@@ -22,7 +22,6 @@ class PipelineDownRunner implements \OriginEngine\Contracts\Pipeline\PipelineDow
             }
             foreach($pipeline->getBeforeDownEvents($key) as $event) {
                 $event($history);
-                // Abort if event returns false
             }
 
             IO::info(sprintf('Undoing Task: %s' , $task->getDownName($history->getConfig($key))));
