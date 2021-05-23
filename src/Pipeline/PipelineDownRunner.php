@@ -1,0 +1,38 @@
+<?php
+
+namespace OriginEngine\Pipeline;
+
+use OriginEngine\Helpers\IO\IO;
+use OriginEngine\Helpers\WorkingDirectory\WorkingDirectory;
+
+class PipelineDownRunner implements \OriginEngine\Contracts\Pipeline\PipelineDownRunner
+{
+
+    public function run(Pipeline $pipeline, WorkingDirectory $workingDirectory, PipelineHistory $history, string $startFrom = null)
+    {
+        $tasks = array_reverse($pipeline->getTasks());
+
+        $skip = true;
+        foreach($tasks as $key => $task) {
+            if($task === $startFrom) {
+                $skip = false;
+            }
+            if($skip === true) {
+                continue;
+            }
+            foreach($pipeline->getBeforeDownEvents($key) as $event) {
+                $event($history);
+                // Abort if event returns false
+            }
+
+            IO::info(sprintf('Undoing Task: %s' , $task->getDownName($history->getConfig($key))));
+            $task->reverse($workingDirectory, $history->succeeded($key), $history->getConfig($key), $history->getOutput($key));
+
+            foreach($pipeline->getAfterDownEvents($key) as $event) {
+                $event($history);
+            }
+        }
+
+    }
+
+}

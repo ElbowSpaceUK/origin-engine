@@ -28,6 +28,8 @@ use OriginEngine\Contracts\Helpers\Composer\OperationManager as OperationManager
 use OriginEngine\Contracts\Helpers\Port\PortChecker;
 use OriginEngine\Contracts\Helpers\Terminal\Executor;
 use OriginEngine\Contracts\Instance\InstanceRepository as InstanceManagerContract;
+use OriginEngine\Contracts\Pipeline\PipelineDownRunner as PipelineDownRunnerContract;
+use OriginEngine\Contracts\Pipeline\PipelineRunner as PipelineRunnerContract;
 use OriginEngine\Contracts\Site\SiteBlueprintStore as SiteBlueprintStoreContract;
 use OriginEngine\Contracts\Site\SiteRepository as SiteRepositoryContract;
 use OriginEngine\Contracts\Helpers\Settings\SettingRepository as SettingRepositoryContract;
@@ -38,9 +40,11 @@ use OriginEngine\Helpers\Composer\Operations\StandardOperationManager;
 use OriginEngine\Helpers\IO\IO;
 use OriginEngine\Helpers\Port\FSockOpenPortChecker;
 use OriginEngine\Helpers\Terminal\ShellExecutor;
+use OriginEngine\Pipeline\PipelineDownRunner;
 use OriginEngine\Pipeline\PipelineManager;
 use OriginEngine\Instance\InstanceRepository;
 use OriginEngine\Helpers\Settings\SettingRepository;
+use OriginEngine\Pipeline\PipelineRunner;
 use OriginEngine\Site\SettingsSiteResolver;
 use OriginEngine\Site\SiteBlueprintStore;
 use OriginEngine\Site\SiteRepository;
@@ -167,7 +171,10 @@ class OriginEngineServiceProvider extends ServiceProvider
         $this->app->bind(FeatureResolver::class, SiteFeatureResolver::class);
         $this->app->bind(SiteResolver::class, SettingsSiteResolver::class);
 
-        $this->app->bind(SiteBlueprintStoreContract::class, SiteBlueprintStore::class);
+        $this->app->singleton(SiteBlueprintStoreContract::class, SiteBlueprintStore::class);
+
+        $this->app->bind(PipelineRunnerContract::class, PipelineRunner::class);
+        $this->app->bind(PipelineDownRunnerContract::class, PipelineDownRunner::class);
 
     }
 }

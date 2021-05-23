@@ -33,7 +33,7 @@ class SiteBlueprintStore implements SiteBlueprintStoreContract
             return $this->siteBlueprints[$alias];
         }
         throw new \Exception(sprintf(
-            'Could not find the site with alias %s', $alias
+            'Could not find the site blueprint with alias [%s]', $alias
         ));
     }
 }

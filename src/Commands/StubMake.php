@@ -83,7 +83,7 @@ class StubMake extends FeatureCommand
                 throw new \Exception(sprintf('Data [%s] could not be parsed, please ensure you include both the variable name and value separated with an =.', $data));
             }
             return [$parts[0] => $parts[1]];
-        })->toArray();;
+        })->toArray();
 
         foreach($stub->getStubFiles() as $stubFile) {
             foreach($stubFile->getReplacements() as $replacement) {

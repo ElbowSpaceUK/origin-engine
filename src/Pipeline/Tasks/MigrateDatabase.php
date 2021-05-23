@@ -1,12 +1,12 @@
 <?php
 
-namespace OriginEngine\Pipeline\Old\Tasks;
+namespace OriginEngine\Pipeline\Tasks;
 
 use OriginEngine\Contracts\Pipeline\Task;
 use OriginEngine\Helpers\Terminal\Executor;
 use OriginEngine\Pipeline\Old\ProvisionedTask;
 
-class GenerateApplicationKey extends Task
+class MigrateDatabase extends Task
 {
 
     public static function provision(string $environment = 'local')
@@ -20,13 +20,17 @@ class GenerateApplicationKey extends Task
     public function up(\OriginEngine\Helpers\WorkingDirectory\WorkingDirectory $workingDirectory): void
     {
         Executor::cd($workingDirectory)->execute(
-            sprintf('./vendor/bin/sail artisan key:generate --env=%s', $this->config->get('environment'))
+            sprintf('./vendor/bin/sail artisan migrate --env=%s', $this->config->get('environment'))
         );
     }
 
     public function down(\OriginEngine\Helpers\WorkingDirectory\WorkingDirectory $workingDirectory): void
     {
-        // No down tasks
+        // TODO Enable once migrations fixed
+
+        //    Executor::cd($workingDirectory)->execute(
+        //        sprintf('./vendor/bin/sail artisan migrate:rollback --env=%s', $this->config->get('environment'))
+        //    );
     }
 
 }

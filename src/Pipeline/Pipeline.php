@@ -4,43 +4,61 @@ namespace OriginEngine\Pipeline;
 
 abstract class Pipeline
 {
+    use HasEvents;
 
-    private array $beforeEvents = [];
-
-    private array $afterEvents = [];
+    public const BEFORE_EVENT = 'before';
+    public const AFTER_EVENT = 'after';
+    public const BEFORE_DOWN_EVENT = 'beforeDown';
+    public const AFTER_DOWN_EVENT = 'afterDown';
 
     /**
      * @return array|Task[]
      */
     abstract public function getTasks(): array;
 
-    public function boot() {
-        // Override this method to set up custom events on pipelines.
-    }
-
     public function before(string $task, \Closure $event)
     {
-        if(!array_key_exists($task, $this->beforeEvents)) {
-            $this->beforeEvents[$task] = [];
-        }
-        $this->beforeEvents[$task][] = $event;
+        $this->addEvent(static::BEFORE_EVENT, $task, $event);
     }
 
     public function after(string $task, \Closure $event)
     {
-        if(!array_key_exists($task, $this->afterEvents)) {
-            $this->afterEvents[$task] = [];
-        }
-        $this->afterEvents[$task][] = $event;
+        $this->addEvent(static::AFTER_EVENT, $task, $event);
     }
 
-    public function getBeforeEventsForTask(string $task): array
+    public function beforeDown(string $task, \Closure $event)
     {
-        return array_key_exists($task, $this->beforeEvents) ? $this->beforeEvents[$task] : [];
+        $this->addEvent(STATIC::BEFORE_DOWN_EVENT, $task, $event);
     }
 
-    public function getAfterEventsForTask(string $task): array
+    public function afterDown(string $task, \Closure $event)
     {
-        return array_key_exists($task, $this->afterEvents) ? $this->afterEvents[$task] : [];
+        $this->addEvent(static::AFTER_DOWN_EVENT, $task, $event);
     }
+
+    public function getBeforeEvents(string $task): array
+    {
+        return $this->getEvents(static::BEFORE_EVENT, $task);
+    }
+
+    public function getAfterEvents(string $task): array
+    {
+        return $this->getEvents(static::AFTER_EVENT, $task);
+    }
+
+    public function getBeforeDownEvents(string $task): array
+    {
+        return $this->getEvents(static::BEFORE_DOWN_EVENT, $task);
+    }
+
+    public function getAfterDownEvents(string $task): array
+    {
+        return $this->getEvents(static::AFTER_DOWN_EVENT, $task);
+    }
+
+    public function aliasedConfig(): array
+    {
+        return [];
+    }
+
 }

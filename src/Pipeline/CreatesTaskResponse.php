@@ -20,47 +20,47 @@ trait CreatesTaskResponse
         $this->messages[$level][] = $message;
     }
 
-    public function writeDebug(string $message): void
+    protected function writeDebug(string $message): void
     {
         $this->writeMessage('debug', $message);
     }
 
-    public function writeInfo(string $message): void
+    protected function writeInfo(string $message): void
     {
         $this->writeMessage('info', $message);
     }
 
-    public function writeWarning(string $message): void
+    protected function writeWarning(string $message): void
     {
         $this->writeMessage('warning', $message);
     }
 
-    public function writeError(string $message): void
+    protected function writeError(string $message): void
     {
         $this->writeMessage('error', $message);
     }
 
-    public function writeSuccess(string $message): void
+    protected function writeSuccess(string $message): void
     {
         $this->writeMessage('success', $message);
     }
 
-    public function export(string $key, $value)
+    protected function export(string $key, $value)
     {
         $this->data[$key] = $value;
     }
 
-    public function succeeded(array $data): TaskResponse
+    protected function succeeded(array $data = []): TaskResponse
     {
-        foreach($this->data as $key => $value) {
+        foreach($data as $key => $value) {
             $this->export($key, $value);
         }
         return $this->createResponse(true);
     }
 
-    public function failed(array $data): TaskResponse
+    protected function failed(array $data = []): TaskResponse
     {
-        foreach($this->data as $key => $value) {
+        foreach($data as $key => $value) {
             $this->export($key, $value);
         }
         return $this->createResponse(false);
@@ -70,7 +70,7 @@ trait CreatesTaskResponse
     {
         $taskResponse = new TaskResponse();
 
-        $taskResponse->setData([]);
+        $taskResponse->setData($this->data);
         $taskResponse->setMessages($this->messages);
         $taskResponse->setSuccess($status);
 

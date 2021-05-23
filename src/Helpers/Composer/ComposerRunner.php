@@ -43,6 +43,7 @@ class ComposerRunner
 
     public function composer(string $command)
     {
+        // TODO make this extensible so its easy to override the way you run composer. Extract to ComposerExecutor class?
         $docker = new Docker();
         $docker->addVolume($this->workingDirectory->path(), '/opt');
 

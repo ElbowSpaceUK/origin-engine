@@ -1,6 +1,6 @@
 <?php
 
-namespace OriginEngine\Pipeline\Old\Tasks;
+namespace OriginEngine\Pipeline\Tasks;
 
 use OriginEngine\Contracts\Pipeline\Task;
 use OriginEngine\Helpers\Env\Env;
