@@ -1,6 +1,6 @@
 <?php
 
-namespace OriginEngine\Pipeline;
+namespace OriginEngine\Pipeline\Old;
 
 use OriginEngine\Helpers\IO\IO;
 use OriginEngine\Helpers\WorkingDirectory\WorkingDirectory;

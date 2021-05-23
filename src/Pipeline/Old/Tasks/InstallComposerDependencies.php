@@ -1,6 +1,6 @@
 <?php
 
-namespace OriginEngine\Pipeline\Tasks;
+namespace OriginEngine\Pipeline\Old\Tasks;
 
 use OriginEngine\Contracts\Pipeline\Task;
 use OriginEngine\Helpers\Composer\ComposerRunner;

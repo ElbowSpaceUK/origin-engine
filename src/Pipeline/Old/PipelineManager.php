@@ -1,6 +1,6 @@
 <?php
 
-namespace OriginEngine\Pipeline;
+namespace OriginEngine\Pipeline\Old;
 
 use Illuminate\Support\Manager;
 

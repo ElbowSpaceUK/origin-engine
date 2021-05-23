@@ -1,10 +1,10 @@
 <?php
 
-namespace OriginEngine\Pipeline\Tasks;
+namespace OriginEngine\Pipeline\Old\Tasks;
 
 use OriginEngine\Contracts\Pipeline\Task;
 use OriginEngine\Helpers\Storage\Filesystem;
-use OriginEngine\Pipeline\ProvisionedTask;
+use OriginEngine\Pipeline\Old\ProvisionedTask;
 use Cz\Git\GitRepository;
 
 class CloneGitRepository extends Task

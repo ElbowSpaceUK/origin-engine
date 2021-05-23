@@ -1,15 +1,15 @@
 <?php
 
-namespace OriginEngine\Pipeline\Tasks;
+namespace OriginEngine\Pipeline\Old\Tasks;
 
 use OriginEngine\Contracts\Pipeline\Task;
 use OriginEngine\Helpers\Terminal\Executor;
-use OriginEngine\Pipeline\ProvisionedTask;
+use OriginEngine\Pipeline\Old\ProvisionedTask;
 
 class RunYarnScript extends Task
 {
 
-    public static function provision(string $script, string $cwd = ''): \OriginEngine\Pipeline\ProvisionedTask
+    public static function provision(string $script, string $cwd = ''): \OriginEngine\Pipeline\Old\ProvisionedTask
     {
         return ProvisionedTask::provision(static::class)
             ->dependencies([

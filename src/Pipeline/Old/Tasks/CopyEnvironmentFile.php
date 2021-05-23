@@ -1,12 +1,12 @@
 <?php
 
-namespace OriginEngine\Pipeline\Tasks;
+namespace OriginEngine\Pipeline\Old\Tasks;
 
 use OriginEngine\Contracts\Pipeline\Task;
 use OriginEngine\Helpers\Env\EnvRepository;
 use OriginEngine\Helpers\Storage\Filesystem;
 use OriginEngine\Helpers\WorkingDirectory\WorkingDirectory;
-use OriginEngine\Pipeline\ProvisionedTask;
+use OriginEngine\Pipeline\Old\ProvisionedTask;
 
 class CopyEnvironmentFile extends Task
 {

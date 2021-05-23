@@ -1,10 +1,10 @@
 <?php
 
-namespace OriginEngine\Pipeline\Tasks;
+namespace OriginEngine\Pipeline\Old\Tasks;
 
 use OriginEngine\Contracts\Pipeline\Task;
 use OriginEngine\Helpers\Terminal\Executor;
-use OriginEngine\Pipeline\ProvisionedTask;
+use OriginEngine\Pipeline\Old\ProvisionedTask;
 
 class MigrateDatabase extends Task
 {

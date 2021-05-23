@@ -1,6 +1,6 @@
 <?php
 
-namespace OriginEngine\Pipeline\Tasks;
+namespace OriginEngine\Pipeline\Old\Tasks;
 
 use OriginEngine\Contracts\Pipeline\Task;
 use OriginEngine\Helpers\Env\Env;
@@ -9,7 +9,7 @@ use OriginEngine\Helpers\IO\IO;
 use OriginEngine\Helpers\IO\Proxy;
 use OriginEngine\Helpers\Port\Port;
 use OriginEngine\Helpers\WorkingDirectory\WorkingDirectory;
-use OriginEngine\Pipeline\ProvisionedTask;
+use OriginEngine\Pipeline\Old\ProvisionedTask;
 use Illuminate\Contracts\Config\Repository;
 
 class ValidatePortEntries extends Task

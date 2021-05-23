@@ -1,6 +1,6 @@
 <?php
 
-namespace OriginEngine\Pipeline;
+namespace OriginEngine\Pipeline\Old;
 
 use OriginEngine\Contracts\Pipeline\Task;
 use OriginEngine\Helpers\WorkingDirectory\WorkingDirectory;
