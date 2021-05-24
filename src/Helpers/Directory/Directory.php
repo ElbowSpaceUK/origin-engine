@@ -1,10 +1,10 @@
 <?php
 
-namespace OriginEngine\Helpers\WorkingDirectory;
+namespace OriginEngine\Helpers\Directory;
 
 use OriginEngine\Site\Site;
 
-class WorkingDirectory
+class Directory
 {
     private string $directory;
 
@@ -23,21 +23,21 @@ class WorkingDirectory
         $this->directory = $directory;
     }
 
-    public static function fromDirectory(string $directory): WorkingDirectory
+    public static function fromDirectory(string $directory): Directory
     {
-        return new WorkingDirectory(
+        return new Directory(
             ProjectDirectoryLocator::fromDirectory($directory)
         );
     }
 
-    public static function fromSite(Site $site): WorkingDirectory
+    public static function fromSite(Site $site): Directory
     {
-        return static::fromDirectory($site->getDirectory());
+        return $site->getDirectory();
     }
 
-    public static function fromPath(string $path): WorkingDirectory
+    public static function fromFullPath(string $path): Directory
     {
-        return new WorkingDirectory($path);
+        return new Directory($path);
     }
 
 }

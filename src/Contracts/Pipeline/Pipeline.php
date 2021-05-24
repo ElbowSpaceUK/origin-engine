@@ -2,13 +2,13 @@
 
 namespace OriginEngine\Contracts\Pipeline;
 
-use OriginEngine\Helpers\WorkingDirectory\WorkingDirectory;
+use OriginEngine\Helpers\Directory\Directory;
 
 interface Pipeline
 {
 
-    public function install(WorkingDirectory $directory);
+    public function install(Directory $directory);
 
-    public function uninstall(WorkingDirectory $directory);
+    public function uninstall(Directory $directory);
 
 }

@@ -3,12 +3,12 @@
 namespace OriginEngine\Pipeline;
 
 use OriginEngine\Helpers\IO\IO;
-use OriginEngine\Helpers\WorkingDirectory\WorkingDirectory;
+use OriginEngine\Helpers\Directory\Directory;
 
 class PipelineDownRunner implements \OriginEngine\Contracts\Pipeline\PipelineDownRunner
 {
 
-    public function run(Pipeline $pipeline, WorkingDirectory $workingDirectory, PipelineHistory $history, string $startFrom = null)
+    public function run(Pipeline $pipeline, Directory $workingDirectory, PipelineHistory $history, string $startFrom = null)
     {
         $tasks = array_reverse($pipeline->getTasks());
 

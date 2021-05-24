@@ -7,7 +7,7 @@ use OriginEngine\Contracts\Command\FeatureCommand;
 use OriginEngine\Contracts\Feature\FeatureResolver;
 use OriginEngine\Contracts\Site\SiteResolver;
 use OriginEngine\Helpers\IO\IO;
-use OriginEngine\Helpers\WorkingDirectory\WorkingDirectory;
+use OriginEngine\Helpers\Directory\Directory;
 use OriginEngine\Packages\LocalPackage;
 use OriginEngine\Packages\LocalPackageHelper;
 use Cz\Git\GitException;
@@ -45,11 +45,11 @@ class FeatureUse extends FeatureCommand
         $this->task('Resetting the site',
             fn() => $this->call(SiteReset::class, ['--site' => $feature->getSite()->getId()]));
 
-        $workingDirectory = WorkingDirectory::fromSite($feature->getSite());
+        $workingDirectory = $feature->getSite()->getDirectory();
 
         // TODO Base branch stored in site definition
         $this->task('Checkout the base branch', function() use ($feature) {
-            $git = new GitRepository($feature->getSite()->getWorkingDirectory()->path());
+            $git = new GitRepository($feature->getSite()->getDirectory()->path());
             try {
                 $git->checkout($feature->getBranch());
             } catch (GitException $e) {

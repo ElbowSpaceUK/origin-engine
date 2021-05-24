@@ -3,12 +3,12 @@
 namespace OriginEngine\Pipeline;
 
 use OriginEngine\Helpers\IO\IO;
-use OriginEngine\Helpers\WorkingDirectory\WorkingDirectory;
+use OriginEngine\Helpers\Directory\Directory;
 
 class PipelineRunner implements \OriginEngine\Contracts\Pipeline\PipelineRunner
 {
 
-    public function run(Pipeline $pipeline, PipelineConfig $config, WorkingDirectory $workingDirectory): PipelineHistory
+    public function run(Pipeline $pipeline, PipelineConfig $config, Directory $workingDirectory): PipelineHistory
     {
         $tasks = $pipeline->getTasks();
         $history = new PipelineHistory();
@@ -37,7 +37,7 @@ class PipelineRunner implements \OriginEngine\Contracts\Pipeline\PipelineRunner
         return $history;
     }
 
-    protected function undo(Pipeline $pipeline, WorkingDirectory $workingDirectory, PipelineHistory $history, string $startFrom = null)
+    protected function undo(Pipeline $pipeline, Directory $workingDirectory, PipelineHistory $history, string $startFrom = null)
     {
         $downRunner = app(\OriginEngine\Contracts\Pipeline\PipelineDownRunner::class);
         $downRunner->run($pipeline, $workingDirectory, $history, $startFrom);

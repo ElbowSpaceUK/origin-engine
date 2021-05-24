@@ -8,7 +8,7 @@ use OriginEngine\Contracts\Feature\FeatureResolver;
 use OriginEngine\Contracts\Site\SiteRepository;
 use OriginEngine\Feature\Feature;
 use OriginEngine\Helpers\IO\IO;
-use OriginEngine\Helpers\WorkingDirectory\WorkingDirectory;
+use OriginEngine\Helpers\Directory\Directory;
 use OriginEngine\Pipeline\PipelineManager;
 use Cz\Git\GitException;
 use Cz\Git\GitRepository;
@@ -115,7 +115,7 @@ class FeatureNew extends SiteCommand
         );
     }
 
-    private function checkoutBranch(string $branchName, WorkingDirectory $path)
+    private function checkoutBranch(string $branchName, Directory $path)
     {
         $git = new GitRepository($path->path());
         try {

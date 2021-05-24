@@ -7,7 +7,7 @@ use OriginEngine\Contracts\Pipeline\PipelineRunner;
 use OriginEngine\Contracts\Site\SiteBlueprintStore;
 use OriginEngine\Contracts\Site\SiteRepository;
 use OriginEngine\Helpers\IO\IO;
-use OriginEngine\Helpers\WorkingDirectory\WorkingDirectory;
+use OriginEngine\Helpers\Directory\Directory;
 use OriginEngine\Pipeline\PipelineConfig;
 use OriginEngine\Pipeline\PipelineManager;
 use Illuminate\Support\Str;
@@ -56,7 +56,7 @@ class SiteNew extends Command
         $directory = $this->getDirectory($name);
         $description = $this->getSiteDescription();
 
-        $workingDirectory = WorkingDirectory::fromDirectory($directory);
+        $workingDirectory = Directory::fromDirectory($directory);
 
         $blueprintAlias = $this->getOrAskForOption(
             'type',

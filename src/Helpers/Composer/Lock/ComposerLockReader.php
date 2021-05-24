@@ -3,18 +3,18 @@
 namespace OriginEngine\Helpers\Composer\Lock;
 
 use OriginEngine\Helpers\Storage\Filesystem;
-use OriginEngine\Helpers\WorkingDirectory\WorkingDirectory;
+use OriginEngine\Helpers\Directory\Directory;
 
 class ComposerLockReader
 {
 
     /**
-     * @var WorkingDirectory
+     * @var Directory
      */
-    private WorkingDirectory $workingDirectory;
+    private Directory $workingDirectory;
     private string $lockName;
 
-    public function __construct(WorkingDirectory $workingDirectory, string $lockName = 'composer.lock')
+    public function __construct(Directory $workingDirectory, string $lockName = 'composer.lock')
     {
         $this->workingDirectory = $workingDirectory;
         $this->lockName = $lockName;

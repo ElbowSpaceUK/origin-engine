@@ -3,12 +3,12 @@
 namespace OriginEngine\Helpers\Composer\Schema;
 
 use OriginEngine\Helpers\Storage\Filesystem;
-use OriginEngine\Helpers\WorkingDirectory\WorkingDirectory;
+use OriginEngine\Helpers\Directory\Directory;
 
 class ComposerFilesystem
 {
 
-    public function retrieve(WorkingDirectory $directory, string $filename = 'composer.json'): array
+    public function retrieve(Directory $directory, string $filename = 'composer.json'): array
     {
         $path = Filesystem::append(
             $directory->path(),
@@ -26,7 +26,7 @@ class ComposerFilesystem
         );
     }
 
-    public function put(WorkingDirectory $directory, array $composer, string $filename = 'composer.json'): void
+    public function put(Directory $directory, array $composer, string $filename = 'composer.json'): void
     {
         $path = Filesystem::append(
             $directory->path(),

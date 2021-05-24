@@ -5,7 +5,7 @@ namespace OriginEngine\Site;
 use OriginEngine\Contracts\Site\SiteResolver;
 use OriginEngine\Feature\Feature;
 use OriginEngine\Helpers\Env\EnvRepository;
-use OriginEngine\Helpers\WorkingDirectory\WorkingDirectory;
+use OriginEngine\Helpers\Directory\Directory;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -56,11 +56,6 @@ class Site
         return $this->getModel()->getId();
     }
 
-    public function getDirectory(): string
-    {
-        return $this->getModel()->getDirectory();
-    }
-
     public function getName(): string
     {
         return $this->getModel()->getName();
@@ -71,7 +66,7 @@ class Site
         return $this->getModel()->getDescription();
     }
 
-    public function setDirectory(string $directory): void
+    public function setDirectory(Directory $directory): void
     {
         $model = $this->getModel();
         $model->directory = $directory;
@@ -97,9 +92,14 @@ class Site
         return $this->getBlueprint()->getUrl($this);
     }
 
-    public function getWorkingDirectory()
+    public function getDirectory(): Directory
     {
-        return WorkingDirectory::fromSite($this);
+        return Directory::fromDirectory($this->getDirectoryPath());
+    }
+
+    public function getDirectoryPath(): string
+    {
+        return $this->getModel()->getDirectoryPath();
     }
 
     public function getStatus()

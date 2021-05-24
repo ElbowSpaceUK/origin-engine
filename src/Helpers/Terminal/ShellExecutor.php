@@ -5,19 +5,19 @@ namespace OriginEngine\Helpers\Terminal;
 
 
 use OriginEngine\Contracts\Helpers\Terminal\Executor as ExecutorContract;
-use OriginEngine\Helpers\WorkingDirectory\WorkingDirectory;
+use OriginEngine\Helpers\Directory\Directory;
 
 class ShellExecutor implements ExecutorContract
 {
 
-    private ?WorkingDirectory $workingDirectory;
+    private ?Directory $workingDirectory;
 
-    public function __construct(WorkingDirectory $workingDirectory = null)
+    public function __construct(Directory $workingDirectory = null)
     {
         $this->workingDirectory = $workingDirectory;
     }
 
-    public function cd(WorkingDirectory $workingDirectory): ExecutorContract
+    public function cd(Directory $workingDirectory): ExecutorContract
     {
         $this->workingDirectory = $workingDirectory;
 

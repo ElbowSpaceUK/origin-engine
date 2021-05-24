@@ -28,7 +28,7 @@ class InstalledSite extends Model
         return $this->id;
     }
 
-    public function getDirectory(): string
+    public function getDirectoryPath(): string
     {
         return $this->directory;
     }

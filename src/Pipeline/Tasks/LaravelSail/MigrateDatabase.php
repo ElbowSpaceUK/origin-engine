@@ -5,7 +5,7 @@ namespace OriginEngine\Pipeline\Tasks\LaravelSail;
 use Illuminate\Support\Collection;
 use OriginEngine\Pipeline\Task;
 use OriginEngine\Helpers\Terminal\Executor;
-use OriginEngine\Helpers\WorkingDirectory\WorkingDirectory;
+use OriginEngine\Helpers\Directory\Directory;
 use OriginEngine\Pipeline\Old\ProvisionedTask;
 use OriginEngine\Pipeline\TaskResponse;
 
@@ -22,7 +22,7 @@ class MigrateDatabase extends Task
         ]);
     }
 
-    protected function execute(WorkingDirectory $workingDirectory, Collection $config): TaskResponse
+    protected function execute(Directory $workingDirectory, Collection $config): TaskResponse
     {
         $output = Executor::cd($workingDirectory)->execute(
             sprintf('./vendor/bin/sail artisan migrate --env=%s', $config->get('environment'))
@@ -35,7 +35,7 @@ class MigrateDatabase extends Task
         ]);
     }
 
-    protected function undo(WorkingDirectory $workingDirectory, bool $status, Collection $config, Collection $output): void
+    protected function undo(Directory $workingDirectory, bool $status, Collection $config, Collection $output): void
     {
         Executor::cd($workingDirectory)->execute(
             sprintf('./vendor/bin/sail artisan migrate:rollback --env=%s', $config->get('environment'))

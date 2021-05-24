@@ -4,7 +4,7 @@ namespace OriginEngine\Pipeline;
 
 use Illuminate\Support\Collection;
 use OriginEngine\Helpers\IO\IO;
-use OriginEngine\Helpers\WorkingDirectory\WorkingDirectory;
+use OriginEngine\Helpers\Directory\Directory;
 
 abstract class Task
 {
@@ -21,7 +21,7 @@ abstract class Task
         $this->defaultConfiguration = $defaultConfiguration;
     }
 
-    public function run(WorkingDirectory $workingDirectory, Collection $config): TaskResponse
+    public function run(Directory $workingDirectory, Collection $config): TaskResponse
     {
         try {
             return $this->execute($workingDirectory, $config);
@@ -32,7 +32,7 @@ abstract class Task
         }
     }
 
-    public function reverse(WorkingDirectory $workingDirectory, bool $status, Collection $config, Collection $output): void
+    public function reverse(Directory $workingDirectory, bool $status, Collection $config, Collection $output): void
     {
         try {
             $this->undo($workingDirectory, $status, $config, $output);
@@ -46,9 +46,9 @@ abstract class Task
         return $this->defaultConfiguration;
     }
 
-    abstract protected function execute(WorkingDirectory $workingDirectory, Collection $config): TaskResponse;
+    abstract protected function execute(Directory $workingDirectory, Collection $config): TaskResponse;
 
-    abstract protected function undo(WorkingDirectory $workingDirectory, bool $status, Collection $config, Collection $output): void;
+    abstract protected function undo(Directory $workingDirectory, bool $status, Collection $config, Collection $output): void;
 
     abstract protected function upName(Collection $config): string;
 

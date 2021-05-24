@@ -4,7 +4,7 @@ namespace OriginEngine\Pipeline;
 
 use OriginEngine\Contracts\Pipeline\PipelineRunner as PipelineRunnerContract;
 use OriginEngine\Helpers\IO\IO;
-use OriginEngine\Helpers\WorkingDirectory\WorkingDirectory;
+use OriginEngine\Helpers\Directory\Directory;
 
 class NormalPipelineRunner implements PipelineRunnerContract
 {
@@ -16,7 +16,7 @@ class NormalPipelineRunner implements PipelineRunnerContract
         $this->baseRunner = $baseRunner;
     }
 
-    public function run(Pipeline $pipeline, PipelineConfig $config, WorkingDirectory $workingDirectory): PipelineHistory
+    public function run(Pipeline $pipeline, PipelineConfig $config, Directory $workingDirectory): PipelineHistory
     {
         $pipeline->addGlobalEvent(Pipeline::BEFORE_EVENT, function(PipelineConfig $config, PipelineHistory $history, string $taskKey) use ($pipeline) {
             $task = $pipeline->getTask($taskKey);

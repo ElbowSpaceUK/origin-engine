@@ -4,7 +4,7 @@ namespace OriginEngine\Pipeline\Tasks\LaravelSail;
 
 use Illuminate\Support\Collection;
 use OriginEngine\Helpers\Storage\Filesystem;
-use OriginEngine\Helpers\WorkingDirectory\WorkingDirectory;
+use OriginEngine\Helpers\Directory\Directory;
 use OriginEngine\Pipeline\Task;
 use OriginEngine\Helpers\Terminal\Executor;
 use OriginEngine\Pipeline\TaskResponse;
@@ -22,7 +22,7 @@ class InstallYarnDependencies extends Task
         ]);
     }
 
-    protected function execute(WorkingDirectory $workingDirectory, Collection $config): TaskResponse
+    protected function execute(Directory $workingDirectory, Collection $config): TaskResponse
     {
         $command = './vendor/bin/sail yarn';
 
@@ -40,7 +40,7 @@ class InstallYarnDependencies extends Task
         return $this->succeeded();
     }
 
-    protected function undo(WorkingDirectory $workingDirectory, bool $status, Collection $config, Collection $output): void
+    protected function undo(Directory $workingDirectory, bool $status, Collection $config, Collection $output): void
     {
         Executor::cd($workingDirectory)->execute(sprintf('rm -r %s', Filesystem::append($config->get('cwd', $workingDirectory->path()), 'node_modules')));
     }

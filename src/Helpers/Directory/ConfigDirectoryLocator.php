@@ -1,6 +1,6 @@
 <?php
 
-namespace OriginEngine\Helpers\WorkingDirectory;
+namespace OriginEngine\Helpers\Directory;
 
 class ConfigDirectoryLocator
 {

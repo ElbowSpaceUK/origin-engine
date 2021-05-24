@@ -13,7 +13,7 @@ use OriginEngine\Helpers\Composer\Schema\ComposerRepository;
 use OriginEngine\Helpers\Composer\Schema\Schema\ComposerSchema;
 use OriginEngine\Helpers\IO\IO;
 use OriginEngine\Helpers\Storage\Filesystem;
-use OriginEngine\Helpers\WorkingDirectory\WorkingDirectory;
+use OriginEngine\Helpers\Directory\Directory;
 use OriginEngine\Packages\LocalPackage;
 use OriginEngine\Packages\LocalPackageHelper;
 use OriginEngine\Site\Site;
@@ -65,7 +65,7 @@ class DepRemote extends FeatureCommand
             'feature_id' => $feature->getId()
         ])->firstOrFail();
 
-        $workingDirectory = WorkingDirectory::fromSite($site);
+        $workingDirectory = $site->getDirectory();
 
         IO::info(sprintf('Converting %s into a remote package.', $localPackage->getName()));
 
@@ -78,7 +78,7 @@ class DepRemote extends FeatureCommand
 
 
 
-    private function clearStaleDependencies(WorkingDirectory $workingDirectory, string $package)
+    private function clearStaleDependencies(Directory $workingDirectory, string $package)
     {
         $currentVendorPath = Filesystem::append($workingDirectory->path(), 'vendor', $package);
         if(Filesystem::create()->exists($currentVendorPath)) {
@@ -87,7 +87,7 @@ class DepRemote extends FeatureCommand
         return true;
     }
 
-    private function updateComposer(WorkingDirectory $workingDirectory)
+    private function updateComposer(Directory $workingDirectory)
     {
         ComposerRunner::for($workingDirectory)->update();
         return true;

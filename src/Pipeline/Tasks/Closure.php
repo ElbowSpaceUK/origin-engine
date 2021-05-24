@@ -3,7 +3,7 @@
 namespace OriginEngine\Pipeline\Tasks;
 
 use Illuminate\Support\Collection;
-use OriginEngine\Helpers\WorkingDirectory\WorkingDirectory;
+use OriginEngine\Helpers\Directory\Directory;
 use OriginEngine\Pipeline\Task;
 use OriginEngine\Pipeline\TaskResponse;
 
@@ -18,7 +18,7 @@ class Closure extends Task
         ]);
     }
 
-    protected function execute(WorkingDirectory $workingDirectory, Collection $config): TaskResponse
+    protected function execute(Directory $workingDirectory, Collection $config): TaskResponse
     {
         $this->writeInfo('Calling closure');
 
@@ -40,7 +40,7 @@ class Closure extends Task
         return 'Running reverse callback';
     }
 
-    protected function undo(WorkingDirectory $workingDirectory, bool $status, Collection $config, Collection $output): void
+    protected function undo(Directory $workingDirectory, bool $status, Collection $config, Collection $output): void
     {
         if($config->get('revert') !== null) {
             $config->get('revert')($config, $output);

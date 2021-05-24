@@ -3,7 +3,7 @@
 namespace OriginEngine\Helpers\Composer\Schema;
 
 use OriginEngine\Helpers\Composer\Schema\Schema\ComposerSchema;
-use OriginEngine\Helpers\WorkingDirectory\WorkingDirectory;
+use OriginEngine\Helpers\Directory\Directory;
 
 class ComposerRepository
 {
@@ -23,14 +23,14 @@ class ComposerRepository
         $this->composerSchemaFactory = $composerSchemaFactory;
     }
 
-    public function get(WorkingDirectory $workingDirectory, string $filename = 'composer.json'): ComposerSchema
+    public function get(Directory $workingDirectory, string $filename = 'composer.json'): ComposerSchema
     {
         return $this->composerSchemaFactory->create(
             $this->composerFilesystem->retrieve($workingDirectory, $filename)
         );
     }
 
-    public function save(WorkingDirectory $workingDirectory, ComposerSchema $composerSchema, string $filename = 'composer.json')
+    public function save(Directory $workingDirectory, ComposerSchema $composerSchema, string $filename = 'composer.json')
     {
         $composer = $composerSchema->toArray();
 

@@ -9,7 +9,7 @@ use OriginEngine\Helpers\Env\EnvRepository;
 use OriginEngine\Helpers\IO\IO;
 use OriginEngine\Helpers\IO\Proxy;
 use OriginEngine\Helpers\Port\Port;
-use OriginEngine\Helpers\WorkingDirectory\WorkingDirectory;
+use OriginEngine\Helpers\Directory\Directory;
 use OriginEngine\Pipeline\Old\ProvisionedTask;
 use Illuminate\Contracts\Config\Repository;
 use OriginEngine\Pipeline\TaskResponse;
@@ -75,7 +75,7 @@ class CheckPortsAreFree extends Task
         return $env;
     }
 
-    protected function execute(WorkingDirectory $workingDirectory, Collection $config): TaskResponse
+    protected function execute(Directory $workingDirectory, Collection $config): TaskResponse
     {
         $envRepository = new EnvRepository($workingDirectory);
         $env = $envRepository->get($config->get('environmentFile'));
@@ -102,7 +102,7 @@ class CheckPortsAreFree extends Task
         ]);
     }
 
-    protected function undo(WorkingDirectory $workingDirectory, bool $status, Collection $config, Collection $output): void
+    protected function undo(Directory $workingDirectory, bool $status, Collection $config, Collection $output): void
     {
         $envRepository = new EnvRepository($workingDirectory);
         $env = $envRepository->get($config->get('environmentFile'));

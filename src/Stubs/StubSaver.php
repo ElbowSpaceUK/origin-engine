@@ -4,20 +4,20 @@ namespace OriginEngine\Stubs;
 
 use OriginEngine\Helpers\IO\IO;
 use OriginEngine\Helpers\Storage\Filesystem;
-use OriginEngine\Helpers\WorkingDirectory\WorkingDirectory;
+use OriginEngine\Helpers\Directory\Directory;
 use OriginEngine\Stubs\Entities\CompiledStub;
 
 class StubSaver
 {
 
     /**
-     * @var WorkingDirectory
+     * @var Directory
      */
-    private WorkingDirectory $workingDirectory;
+    private Directory $workingDirectory;
 
     private bool $force = false;
 
-    public function __construct(WorkingDirectory $workingDirectory)
+    public function __construct(Directory $workingDirectory)
     {
         $this->workingDirectory = $workingDirectory;
     }
@@ -61,7 +61,7 @@ class StubSaver
         IO::task(sprintf('Save %s', $path), fn() => file_put_contents($path, $stubFile->getContent()), 'Saving...');
     }
 
-    public static function in(WorkingDirectory $workingDirectory): StubSaver
+    public static function in(Directory $workingDirectory): StubSaver
     {
         return new static($workingDirectory);
     }

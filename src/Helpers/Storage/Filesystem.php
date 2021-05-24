@@ -3,7 +3,7 @@
 namespace OriginEngine\Helpers\Storage;
 
 use OriginEngine\Helpers\Settings\Settings;
-use OriginEngine\Helpers\WorkingDirectory\ConfigDirectoryLocator;
+use OriginEngine\Helpers\Directory\ConfigDirectoryLocator;
 use Illuminate\Support\Str;
 use Symfony\Component\Filesystem\Filesystem as SymfonyFilesystem;
 

@@ -6,7 +6,7 @@ use OriginEngine\Contracts\Command\Command;
 use OriginEngine\Contracts\Command\FeatureCommand;
 use OriginEngine\Helpers\IO\IO;
 use OriginEngine\Helpers\Storage\Filesystem;
-use OriginEngine\Helpers\WorkingDirectory\WorkingDirectory;
+use OriginEngine\Helpers\Directory\Directory;
 use OriginEngine\Stubs\Entities\Stub;
 use OriginEngine\Stubs\Entities\StubFile;
 use OriginEngine\Stubs\StubMigrator;
@@ -60,7 +60,7 @@ class StubMake extends FeatureCommand
 
         IO::info('Stubs compiled');
 
-        $saver = StubSaver::in(WorkingDirectory::fromPath(
+        $saver = StubSaver::in(Directory::fromFullPath(
             Filesystem::append(
                 $workingDirectory->path(),
                 $this->option('location') ?? $stub->getDefaultLocation()

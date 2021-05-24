@@ -6,7 +6,7 @@ use OriginEngine\Contracts\Feature\FeatureRepository;
 use OriginEngine\Contracts\Feature\FeatureResolver;
 use OriginEngine\Helpers\IO\IO;
 use OriginEngine\Helpers\Storage\Filesystem;
-use OriginEngine\Helpers\WorkingDirectory\WorkingDirectory;
+use OriginEngine\Helpers\Directory\Directory;
 use OriginEngine\Feature\Feature;
 use OriginEngine\Packages\LocalPackage;
 use Illuminate\Support\Collection;
@@ -21,7 +21,7 @@ class FeatureCommand extends Command
 
     private Feature $feature;
 
-    private WorkingDirectory $workingDirectory;
+    private Directory $workingDirectory;
 
     private FeatureRepository $featureRepository;
 
@@ -133,16 +133,14 @@ class FeatureCommand extends Command
      * @param string $message
      * @param \Closure|null $featureFilter
      * @param bool $ignoreDefault
-     * @return WorkingDirectory
+     * @return Directory
      * @throws \Exception
      */
-    public function getWorkingDirectory(string $message = 'Which feature would you like to perform the action against?',
-                                        \Closure $featureFilter = null,
-                                        bool $ignoreDefault = false): WorkingDirectory
+    public function getWorkingDirectory(string $message = 'Which feature would you like to perform the action against?'): Directory
     {
         if(!isset($this->workingDirectory)) {
-            $feature = $this->getFeature($message, $featureFilter, $ignoreDefault);
-            $paths = [$feature->getSite()->getWorkingDirectory()->path()];
+            $feature = $this->getFeature($message, []);
+            $paths = [$feature->getSite()->getDirectory()->path()];
 
             if($this->supportsDependencies && $this->option('dep') !== null) {
                 $existingDeps = $feature->getLocalPackages()->filter(fn(LocalPackage $localPackage) => $localPackage->getName() === $this->option('dep'));
@@ -153,7 +151,7 @@ class FeatureCommand extends Command
                     throw new \Exception(sprintf('Dependency %s not found', $this->option('dep')));
                 }
             }
-            $this->workingDirectory = WorkingDirectory::fromPath(Filesystem::append(...$paths));
+            $this->workingDirectory = Directory::fromFullPath(Filesystem::append(...$paths));
         }
         return $this->workingDirectory;
     }

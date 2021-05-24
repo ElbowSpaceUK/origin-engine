@@ -2,13 +2,13 @@
 
 namespace OriginEngine\Contracts\Helpers\Terminal;
 
-use OriginEngine\Helpers\WorkingDirectory\WorkingDirectory;
+use OriginEngine\Helpers\Directory\Directory;
 
 interface Executor
 {
 
     public function execute(string $command): ?string;
 
-    public function cd(WorkingDirectory $workingDirectory): Executor;
+    public function cd(Directory $workingDirectory): Executor;
 
 }

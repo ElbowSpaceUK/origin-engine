@@ -13,7 +13,7 @@ use OriginEngine\Helpers\Composer\Schema\ComposerRepository;
 use OriginEngine\Helpers\Composer\Schema\Schema\ComposerSchema;
 use OriginEngine\Helpers\IO\IO;
 use OriginEngine\Helpers\Storage\Filesystem;
-use OriginEngine\Helpers\WorkingDirectory\WorkingDirectory;
+use OriginEngine\Helpers\Directory\Directory;
 use OriginEngine\Packages\LocalPackage;
 use OriginEngine\Packages\LocalPackageHelper;
 use OriginEngine\Site\Site;
@@ -51,7 +51,7 @@ class DepLocal extends FeatureCommand
         $feature = $this->getFeature('Which feature should this be done against?');
         $site = $feature->getSite();
 
-        $workingDirectory = WorkingDirectory::fromSite($site);
+        $workingDirectory = $site->getDirectory();
 
         $package = $this->getOrAskForOption(
             'package',
@@ -90,7 +90,7 @@ class DepLocal extends FeatureCommand
 
 
 
-    private function getDependencyType(WorkingDirectory $workingDirectory, string $package): string
+    private function getDependencyType(Directory $workingDirectory, string $package): string
     {
         $reader = ComposerReader::for($workingDirectory);
         if($reader->isDependency($package, true)) {
@@ -101,7 +101,7 @@ class DepLocal extends FeatureCommand
         return 'none';
     }
 
-    private function getCurrentVersionConstraint(WorkingDirectory $workingDirectory, string $package, string $filename = 'composer.json'): ?string
+    private function getCurrentVersionConstraint(Directory $workingDirectory, string $package, string $filename = 'composer.json'): ?string
     {
         /** @var ComposerSchema $composer */
         $composer = app(ComposerRepository::class)->get($workingDirectory, $filename);

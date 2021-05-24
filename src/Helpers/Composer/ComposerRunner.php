@@ -4,19 +4,19 @@ namespace OriginEngine\Helpers\Composer;
 
 use OriginEngine\Helpers\Docker\Docker;
 use OriginEngine\Helpers\Terminal\Executor;
-use OriginEngine\Helpers\WorkingDirectory\WorkingDirectory;
+use OriginEngine\Helpers\Directory\Directory;
 
 class ComposerRunner
 {
 
-    private WorkingDirectory $workingDirectory;
+    private Directory $workingDirectory;
 
-    public function __construct(WorkingDirectory $workingDirectory)
+    public function __construct(Directory $workingDirectory)
     {
         $this->workingDirectory = $workingDirectory;
     }
 
-    public static function for(WorkingDirectory $workingDirectory): ComposerRunner
+    public static function for(Directory $workingDirectory): ComposerRunner
     {
         return new static($workingDirectory);
     }

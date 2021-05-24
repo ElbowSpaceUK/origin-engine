@@ -7,7 +7,7 @@ use OriginEngine\Helpers\Composer\ComposerReader;
 use OriginEngine\Helpers\Composer\ComposerRunner;
 use OriginEngine\Helpers\IO\IO;
 use OriginEngine\Helpers\Storage\Filesystem;
-use OriginEngine\Helpers\WorkingDirectory\WorkingDirectory;
+use OriginEngine\Helpers\Directory\Directory;
 use Cz\Git\GitException;
 use Cz\Git\GitRepository;
 
@@ -16,7 +16,7 @@ class LocalPackageHelper
 
     // TODO implement this properly with a pipeline
 
-    public function makeLocal(LocalPackage $localPackage, WorkingDirectory $workingDirectory)
+    public function makeLocal(LocalPackage $localPackage, Directory $workingDirectory)
     {
         $relativeInstallPath = sprintf('repos/%s', $localPackage->getName());
         $installPath = Filesystem::append(
@@ -32,7 +32,7 @@ class LocalPackageHelper
         IO::task('Updating composer', fn() => $this->updateComposer($workingDirectory));
     }
 
-    public function makeRemote(LocalPackage $localPackage, WorkingDirectory $workingDirectory)
+    public function makeRemote(LocalPackage $localPackage, Directory $workingDirectory)
     {
         $relativeInstallPath = sprintf('repos/%s', $localPackage->getName());
         $installPath = Filesystem::append(
@@ -41,7 +41,7 @@ class LocalPackageHelper
         );
 
         try {
-            IO::task('Scanning for changes', fn() => $this->confirmChangesSaved(WorkingDirectory::fromPath($installPath)));
+            IO::task('Scanning for changes', fn() => $this->confirmChangesSaved(Directory::fromFullPath($installPath)));
         } catch (\Exception $e) {
             IO::error($e->getMessage());
             return;
@@ -72,7 +72,7 @@ class LocalPackageHelper
         return true;
     }
 
-    private function composerRequireLocal(WorkingDirectory $workingDirectory, string $package, string $branchName)
+    private function composerRequireLocal(Directory $workingDirectory, string $package, string $branchName)
     {
         $reader = ComposerReader::for($workingDirectory);
         try {
@@ -90,7 +90,7 @@ class LocalPackageHelper
         return true;
     }
 
-    private function addSymlinkInComposer(WorkingDirectory $workingDirectory, string $relativeInstallPath)
+    private function addSymlinkInComposer(Directory $workingDirectory, string $relativeInstallPath)
     {
         ComposerModifier::for($workingDirectory)->addRepository(
             'path',
@@ -100,7 +100,7 @@ class LocalPackageHelper
         return true;
     }
 
-    private function clearStaleDependencies(WorkingDirectory $workingDirectory, string $package)
+    private function clearStaleDependencies(Directory $workingDirectory, string $package)
     {
         $currentVendorPath = Filesystem::append($workingDirectory->path(), 'vendor', $package);
         if(Filesystem::create()->exists($currentVendorPath)) {
@@ -109,13 +109,13 @@ class LocalPackageHelper
         return true;
     }
 
-    private function updateComposer(WorkingDirectory $workingDirectory)
+    private function updateComposer(Directory $workingDirectory)
     {
         ComposerRunner::for($workingDirectory)->update();
         return true;
     }
 
-    private function composerRequireRemote(WorkingDirectory $workingDirectory, LocalPackage $localPackage)
+    private function composerRequireRemote(Directory $workingDirectory, LocalPackage $localPackage)
     {
         if($localPackage->getType() === 'direct') {
             ComposerModifier::for($workingDirectory)->changeDependencyVersion($localPackage->getName(), $localPackage->getOriginalVersion());
@@ -125,7 +125,7 @@ class LocalPackageHelper
         return true;
     }
 
-    private function removeSymlinkInComposer(WorkingDirectory $workingDirectory, string $relativeInstallPath)
+    private function removeSymlinkInComposer(Directory $workingDirectory, string $relativeInstallPath)
     {
         ComposerModifier::for($workingDirectory)->removeRepository(
             'path',
@@ -135,7 +135,7 @@ class LocalPackageHelper
         return true;
     }
 
-    private function confirmChangesSaved(WorkingDirectory $workingDirectory)
+    private function confirmChangesSaved(Directory $workingDirectory)
     {
         if(!IO::confirm(
             sprintf(

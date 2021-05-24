@@ -5,7 +5,7 @@ namespace OriginEngine\Pipeline\Tasks\LaravelSail;
 use Illuminate\Support\Collection;
 use OriginEngine\Pipeline\Task;
 use OriginEngine\Helpers\Terminal\Executor;
-use OriginEngine\Helpers\WorkingDirectory\WorkingDirectory;
+use OriginEngine\Helpers\Directory\Directory;
 use OriginEngine\Pipeline\Old\ProvisionedTask;
 use OriginEngine\Pipeline\TaskResponse;
 
@@ -24,7 +24,7 @@ class SeedLaravelModule extends Task
         ]);
     }
 
-    protected function execute(WorkingDirectory $workingDirectory, Collection $config): TaskResponse
+    protected function execute(Directory $workingDirectory, Collection $config): TaskResponse
     {
         $output = Executor::cd($workingDirectory)->execute(sprintf(
             './vendor/bin/sail artisan module:seed %s --class=%s --env=%s',
@@ -37,7 +37,7 @@ class SeedLaravelModule extends Task
         return $this->succeeded();
     }
 
-    protected function undo(WorkingDirectory $workingDirectory, bool $status, Collection $config, Collection $output): void
+    protected function undo(Directory $workingDirectory, bool $status, Collection $config, Collection $output): void
     {
         // Unable to undo a seed action
     }

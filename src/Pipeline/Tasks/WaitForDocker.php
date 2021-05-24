@@ -5,13 +5,13 @@ namespace OriginEngine\Pipeline\Tasks;
 use Illuminate\Support\Collection;
 use OriginEngine\Pipeline\Task;
 use OriginEngine\Helpers\Terminal\Executor;
-use OriginEngine\Helpers\WorkingDirectory\WorkingDirectory;
+use OriginEngine\Helpers\Directory\Directory;
 use OriginEngine\Pipeline\TaskResponse;
 
 class WaitForDocker extends Task
 {
 
-    protected function execute(WorkingDirectory $workingDirectory, Collection $config): TaskResponse
+    protected function execute(Directory $workingDirectory, Collection $config): TaskResponse
     {
         $startTime = microtime(true);
 
@@ -29,7 +29,7 @@ class WaitForDocker extends Task
         ]);
     }
 
-    protected function undo(WorkingDirectory $workingDirectory, bool $status, Collection $config, Collection $output): void
+    protected function undo(Directory $workingDirectory, bool $status, Collection $config, Collection $output): void
     {
         // No down method
     }

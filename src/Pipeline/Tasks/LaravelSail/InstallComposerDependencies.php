@@ -3,7 +3,7 @@
 namespace OriginEngine\Pipeline\Tasks\LaravelSail;
 
 use Illuminate\Support\Collection;
-use OriginEngine\Helpers\WorkingDirectory\WorkingDirectory;
+use OriginEngine\Helpers\Directory\Directory;
 use OriginEngine\Pipeline\Task;
 use OriginEngine\Helpers\Composer\ComposerRunner;
 use OriginEngine\Helpers\Storage\Filesystem;
@@ -12,7 +12,7 @@ use OriginEngine\Pipeline\TaskResponse;
 class InstallComposerDependencies extends Task
 {
 
-    protected function execute(WorkingDirectory $workingDirectory, Collection $config): TaskResponse
+    protected function execute(Directory $workingDirectory, Collection $config): TaskResponse
     {
         $composer = new ComposerRunner($workingDirectory);
         $output = $composer->install();
@@ -23,7 +23,7 @@ class InstallComposerDependencies extends Task
         return $this->succeeded();
     }
 
-    protected function undo(WorkingDirectory $workingDirectory, bool $status, Collection $config, Collection $output): void
+    protected function undo(Directory $workingDirectory, bool $status, Collection $config, Collection $output): void
     {
         Filesystem::create()->remove(
             $workingDirectory->path() . '/vendor'

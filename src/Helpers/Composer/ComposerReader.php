@@ -7,7 +7,7 @@ namespace OriginEngine\Helpers\Composer;
 use OriginEngine\Helpers\Composer\Lock\ComposerLockReader;
 use OriginEngine\Helpers\Composer\Schema\ComposerRepository;
 use OriginEngine\Helpers\Composer\Schema\Schema\ComposerSchema;
-use OriginEngine\Helpers\WorkingDirectory\WorkingDirectory;
+use OriginEngine\Helpers\Directory\Directory;
 
 class ComposerReader
 {
@@ -26,7 +26,7 @@ class ComposerReader
         $this->composerSchema = $composerSchema;
     }
 
-    public static function for(WorkingDirectory $workingDirectory,
+    public static function for(Directory $workingDirectory,
                                string $composerJsonName = 'composer.json',
                                string $composerLockName = 'composer.lock'): ComposerReader
     {

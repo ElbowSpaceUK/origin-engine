@@ -7,7 +7,7 @@ use OriginEngine\Contracts\Command\FeatureCommand;
 use OriginEngine\Contracts\Feature\FeatureResolver;
 use OriginEngine\Contracts\Site\SiteResolver;
 use OriginEngine\Helpers\IO\IO;
-use OriginEngine\Helpers\WorkingDirectory\WorkingDirectory;
+use OriginEngine\Helpers\Directory\Directory;
 use OriginEngine\Packages\LocalPackage;
 use OriginEngine\Packages\LocalPackageHelper;
 use Cz\Git\GitException;

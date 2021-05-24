@@ -10,7 +10,7 @@ use OriginEngine\Contracts\Site\SiteResolver;
 use OriginEngine\Feature\Feature;
 use OriginEngine\Helpers\IO\IO;
 use OriginEngine\Helpers\IO\Proxy;
-use OriginEngine\Helpers\WorkingDirectory\WorkingDirectory;
+use OriginEngine\Helpers\Directory\Directory;
 use OriginEngine\Pipeline\DebugPipelineRunner;
 use OriginEngine\Pipeline\NormalPipelineRunner;
 use OriginEngine\Pipeline\PipelineConfig;

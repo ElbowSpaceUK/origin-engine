@@ -4,11 +4,11 @@ namespace OriginEngine\Commands;
 
 use OriginEngine\Contracts\Command\Command;
 use OriginEngine\Contracts\Command\SiteCommand;
-use OriginEngine\Contracts\Helpers\Directory\DirectoryValidator;
 use OriginEngine\Contracts\Pipeline\PipelineRunner;
 use OriginEngine\Contracts\Site\SiteRepository;
 use OriginEngine\Helpers\IO\IO;
-use OriginEngine\Helpers\WorkingDirectory\WorkingDirectory;
+use OriginEngine\Helpers\Directory\Directory;
+use OriginEngine\Helpers\Storage\Filesystem;
 use OriginEngine\Pipeline\PipelineConfig;
 use OriginEngine\Pipeline\PipelineManager;
 use OriginEngine\Site\Site;
@@ -36,23 +36,29 @@ class SiteDelete extends SiteCommand
      *
      * @param PipelineRunner $pipelineRunner
      * @param SiteRepository $siteRepository
-     * @param DirectoryValidator $directoryValidator
      * @return void
      * @throws \Exception
      */
-    public function handle(PipelineRunner $pipelineRunner, SiteRepository $siteRepository, DirectoryValidator $directoryValidator)
+    public function handle(PipelineRunner $pipelineRunner, SiteRepository $siteRepository)
     {
         $site = $this->getSite('Which sites would you like to delete?');
 
-        if(!$directoryValidator->isValid($site->getDirectory())) {
+        if(!$this->directoryExists($site)) {
             IO::warning('The site was not found on the filesystem');
         } else {
-            $pipelineRunner->run($site->getBlueprint()->getUninstallationPipeline(), $this->getPipelineConfig(), $site->getWorkingDirectory());
+            $pipelineRunner->run($site->getBlueprint()->getUninstallationPipeline(), $this->getPipelineConfig(), $site->getDirectory());
             IO::success('Removed the site from your filesystem');
         }
 
         $siteRepository->delete($site->getId());
         IO::success('Pruned remaining site data.');
+    }
+
+    public function directoryExists(Site $site)
+    {
+        return Filesystem::create()->exists(
+            $site->getDirectory()->path()
+        );
     }
 
 }

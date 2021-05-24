@@ -8,7 +8,7 @@ use OriginEngine\Contracts\Pipeline\PipelineRunner;
 use OriginEngine\Contracts\Site\SiteRepository;
 use OriginEngine\Helpers\IO\IO;
 use OriginEngine\Helpers\Terminal\Executor;
-use OriginEngine\Helpers\WorkingDirectory\WorkingDirectory;
+use OriginEngine\Helpers\Directory\Directory;
 use OriginEngine\Site\Site;
 
 class SiteDown extends SiteCommand
@@ -43,7 +43,7 @@ class SiteDown extends SiteCommand
 
         IO::info('Turning off site.');
 
-        $pipelineRunner->run($site->getBlueprint()->getSiteDownPipeline(), $this->getPipelineConfig(), $site->getWorkingDirectory());
+        $pipelineRunner->run($site->getBlueprint()->getSiteDownPipeline(), $this->getPipelineConfig(), $site->getDirectory());
 
         IO::success('Turned off site.');
 

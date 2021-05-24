@@ -6,7 +6,7 @@ use OriginEngine\Contracts\Command\Command;
 use OriginEngine\Contracts\Command\SiteCommand;
 use OriginEngine\Contracts\Feature\FeatureResolver;
 use OriginEngine\Helpers\IO\IO;
-use OriginEngine\Helpers\WorkingDirectory\WorkingDirectory;
+use OriginEngine\Helpers\Directory\Directory;
 use OriginEngine\Packages\LocalPackage;
 use OriginEngine\Packages\LocalPackageHelper;
 use Cz\Git\GitException;
@@ -44,7 +44,7 @@ class SiteReset extends SiteCommand
         );
 
         $feature = $site->getCurrentFeature();
-        $workingDirectory = WorkingDirectory::fromSite($site);
+        $workingDirectory = $site->getDirectory();
 
         if($feature !== null) {
             // Site has a feature currently checked out
@@ -59,7 +59,7 @@ class SiteReset extends SiteCommand
             }
         }
 
-        $git = new GitRepository($site->getWorkingDirectory()->path());
+        $git = new GitRepository($site->getDirectory()->path());
         try {
             $git->checkout($branch);
         } catch (GitException $e) {

@@ -2,7 +2,7 @@
 
 namespace OriginEngine\Contracts\Pipeline;
 
-use OriginEngine\Helpers\WorkingDirectory\WorkingDirectory;
+use OriginEngine\Helpers\Directory\Directory;
 use OriginEngine\Pipeline\ProvisionedTask;
 use OriginEngine\Pipeline\PipelineConfig;
 
@@ -22,9 +22,9 @@ abstract class Task
         $this->config = $config;
     }
 
-    abstract public function up(WorkingDirectory $workingDirectory): void;
+    abstract public function up(Directory $workingDirectory): void;
 
-    abstract public function down(WorkingDirectory $workingDirectory): void;
+    abstract public function down(Directory $workingDirectory): void;
 
     public static function __callStatic($name, $arguments)
     {

@@ -7,7 +7,7 @@ namespace OriginEngine\Helpers\Composer;
 use OriginEngine\Contracts\Helpers\Composer\OperationManager as OperationManagerContract;
 use OriginEngine\Helpers\Composer\Schema\ComposerRepository;
 use OriginEngine\Helpers\Composer\Schema\Schema\PackageRepositorySchema;
-use OriginEngine\Helpers\WorkingDirectory\WorkingDirectory;
+use OriginEngine\Helpers\Directory\Directory;
 
 class ComposerModifier
 {
@@ -19,9 +19,9 @@ class ComposerModifier
      */
     private OperationManagerContract $operationManager;
     /**
-     * @var WorkingDirectory
+     * @var Directory
      */
-    private WorkingDirectory $workingDirectory;
+    private Directory $workingDirectory;
     private string $filename;
     /**
      * @var ComposerRepository
@@ -29,7 +29,7 @@ class ComposerModifier
     private ComposerRepository $composerRepository;
 
 
-    public function __construct(WorkingDirectory $workingDirectory, OperationManagerContract $operationManager, ComposerRepository $composerRepository, string $filename = 'composer.json')
+    public function __construct(Directory $workingDirectory, OperationManagerContract $operationManager, ComposerRepository $composerRepository, string $filename = 'composer.json')
     {
         $this->operationManager = $operationManager;
         $this->workingDirectory = $workingDirectory;
@@ -37,7 +37,7 @@ class ComposerModifier
         $this->composerRepository = $composerRepository;
     }
 
-    public static function for(WorkingDirectory $workingDirectory, string $filename = 'composer.json'): ComposerModifier
+    public static function for(Directory $workingDirectory, string $filename = 'composer.json'): ComposerModifier
     {
         return app(ComposerModifier::class, [
             'workingDirectory' => $workingDirectory,

@@ -3,18 +3,18 @@
 namespace OriginEngine\Helpers\Env;
 
 use OriginEngine\Helpers\Storage\Filesystem;
-use OriginEngine\Helpers\WorkingDirectory\WorkingDirectory;
+use OriginEngine\Helpers\Directory\Directory;
 use Illuminate\Support\Str;
 
 class EnvRepository
 {
 
     /**
-     * @var WorkingDirectory
+     * @var Directory
      */
-    private WorkingDirectory $workingDirectory;
+    private Directory $workingDirectory;
 
-    public function __construct(WorkingDirectory $workingDirectory)
+    public function __construct(Directory $workingDirectory)
     {
         $this->workingDirectory = $workingDirectory;
     }

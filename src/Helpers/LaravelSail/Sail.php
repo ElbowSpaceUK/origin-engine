@@ -13,7 +13,7 @@ class Sail
         // TODO Make parallel to calculate?
         try {
             Executor::cd(
-                $site->getWorkingDirectory()
+                $site->getDirectory()
             )->execute('./vendor/bin/sail artisan help');
         } catch (\Exception $e) {
             return false;
