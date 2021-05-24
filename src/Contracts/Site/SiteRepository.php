@@ -10,17 +10,17 @@ interface SiteRepository
 
     public function all(): Collection;
 
-    public function create(string $instanceId, string $name, string $description, string $blueprint): Site;
+    public function create(string $directory, string $name, string $description, string $blueprint): Site;
 
     public function exists(int $id): bool;
 
-    public function instanceIdExists(string $instanceId): bool;
+    public function directoryExists(string $directory): bool;
 
     public function count(): int;
 
     public function getById(int $id): Site;
 
-    public function getByInstanceId(string $instanceId): Site;
+    public function getByDirectory(string $directory): Site;
 
     public function delete(int $id): void;
 }

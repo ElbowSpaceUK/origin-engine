@@ -41,8 +41,6 @@ class FeatureNew extends SiteCommand
      */
     protected $siteRepository;
 
-    protected $instanceId = null;
-
     /**
      * Execute the console command.
      *

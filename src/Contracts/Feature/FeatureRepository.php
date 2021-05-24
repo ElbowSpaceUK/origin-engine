@@ -19,8 +19,6 @@ interface FeatureRepository
 
     public function getById(int $id): Feature;
 
-    public function getByInstanceId(string $instanceId): Feature;
-
     public function delete(int $id): void;
 
 }

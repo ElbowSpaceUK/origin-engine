@@ -28,7 +28,7 @@ use OriginEngine\Contracts\Feature\FeatureResolver;
 use OriginEngine\Contracts\Helpers\Composer\OperationManager as OperationManagerContract;
 use OriginEngine\Contracts\Helpers\Port\PortChecker;
 use OriginEngine\Contracts\Helpers\Terminal\Executor;
-use OriginEngine\Contracts\Instance\InstanceRepository as InstanceManagerContract;
+use OriginEngine\Contracts\Instance\DirectoryValidator as InstanceManagerContract;
 use OriginEngine\Contracts\Pipeline\PipelineDownRunner as PipelineDownRunnerContract;
 use OriginEngine\Contracts\Pipeline\PipelineRunner as PipelineRunnerContract;
 use OriginEngine\Contracts\Site\SiteBlueprintStore as SiteBlueprintStoreContract;
@@ -43,7 +43,7 @@ use OriginEngine\Helpers\Port\FSockOpenPortChecker;
 use OriginEngine\Helpers\Terminal\ShellExecutor;
 use OriginEngine\Pipeline\PipelineDownRunner;
 use OriginEngine\Pipeline\PipelineManager;
-use OriginEngine\Instance\InstanceRepository;
+use OriginEngine\Instance\DirectoryValidator;
 use OriginEngine\Helpers\Settings\SettingRepository;
 use OriginEngine\Pipeline\PipelineRunner;
 use OriginEngine\Site\SettingsSiteResolver;
@@ -160,7 +160,7 @@ class OriginEngineServiceProvider extends ServiceProvider
     public function register()
     {
         $this->app->bind(SiteRepositoryContract::class, SiteRepository::class);
-        $this->app->bind(InstanceManagerContract::class, InstanceRepository::class);
+        $this->app->bind(InstanceManagerContract::class, DirectoryValidator::class);
         $this->app->bind(SettingRepositoryContract::class, SettingRepository::class);
         $this->app->bind(PortChecker::class, FSockOpenPortChecker::class);
         $this->app->bind(Executor::class, ShellExecutor::class);

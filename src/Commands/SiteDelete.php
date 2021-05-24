@@ -4,7 +4,7 @@ namespace OriginEngine\Commands;
 
 use OriginEngine\Contracts\Command\Command;
 use OriginEngine\Contracts\Command\SiteCommand;
-use OriginEngine\Contracts\Instance\InstanceRepository;
+use OriginEngine\Contracts\Instance\DirectoryValidator;
 use OriginEngine\Contracts\Pipeline\PipelineRunner;
 use OriginEngine\Contracts\Site\SiteRepository;
 use OriginEngine\Helpers\IO\IO;
@@ -36,15 +36,15 @@ class SiteDelete extends SiteCommand
      *
      * @param PipelineRunner $pipelineRunner
      * @param SiteRepository $siteRepository
-     * @param InstanceRepository $instanceRepository
+     * @param DirectoryValidator $instanceRepository
      * @return void
      * @throws \Exception
      */
-    public function handle(PipelineRunner $pipelineRunner, SiteRepository $siteRepository, InstanceRepository $instanceRepository)
+    public function handle(PipelineRunner $pipelineRunner, SiteRepository $siteRepository, DirectoryValidator $instanceRepository)
     {
-        $site = $this->getSite('Which sites would you like to delete?', null);
+        $site = $this->getSite('Which sites would you like to delete?');
 
-        if(!$instanceRepository->exists($site->getInstanceId())) {
+        if(!$instanceRepository->isValid($site->getDirectory())) {
             IO::warning('The site was not found on the filesystem');
         } else {
             $pipelineRunner->run($site->getBlueprint()->getUninstallationPipeline(), $this->getPipelineConfig(), $site->getWorkingDirectory());

@@ -13,11 +13,11 @@ class SiteRepository implements \OriginEngine\Contracts\Site\SiteRepository
        return InstalledSite::all()->map(fn(InstalledSite $installedSite) => new Site($installedSite));
     }
 
-    public function create(string $instanceId, string $name, string $description, string $blueprint): Site
+    public function create(string $directory, string $name, string $description, string $blueprint): Site
     {
         $site = new InstalledSite();
 
-        $site->instance_id = $instanceId;
+        $site->directory = $directory;
         $site->name = $name;
         $site->description = $description;
         $site->blueprint = $blueprint;
@@ -49,10 +49,10 @@ class SiteRepository implements \OriginEngine\Contracts\Site\SiteRepository
         );
     }
 
-    public function getByInstanceId(string $instanceId): Site
+    public function getByDirectory(string $directory): Site
     {
         return new Site(
-            InstalledSite::where('instance_id', $instanceId)->firstOrFail()
+            InstalledSite::where('directory', $directory)->firstOrFail()
         );
     }
 
@@ -62,8 +62,8 @@ class SiteRepository implements \OriginEngine\Contracts\Site\SiteRepository
         $site->delete();
     }
 
-    public function instanceIdExists(string $instanceId): bool
+    public function directoryExists(string $directory): bool
     {
-        return InstalledSite::where('instance_id', $instanceId)->count() > 0;
+        return InstalledSite::where('directory', $directory)->count() > 0;
     }
 }

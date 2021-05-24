@@ -16,14 +16,13 @@ class PipelineRunner implements \OriginEngine\Contracts\Pipeline\PipelineRunner
 
         foreach($tasks as $key => $task) {
             foreach($pipeline->getBeforeEvents($key) as $event) {
-                $result = $event($config, $history);
+                $result = $event($config, $history, $key);
                 if($result === false) {
                     continue 2;
                 }
             }
 
             $taskConfig = collect($config->getAll($key));
-            IO::info(sprintf('Task: %s', $task->getUpName($taskConfig)));
             $response = $task->run($workingDirectory, $taskConfig);
             $history->add($key, $response->isSuccess(), $response->getMessages(), $response->getData(), $taskConfig->toArray());
             if($response->isSuccess() === false) {
@@ -32,7 +31,7 @@ class PipelineRunner implements \OriginEngine\Contracts\Pipeline\PipelineRunner
             }
 
             foreach($pipeline->getAfterEvents($key) as $event) {
-                $event($config, $history);
+                $event($config, $history, $key);
             }
         }
         return $history;

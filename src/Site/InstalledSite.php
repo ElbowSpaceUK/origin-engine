@@ -28,9 +28,9 @@ class InstalledSite extends Model
         return $this->id;
     }
 
-    public function getInstanceId(): string
+    public function getDirectory(): string
     {
-        return $this->instance_id;
+        return $this->directory;
     }
 
     public function getName(): string

@@ -5,6 +5,7 @@ namespace OriginEngine\Commands;
 use OriginEngine\Contracts\Command\Command;
 use OriginEngine\Contracts\Command\SiteCommand;
 use OriginEngine\Contracts\Pipeline\PipelineRunner;
+use OriginEngine\Contracts\Site\SiteRepository;
 use OriginEngine\Helpers\IO\IO;
 use OriginEngine\Helpers\Terminal\Executor;
 use OriginEngine\Helpers\WorkingDirectory\WorkingDirectory;
@@ -33,11 +34,11 @@ class SiteUp extends SiteCommand
      *
      * @return mixed
      */
-    public function handle(PipelineRunner $pipelineRunner)
+    public function handle(PipelineRunner $pipelineRunner, SiteRepository $siteRepository)
     {
         $site = $this->getSite(
             'Which site would you like to turn on?',
-            fn(Site $site) => $site->getStatus() === Site::STATUS_DOWN
+            $siteRepository->all()->filter(fn(Site $site) => $site->getStatus() === Site::STATUS_DOWN)->toArray()
         );
 
         IO::info('Turning on site.');

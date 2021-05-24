@@ -38,7 +38,7 @@ class SiteNew extends Command
      */
     protected $siteRepository;
 
-    protected $instanceId = null;
+    protected $directory = null;
 
     protected bool $usePipelines = true;
 
@@ -53,10 +53,10 @@ class SiteNew extends Command
         $this->info('Creating a new site');
 
         $name = $this->getInstanceName();
-        $instanceId = $this->getInstanceId($name);
+        $directory = $this->getDirectory($name);
         $description = $this->getInstanceDescription();
 
-        $workingDirectory = WorkingDirectory::fromInstanceId($instanceId);
+        $workingDirectory = WorkingDirectory::fromDirectory($directory);
 
         $blueprintAlias = $this->getOrAskForOption(
             'type',
@@ -73,7 +73,7 @@ class SiteNew extends Command
         if($response->allSuccessful()) {
             $this->getOutput()->success(sprintf('Installed a new instance of %s.', $blueprint->name()));
             $this->siteRepository->create(
-                $instanceId,
+                $directory,
                 $name,
                 $description,
                 $blueprintAlias
@@ -83,21 +83,21 @@ class SiteNew extends Command
         }
     }
 
-    private function getInstanceId(string $name): string
+    private function getDirectory(string $name): string
     {
-        if($this->instanceId === null) {
+        if($this->directory === null) {
             $id = Str::kebab($name);
             $prefix = '';
-            while($this->siteRepository->instanceIdExists($id . $prefix) === true) {
+            while($this->siteRepository->directoryExists($id . $prefix) === true) {
                 if($prefix === '') {
                     $prefix = 1;
                 } else {
                     $prefix++;
                 }
             }
-            $this->instanceId = trim($id . $prefix);
+            $this->directory = trim($id . $prefix);
         }
-        return $this->instanceId;
+        return $this->directory;
     }
 
     private function getInstanceName(): string

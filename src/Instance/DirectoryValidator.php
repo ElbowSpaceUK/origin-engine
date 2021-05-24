@@ -5,13 +5,13 @@ namespace OriginEngine\Instance;
 use OriginEngine\Helpers\Storage\Filesystem;
 use OriginEngine\Helpers\WorkingDirectory\WorkingDirectory;
 
-class InstanceRepository implements \OriginEngine\Contracts\Instance\InstanceRepository
+class DirectoryValidator implements \OriginEngine\Contracts\Instance\DirectoryValidator
 {
 
-    public function exists(string $instanceId): bool
+    public function isValid(string $directory): bool
     {
         return Filesystem::create()->exists(
-            WorkingDirectory::fromInstanceId($instanceId)->path()
+            WorkingDirectory::fromDirectory($directory)->path()
         );
     }
 

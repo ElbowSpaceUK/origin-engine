@@ -4,6 +4,7 @@ namespace OriginEngine\Contracts\Command;
 
 use OriginEngine\Contracts\Feature\FeatureRepository;
 use OriginEngine\Contracts\Feature\FeatureResolver;
+use OriginEngine\Contracts\Pipeline\PipelineRunner;
 use OriginEngine\Contracts\Site\SiteRepository;
 use OriginEngine\Contracts\Site\SiteResolver;
 use OriginEngine\Feature\Feature;
@@ -11,6 +12,7 @@ use OriginEngine\Helpers\IO\IO;
 use OriginEngine\Helpers\IO\Proxy;
 use OriginEngine\Helpers\WorkingDirectory\WorkingDirectory;
 use OriginEngine\Pipeline\PipelineConfig;
+use OriginEngine\Pipeline\VerbosePipelineRunner;
 use OriginEngine\Site\Site;
 use Illuminate\Console\OutputStyle;
 use Illuminate\Support\Str;
@@ -30,6 +32,8 @@ abstract class Command extends \LaravelZero\Framework\Commands\Command
             $this->addOption('config', 'C', InputOption::VALUE_IS_ARRAY|InputOption::VALUE_OPTIONAL, 'Data to pass to the installation pipeline. Separate the variable and value with an equals.', []);
         }
     }
+
+
 
     public function getPipelineConfig(): PipelineConfig
     {
@@ -68,6 +72,16 @@ abstract class Command extends \LaravelZero\Framework\Commands\Command
         }
 
         return $value;
+    }
+
+    protected function execute(InputInterface $input, OutputInterface $output)
+    {
+        if($output->getVerbosity() >= OutputInterface::VERBOSITY_VERBOSE) {
+            $this->app->extend(PipelineRunner::class, function($service, $app) {
+                return new VerbosePipelineRunner($service);
+            });
+        }
+        return parent::execute($input, $output);
     }
 
 }

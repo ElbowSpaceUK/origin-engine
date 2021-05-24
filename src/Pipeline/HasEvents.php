@@ -24,7 +24,7 @@ trait HasEvents
         if(!array_key_exists($event, $this->globalEvents)) {
             $this->globalEvents[$event] = [];
         }
-        $this->globalEvents[$event] = $closure;
+        $this->globalEvents[$event][] = $closure;
     }
 
     public function getEvents(string $event, string $task)

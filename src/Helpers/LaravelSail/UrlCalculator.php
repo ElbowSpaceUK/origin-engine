@@ -8,9 +8,9 @@ use OriginEngine\Helpers\WorkingDirectory\WorkingDirectory;
 class UrlCalculator
 {
 
-    public static function calculate(string $instanceId, string $envFile = '.env'): string
+    public static function calculate(string $directoryPath, string $envFile = '.env'): string
     {
-        $directory = WorkingDirectory::fromInstanceId($instanceId);
+        $directory = WorkingDirectory::fromDirectory($directoryPath);
 
         $envRepository = new EnvRepository($directory);
         $env = $envRepository->get($envFile);

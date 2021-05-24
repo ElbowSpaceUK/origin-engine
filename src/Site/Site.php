@@ -56,9 +56,9 @@ class Site
         return $this->getModel()->getId();
     }
 
-    public function getInstanceId(): string
+    public function getDirectory(): string
     {
-        return $this->getModel()->getInstanceId();
+        return $this->getModel()->getDirectory();
     }
 
     public function getName(): string
@@ -69,6 +69,27 @@ class Site
     public function getDescription(): string
     {
         return $this->getModel()->getDescription();
+    }
+
+    public function setDirectory(string $directory): void
+    {
+        $model = $this->getModel();
+        $model->directory = $directory;
+        $model->save();
+    }
+
+    public function setName(string $name): void
+    {
+        $model = $this->getModel();
+        $model->name = $name;
+        $model->save();
+    }
+
+    public function setDescription(string $description): void
+    {
+        $model = $this->getModel();
+        $model->description = $description;
+        $model->save();
     }
 
     public function getUrl()

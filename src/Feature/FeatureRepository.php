@@ -49,11 +49,6 @@ class FeatureRepository implements FeatureRepositoryContract
         return Feature::findOrFail($id);
     }
 
-    public function getByInstanceId(string $instanceId): Feature
-    {
-        return Feature::where('instance_id', $instanceId)->firstOrFail();
-    }
-
     public function delete(int $id): void
     {
         $feature = $this->getById($id);

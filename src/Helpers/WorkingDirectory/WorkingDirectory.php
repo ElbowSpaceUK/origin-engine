@@ -23,16 +23,16 @@ class WorkingDirectory
         $this->directory = $directory;
     }
 
-    public static function fromInstanceId(string $instanceId): WorkingDirectory
+    public static function fromDirectory(string $directory): WorkingDirectory
     {
         return new WorkingDirectory(
-            InstanceDirectoryLocator::fromInstanceId($instanceId)
+            ProjectDirectoryLocator::fromDirectory($directory)
         );
     }
 
     public static function fromSite(Site $site): WorkingDirectory
     {
-        return static::fromInstanceId($site->getInstanceId());
+        return static::fromDirectory($site->getDirectory());
     }
 
     public static function fromPath(string $path): WorkingDirectory
