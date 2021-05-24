@@ -29,7 +29,7 @@ class FeatureUse extends FeatureCommand
      *
      * @var string
      */
-    protected $description = 'Use the given feature by default.';
+    protected $description = 'Check out the feature.';
 
     /**
      * Execute the console command.
@@ -38,15 +38,14 @@ class FeatureUse extends FeatureCommand
      */
     public function handle(FeatureResolver $featureResolver, SiteResolver $siteResolver, LocalPackageHelper $localPackageHelper)
     {
-        $feature = $this->getFeature('Which feature would you like to use by default?', null, true);
+        $feature = $this->getFeature('Which feature would you like to check out?');
 
-        IO::info('Switching default feature to ' . $feature->getName() . '.');
+        IO::info('Switching feature to ' . $feature->getName() . '.');
 
         $this->task('Resetting the site',
             fn() => $this->call(SiteReset::class, ['--site' => $feature->getSite()->getId()]));
 
         $workingDirectory = WorkingDirectory::fromSite($feature->getSite());
-
 
         // TODO Base branch stored in site definition
         $this->task('Checkout the base branch', function() use ($feature) {
@@ -66,8 +65,6 @@ class FeatureUse extends FeatureCommand
                 $localPackageHelper->makeLocal($package, $workingDirectory);
             }
         });
-
-        $this->task(sprintf('Setting the default feature to %s', $feature->getName()), fn() => $featureResolver->setFeature($feature));
 
     }
 

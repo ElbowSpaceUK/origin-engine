@@ -76,7 +76,7 @@ class SiteNew extends Command
                 $instanceId,
                 $name,
                 $description,
-                $this->option('type')
+                $blueprintAlias
             );
         } else {
             $this->getOutput()->error(sprintf('Installation of %s failed.', $blueprint->name()));

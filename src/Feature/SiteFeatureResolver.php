@@ -4,6 +4,7 @@ namespace OriginEngine\Feature;
 
 use OriginEngine\Contracts\Feature\FeatureResolver;
 use OriginEngine\Contracts\Site\SiteResolver;
+use OriginEngine\Site\Site;
 
 class SiteFeatureResolver implements FeatureResolver
 {
@@ -20,11 +21,11 @@ class SiteFeatureResolver implements FeatureResolver
 
     public function setFeature(Feature $feature): void
     {
-        $site = $feature->getSite();
+        $site = $feature->getSite()->getModel();
         $site->current_feature_id = $feature->getId();
         $site->save();
 
-        $this->siteResolver->setSite($site);
+        $this->siteResolver->setSite(new Site($site));
     }
 
     public function getFeature(): Feature
@@ -44,7 +45,7 @@ class SiteFeatureResolver implements FeatureResolver
     {
         if($this->hasFeature()) {
             $feature = $this->getFeature();
-            $site = $feature->getSite();
+            $site = $feature->getSite()->getModel();
             $site->current_feature_id = null;
             $site->save();
         }

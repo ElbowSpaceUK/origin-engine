@@ -30,7 +30,7 @@ class SiteUse extends SiteCommand
      */
     public function handle(SiteResolver $siteResolver)
     {
-        $site = $this->getSite('Which site would you like to use by default?', null, true);
+        $site = $this->getSite('Which site would you like to use by default?', null);
 
         IO::info('Switching default site to ' . $site->getName() . '.');
 

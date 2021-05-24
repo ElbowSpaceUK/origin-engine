@@ -26,7 +26,8 @@ class FeatureCommand extends Command
     private FeatureRepository $featureRepository;
 
     private FeatureResolver $featureResolver;
-    private \Illuminate\Database\Eloquent\Collection $allFeatures;
+
+    static bool $confirmedFeature = false;
 
     public function configure()
     {
@@ -47,21 +48,29 @@ class FeatureCommand extends Command
      * @return Feature
      * @throws \Exception If no features are available or the chosen feature could not be found
      */
-    protected function getFeature(string $message = 'Which feature would you like to perform the action against?',
-                               \Closure $featureFilter = null,
-                               bool $ignoreDefault = false): Feature
+    protected function getFeature(string $message = 'Which feature would you like to perform the action against?', ?array $features = null): Feature
     {
         if(isset($this->feature)) {
             return $this->feature;
         }
 
-        if(!$this->featuresAreAvailable($featureFilter)) {
+        if(empty($features) && !$this->featuresAreAvailable()) {
             throw new \Exception('No features are available');
         }
 
+        if($features == null) {
+            $features = $this->getAvailableFeatures();
+        }
+
         // Get the feature from the default feature
-        if($ignoreDefault === false && $this->getFeatureResolver()->hasFeature()) {
-            return $this->cacheFeature($this->getFeatureResolver()->getFeature());
+        if($this->getFeatureResolver()->hasFeature() &&  (
+                static::$confirmedFeature ||
+                IO::confirm(sprintf('This will run on feature \'%s\', is this correct?', $this->getFeatureResolver()->getFeature()->getName()), true)
+            )
+        ) {
+            $this->feature = $this->getFeatureResolver()->getFeature();
+            static::$confirmedFeature = true;
+            return $this->feature;
         }
 
         $featureId = $this->convertFeatureTextIntoId(
@@ -69,36 +78,20 @@ class FeatureCommand extends Command
                 'feature',
                 fn() => $this->choice(
                     $message,
-                    $this->getAvailableFeatures($featureFilter)->mapWithKeys(fn(Feature $feature) => [sprintf('feature-%u', $feature->getId()) => $feature->getName()])->toArray()
+                    $features->mapWithKeys(fn(Feature $feature) => [sprintf('feature-%u', $feature->getId()) => $feature->getName()])->toArray()
                 ),
-                fn($value) => $value && $this->getAvailableFeatures($featureFilter)->map(fn($feature) => $feature->getId())->contains($this->convertFeatureTextIntoId($value))
+                fn($value) => $value && $features->map(fn($feature) => $feature->getId())->contains($this->convertFeatureTextIntoId($value))
             )
         );
 
-        $feature = $this->getFeatureRepository()->getById($featureId);
+        $this->feature = $this->getFeatureRepository()->getById($featureId);
 
-        $this->feature = $feature;
         return $this->feature;
     }
 
-    private function promptUserForFeature(string $message, ?\Closure $featureFilter): int
+    private function featuresAreAvailable(): bool
     {
-        $prefixedFeatureId = $this->choice(
-            $message,
-            $this->getAvailableFeatures($featureFilter)->mapWithKeys(fn(Feature $feature) => [sprintf('feature-%u', $feature->getId()) => $feature->getName()])->toArray()
-        );
-
-        if($prefixedFeatureId && $this->getAvailableFeatures($featureFilter)->map(fn($feature) => $feature->getId())->contains($this->convertFeatureTextIntoId($prefixedFeatureId))) {
-            IO::error(sprintf('[%s] is not a valid feature', $prefixedFeatureId));
-            return $this->promptUserForFeature($message, $featureFilter);
-        }
-
-        return $this->convertFeatureTextIntoId($prefixedFeatureId);
-    }
-
-    private function featuresAreAvailable(?\Closure $featureFilter): bool
-    {
-        return $this->getAvailableFeatures($featureFilter)->count() > 0;
+        return $this->getAvailableFeatures()->count() > 0;
     }
 
     private function getFeatureRepository(): FeatureRepository
@@ -109,13 +102,9 @@ class FeatureCommand extends Command
         return $this->featureRepository;
     }
 
-    private function getAvailableFeatures(?\Closure $featureFilter = null): Collection
+    private function getAvailableFeatures(): Collection
     {
-        if(!isset($this->allFeatures)) {
-            $this->allFeatures = $this->getFeatureRepository()->all()->filter($featureFilter);
-        }
-
-        return $this->allFeatures;
+        return $this->getFeatureRepository()->all();
     }
 
     private function getFeatureResolver(): FeatureResolver

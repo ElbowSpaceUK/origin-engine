@@ -26,7 +26,7 @@ class Site
         $this->installedSite = $installedSite;
     }
 
-    protected function getModel(): InstalledSite
+    public function getModel(): InstalledSite
     {
         return $this->installedSite;
     }
@@ -98,7 +98,7 @@ class Site
 
     public function getCurrentFeature(): ?Feature
     {
-        return $this->currentFeature;
+        return $this->getModel()->currentFeature;
     }
 
     public function features()

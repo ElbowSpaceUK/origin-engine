@@ -3,8 +3,8 @@
 namespace OriginEngine\Feature;
 
 use OriginEngine\Contracts\Feature\FeatureResolver;
-use OriginEngine\Contracts\Site\SiteResolver;
 use OriginEngine\Packages\LocalPackage;
+use OriginEngine\Site\InstalledSite;
 use OriginEngine\Site\Site;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -31,7 +31,7 @@ class Feature extends Model
 
     public function site()
     {
-        return $this->belongsTo(Site::class);
+        return $this->belongsTo(InstalledSite::class);
     }
 
     public function getId(): int
@@ -56,7 +56,7 @@ class Feature extends Model
 
     public function getSite(): Site
     {
-        return $this->site;
+        return new Site($this->site);
     }
 
     public function getLocalPackages(): Collection

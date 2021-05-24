@@ -6,6 +6,7 @@ use OriginEngine\Commands\DepList;
 use OriginEngine\Commands\DepLocal;
 use OriginEngine\Commands\DepMake;
 use OriginEngine\Commands\DepRemote;
+use OriginEngine\Commands\FeatureDefault;
 use OriginEngine\Commands\FeatureDelete;
 use OriginEngine\Commands\FeatureList;
 use OriginEngine\Commands\FeatureNew;
@@ -83,6 +84,7 @@ class OriginEngineServiceProvider extends ServiceProvider
             FeatureList::class,
             FeatureNew::class,
             FeatureUse::class,
+            FeatureDefault::class,
             Setup::class,
             SiteClear::class,
             SiteDelete::class,

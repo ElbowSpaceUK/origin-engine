@@ -27,9 +27,9 @@ class SettingsSiteResolver implements SiteResolver
     public function getSite(): Site
     {
         if($this->hasSite()) {
-            return Site::findOrFail(
+            return new Site(InstalledSite::findOrFail(
                 $this->settingRepository->get(static::SETTING_KEY)
-            );
+            ));
         }
         throw new \Exception('No site is set');
     }

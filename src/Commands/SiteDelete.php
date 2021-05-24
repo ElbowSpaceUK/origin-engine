@@ -42,7 +42,7 @@ class SiteDelete extends SiteCommand
      */
     public function handle(PipelineRunner $pipelineRunner, SiteRepository $siteRepository, InstanceRepository $instanceRepository)
     {
-        $site = $this->getSite('Which sites would you like to delete?', null, true);
+        $site = $this->getSite('Which sites would you like to delete?', null);
 
         if(!$instanceRepository->exists($site->getInstanceId())) {
             IO::warning('The site was not found on the filesystem');

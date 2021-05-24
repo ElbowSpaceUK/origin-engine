@@ -4,6 +4,7 @@ namespace OriginEngine\Contracts\Command;
 
 use OriginEngine\Contracts\Site\SiteRepository;
 use OriginEngine\Contracts\Site\SiteResolver;
+use OriginEngine\Feature\Feature;
 use OriginEngine\Helpers\IO\IO;
 use OriginEngine\Site\Site;
 use Illuminate\Support\Collection;
@@ -23,6 +24,8 @@ class SiteCommand extends Command
     private SiteResolver $siteResolver;
     private \Illuminate\Support\Collection $allSites;
 
+    static bool $confirmedSite = false;
+
     protected function configure()
     {
         parent::configure();
@@ -39,33 +42,51 @@ class SiteCommand extends Command
      * @return Site
      * @throws \Exception If no sites are available or the chosen site could not be found
      */
-    protected function getSite(string $message = 'Which site would you like to perform the action against?',
-                            \Closure $siteFilter = null,
-                            bool $ignoreDefault = false): Site
+    protected function getSite(string $message = 'Which site would you like to perform the action against?', ?array $sites = null): Site
     {
         if(isset($this->site)) {
             return $this->site;
         }
 
-        if(!$this->sitesAreAvailable($siteFilter)) {
+        if(empty($sites) && !$this->sitesAreAvailable()) {
             throw new \Exception('No sites are available');
         }
 
-        // Get the site from the default site
-        if($ignoreDefault === false && $this->getSiteResolver()->hasSite()) {
-            return $this->cacheSite($this->getSiteResolver()->getSite());
+        if($sites == null) {
+            $sites = $this->getAvailableSites();
         }
 
-        $siteId = $this->option('site') ?? $this->promptUserForSite($message, $siteFilter);
+
+        // Get the site from the default site
+        if($this->getSiteResolver()->hasSite() && (
+                static::$confirmedSite ||
+                IO::confirm(sprintf('This will run on site \'%s\', is this correct?', $this->getSiteResolver()->getSite()->getName()), true)
+            )
+        ) {
+            $this->site = $this->getSiteResolver()->getSite();
+            static::$confirmedSite = true;
+            return $this->site;
+        }
+
+        $siteId = $this->convertSiteTextIntoId(
+            $this->getOrAskForOption(
+                'site',
+                fn() => $this->choice(
+                    $message,
+                    $sites->mapWithKeys(fn(Site $site) => [sprintf('site-%u', $site->getId()) => $site->getName()])->toArray()
+                ),
+                fn($value) => $value && $sites->map(fn($site) => $site->getId())->contains($this->convertSiteTextIntoId($value))
+            )
+        );
 
         $this->site = $this->getSiteRepository()->getById($siteId);
 
         return $this->site;
     }
 
-    private function sitesAreAvailable(?\Closure $siteFilter): bool
+    private function sitesAreAvailable(): bool
     {
-        return $this->getAvailableSites($siteFilter)->count() > 0;
+        return $this->getAvailableSites()->count() > 0;
     }
 
     private function getSiteRepository(): SiteRepository
@@ -76,10 +97,10 @@ class SiteCommand extends Command
         return $this->siteRepository;
     }
 
-    private function getAvailableSites(?\Closure $siteFilter = null): Collection
+    private function getAvailableSites(): Collection
     {
         if(!isset($this->allSites)) {
-            $this->allSites = $this->getSiteRepository()->all()->filter($siteFilter);
+            $this->allSites = $this->getSiteRepository()->all()->filter();
         }
 
         return $this->allSites;
@@ -93,12 +114,6 @@ class SiteCommand extends Command
         return $this->siteResolver;
     }
 
-    private function cacheSite(Site $site): Site
-    {
-        $this->site = $site;
-        return $this->site;
-    }
-
     private function convertSiteTextIntoId(string $value): int
     {
         if(Str::startsWith($value, 'site-')) {
@@ -106,21 +121,6 @@ class SiteCommand extends Command
         }
         return (int) $value;
 
-    }
-
-    private function promptUserForSite(string $message, ?\Closure $siteFilter): int
-    {
-        $prefixedSiteId = $this->choice(
-            $message,
-            $this->getAvailableSites($siteFilter)->mapWithKeys(fn(Site $site) => [sprintf('site-%u', $site->getId()) => $site->getName()])->toArray()
-        );
-
-        if(!$prefixedSiteId || !$this->getAvailableSites($siteFilter)->map(fn($site) => $site->getId())->contains($this->convertSiteTextIntoId($prefixedSiteId))) {
-            IO::error(sprintf('[%s] is not a valid site', $prefixedSiteId));
-            return $this->promptUserForSite($message, $siteFilter);
-        }
-
-        return $this->convertSiteTextIntoId($prefixedSiteId);
     }
 
 }
