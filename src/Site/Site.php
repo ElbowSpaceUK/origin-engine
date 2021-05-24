@@ -87,9 +87,9 @@ class Site
         $model->save();
     }
 
-    public function getUrl()
+    public function getUrls()
     {
-        return $this->getBlueprint()->getUrl($this);
+        return $this->getBlueprint()->getUrls($this);
     }
 
     public function getDirectory(): Directory

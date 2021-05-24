@@ -9,7 +9,7 @@ abstract class SiteBlueprint
 
     abstract public function name(): string;
 
-    abstract public function getUrl(Site $site): string;
+    abstract public function getUrls(Site $site): array;
 
     abstract public function getStatus(Site $site): string;
 

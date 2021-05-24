@@ -41,7 +41,7 @@ class SiteList extends Command
                     $site->getName(),
                     $site->getDescription(),
                     $site->getStatus(),
-                    $site->getUrl()
+                    collect($site->getUrls())->map(fn($url, $name) => sprintf('%s: %s', $name, $url))->join(PHP_EOL)
                 ];
             })
         );
