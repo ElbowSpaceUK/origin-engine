@@ -52,9 +52,9 @@ class SiteNew extends Command
         $this->siteRepository = $siteRepository;
         $this->info('Creating a new site');
 
-        $name = $this->getInstanceName();
+        $name = $this->getSiteName();
         $directory = $this->getDirectory($name);
-        $description = $this->getInstanceDescription();
+        $description = $this->getSiteDescription();
 
         $workingDirectory = WorkingDirectory::fromDirectory($directory);
 
@@ -100,7 +100,7 @@ class SiteNew extends Command
         return $this->directory;
     }
 
-    private function getInstanceName(): string
+    private function getSiteName(): string
     {
         return trim($this->getOrAskForOption(
             'name',
@@ -109,7 +109,7 @@ class SiteNew extends Command
         ));
     }
 
-    private function getInstanceDescription(): string
+    private function getSiteDescription(): string
     {
         return trim($this->getOrAskForOption(
             'description',

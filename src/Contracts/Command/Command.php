@@ -11,8 +11,11 @@ use OriginEngine\Feature\Feature;
 use OriginEngine\Helpers\IO\IO;
 use OriginEngine\Helpers\IO\Proxy;
 use OriginEngine\Helpers\WorkingDirectory\WorkingDirectory;
+use OriginEngine\Pipeline\DebugPipelineRunner;
+use OriginEngine\Pipeline\NormalPipelineRunner;
 use OriginEngine\Pipeline\PipelineConfig;
 use OriginEngine\Pipeline\VerbosePipelineRunner;
+use OriginEngine\Pipeline\VeryVerbosePipelineRunner;
 use OriginEngine\Site\Site;
 use Illuminate\Console\OutputStyle;
 use Illuminate\Support\Str;
@@ -76,11 +79,17 @@ abstract class Command extends \LaravelZero\Framework\Commands\Command
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        if($output->getVerbosity() >= OutputInterface::VERBOSITY_VERBOSE) {
-            $this->app->extend(PipelineRunner::class, function($service, $app) {
-                return new VerbosePipelineRunner($service);
-            });
+        $outputs = [
+            OutputInterface::VERBOSITY_NORMAL => fn($service) => new NormalPipelineRunner($service),
+            OutputInterface::VERBOSITY_VERBOSE => fn($service) => new VerbosePipelineRunner($service),
+            OutputInterface::VERBOSITY_VERY_VERBOSE => fn($service) => new VeryVerbosePipelineRunner($service),
+            OutputInterface::VERBOSITY_DEBUG => fn($service) => new DebugPipelineRunner($service)
+        ];
+        $verbosity = $output->getVerbosity();
+        if(array_key_exists($verbosity, $outputs)) {
+            $this->app->extend(PipelineRunner::class, $outputs[$verbosity]);
         }
+
         return parent::execute($input, $output);
     }
 

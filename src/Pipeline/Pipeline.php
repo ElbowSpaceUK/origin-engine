@@ -16,6 +16,17 @@ abstract class Pipeline
      */
     abstract public function getTasks(): array;
 
+    public function getTask(string $taskAlias): Task
+    {
+        $tasks = $this->getTasks();
+        if(array_key_exists($taskAlias, $tasks)) {
+            return $tasks[$taskAlias];
+        }
+        throw new \Exception(
+            sprintf('Could not find task with alias [%s]', $taskAlias)
+        );
+    }
+
     public function before(string $task, \Closure $event)
     {
         $this->addEvent(static::BEFORE_EVENT, $task, $event);

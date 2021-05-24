@@ -73,9 +73,9 @@ class SiteCommand extends Command
                 'site',
                 fn() => $this->choice(
                     $message,
-                    $sites->mapWithKeys(fn(Site $site) => [sprintf('site-%u', $site->getId()) => $site->getName()])->toArray()
+                    collect($sites)->mapWithKeys(fn(Site $site) => [sprintf('site-%u', $site->getId()) => $site->getName()])->toArray()
                 ),
-                fn($value) => $value && $sites->map(fn($site) => $site->getId())->contains($this->convertSiteTextIntoId($value))
+                fn($value) => $value && collect($sites)->map(fn($site) => $site->getId())->contains($this->convertSiteTextIntoId($value))
             )
         );
 

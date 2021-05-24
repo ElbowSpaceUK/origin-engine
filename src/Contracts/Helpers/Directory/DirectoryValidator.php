@@ -1,6 +1,6 @@
 <?php
 
-namespace OriginEngine\Contracts\Instance;
+namespace OriginEngine\Contracts\Helpers\Directory;
 
 /**
  * Check if the given directory is valid

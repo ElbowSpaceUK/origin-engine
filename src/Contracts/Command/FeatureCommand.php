@@ -78,9 +78,9 @@ class FeatureCommand extends Command
                 'feature',
                 fn() => $this->choice(
                     $message,
-                    $features->mapWithKeys(fn(Feature $feature) => [sprintf('feature-%u', $feature->getId()) => $feature->getName()])->toArray()
+                    collect($features)->mapWithKeys(fn(Feature $feature) => [sprintf('feature-%u', $feature->getId()) => $feature->getName()])->toArray()
                 ),
-                fn($value) => $value && $features->map(fn($feature) => $feature->getId())->contains($this->convertFeatureTextIntoId($value))
+                fn($value) => $value && collect($features)->map(fn($feature) => $feature->getId())->contains($this->convertFeatureTextIntoId($value))
             )
         );
 

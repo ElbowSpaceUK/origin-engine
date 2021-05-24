@@ -23,7 +23,7 @@ class FeatureDelete extends FeatureCommand
      *
      * @var string
      */
-    protected $description = 'Delete the given instance';
+    protected $description = 'Delete the given feature';
 
     /**
      * Execute the console command.

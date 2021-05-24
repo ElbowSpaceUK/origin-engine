@@ -34,7 +34,7 @@ class SitePrune extends Command
         if(count($sites) > 0) {
             foreach($sites as $site) {
                 if($site->getStatus() === Site::STATUS_MISSING) {
-                    $siteRepository->delete($site->getInstanceId());
+                    $siteRepository->delete($site->getId());
                     IO::info(sprintf('Cleared site %s', $site->name));
                 }
             }

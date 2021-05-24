@@ -1,11 +1,11 @@
 <?php
 
-namespace OriginEngine\Instance;
+namespace OriginEngine\Helpers\WorkingDirectory;
 
+use OriginEngine\Contracts\Helpers\Directory\DirectoryValidator as DirectoryValidatorContract;
 use OriginEngine\Helpers\Storage\Filesystem;
-use OriginEngine\Helpers\WorkingDirectory\WorkingDirectory;
 
-class DirectoryValidator implements \OriginEngine\Contracts\Instance\DirectoryValidator
+class DirectoryValidator implements DirectoryValidatorContract
 {
 
     public function isValid(string $directory): bool
