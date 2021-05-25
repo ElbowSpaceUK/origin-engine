@@ -19,7 +19,7 @@ class CreateLocalPackagesTable extends Migration
             $table->text('url');
             $table->enum('type', ['direct', 'indirect', 'none']);
             $table->string('original_version')->nullable();
-            $table->string('branch');
+            $table->unsignedBigInteger('parent_feature_id');
             $table->unsignedBigInteger('feature_id');
             $table->timestamps();
             $table->softDeletes();

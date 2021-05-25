@@ -52,7 +52,7 @@ class StubMake extends FeatureCommand
             fn($value) => $value && $stubStore->hasStub($value)
         );
 
-        $workingDirectory = $this->getWorkingDirectory();
+        $workingDirectory = $this->getFeature('Which feature should we copy the stub to?')->getDirectory();
 
         $stub = $stubStore->getStub($stubName);
 

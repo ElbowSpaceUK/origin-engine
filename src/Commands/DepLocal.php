@@ -4,6 +4,7 @@ namespace OriginEngine\Commands;
 
 use OriginEngine\Contracts\Command\Command;
 use OriginEngine\Contracts\Command\FeatureCommand;
+use OriginEngine\Contracts\Feature\FeatureRepository;
 use OriginEngine\Contracts\Site\SiteRepository;
 use OriginEngine\Feature\Feature;
 use OriginEngine\Helpers\Composer\ComposerModifier;
@@ -46,7 +47,7 @@ class DepLocal extends FeatureCommand
      *
      * @return mixed
      */
-    public function handle(SiteRepository $siteRepository)
+    public function handle(SiteRepository $siteRepository, FeatureRepository $featureRepository)
     {
         $feature = $this->getFeature('Which feature should this be done against?');
         $site = $feature->getSite();
@@ -73,13 +74,21 @@ class DepLocal extends FeatureCommand
 
         IO::info(sprintf('Converting %s into a local package.', $package));
 
+        $localPackageFeature = $featureRepository->create(
+            $site->getId(),
+            sprintf('%s (%s)', $feature->getName(), $package),
+            sprintf('%s (for %s)', $feature->getDescription(), $package),
+            $feature->getType(),
+            $branchName
+        );
+
         $localPackage = LocalPackage::create([
             'name' => $package,
             'url' => $repositoryUrl,
             'type' => $this->getDependencyType($workingDirectory, $package),
             'original_version' => $this->getCurrentVersionConstraint($workingDirectory, $package),
-            'feature_id' => $feature->getId(),
-            'branch' => $branchName
+            'feature_id' => $localPackageFeature->getId(),
+            'parent_feature_id' => $feature->getId(),
         ]);
 
         $this->task('Storing project state', fn() => $localPackage);

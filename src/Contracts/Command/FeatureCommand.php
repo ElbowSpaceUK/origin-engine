@@ -129,31 +129,4 @@ class FeatureCommand extends Command
         return (int) $value;
     }
 
-    /**
-     * @param string $message
-     * @param \Closure|null $featureFilter
-     * @param bool $ignoreDefault
-     * @return Directory
-     * @throws \Exception
-     */
-    public function getWorkingDirectory(string $message = 'Which feature would you like to perform the action against?'): Directory
-    {
-        if(!isset($this->workingDirectory)) {
-            $feature = $this->getFeature($message, []);
-            $paths = [$feature->getSite()->getDirectory()->path()];
-
-            if($this->supportsDependencies && $this->option('dep') !== null) {
-                $existingDeps = $feature->getLocalPackages()->filter(fn(LocalPackage $localPackage) => $localPackage->getName() === $this->option('dep'));
-                if($existingDeps->count() > 0) {
-                    $dep = $existingDeps->first();
-                    $paths[] = sprintf('repos/%s', $dep->getName());
-                } else {
-                    throw new \Exception(sprintf('Dependency %s not found', $this->option('dep')));
-                }
-            }
-            $this->workingDirectory = Directory::fromFullPath(Filesystem::append(...$paths));
-        }
-        return $this->workingDirectory;
-    }
-
 }

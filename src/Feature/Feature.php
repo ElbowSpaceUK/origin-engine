@@ -3,6 +3,8 @@
 namespace OriginEngine\Feature;
 
 use OriginEngine\Contracts\Feature\FeatureResolver;
+use OriginEngine\Helpers\Directory\Directory;
+use OriginEngine\Helpers\Storage\Filesystem;
 use OriginEngine\Packages\LocalPackage;
 use OriginEngine\Site\InstalledSite;
 use OriginEngine\Site\Site;
@@ -89,5 +91,15 @@ class Feature extends Model
             return app(FeatureResolver::class)->getFeature();
         }
         return null;
+    }
+
+    public function getDirectory(): Directory
+    {
+        return Directory::fromDirectory(
+            Filesystem::append(
+                $this->getSite()->getDirectory()->path(),
+                sprintf('repos/%s', $this->getName())
+            )
+        );
     }
 }

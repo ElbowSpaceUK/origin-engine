@@ -43,7 +43,7 @@ class SiteUp extends SiteCommand
 
         IO::info('Turning on site.');
 
-        $pipelineRunner->run($site->getBlueprint()->getSiteUpPipeline(), $this->getPipelineConfig(), $site->getDirectory());
+        $history = $pipelineRunner->run($site->getBlueprint()->getSiteUpPipeline(), $this->getPipelineConfig(), $site->getDirectory());
 
         IO::success('Turned on site.');
 

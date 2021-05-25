@@ -21,14 +21,13 @@ class PipelineDownRunner implements \OriginEngine\Contracts\Pipeline\PipelineDow
                 continue;
             }
             foreach($pipeline->getBeforeDownEvents($key) as $event) {
-                $event($history);
+                $event($history, $key);
             }
 
-            IO::info(sprintf('Undoing Task: %s' , $task->getDownName($history->getConfig($key))));
             $task->reverse($workingDirectory, $history->succeeded($key), $history->getConfig($key), $history->getOutput($key));
 
             foreach($pipeline->getAfterDownEvents($key) as $event) {
-                $event($history);
+                $event($history, $key);
             }
         }
 

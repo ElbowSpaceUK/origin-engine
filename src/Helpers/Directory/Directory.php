@@ -30,6 +30,11 @@ class Directory
         );
     }
 
+    /**
+     * @deprecated
+     * @param Site $site
+     * @return Directory
+     */
     public static function fromSite(Site $site): Directory
     {
         return $site->getDirectory();

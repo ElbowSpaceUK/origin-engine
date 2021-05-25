@@ -16,9 +16,9 @@ class VerbosePipelineRunner extends NormalPipelineRunner implements PipelineRunn
             IO::info('Ran task ' . $task->getUpName(collect($config->getAll($taskKey))));
         });
 
-        $pipeline->addGlobalEvent(Pipeline::AFTER_DOWN_EVENT, function(PipelineConfig $config, PipelineHistory $history, string $taskKey) use ($pipeline) {
+        $pipeline->addGlobalEvent(Pipeline::AFTER_DOWN_EVENT, function(PipelineHistory $history, string $taskKey) use ($pipeline) {
             $task = $pipeline->getTask($taskKey);
-            IO::info('Undone task ' . $task->getDownName(collect($config->getAll($taskKey))));
+            IO::info('Undone task ' . $task->getDownName($history->getConfig($taskKey)));
         });
 
         return parent::run($pipeline, $config, $workingDirectory);

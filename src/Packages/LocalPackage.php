@@ -13,12 +13,17 @@ class LocalPackage extends Model
     use HasFactory, SoftDeletes;
 
     protected $fillable = [
-        'name', 'url', 'type', 'original_version', 'feature_id', 'branch'
+        'name', 'url', 'type', 'original_version', 'feature_id', 'parent_feature_id'
     ];
 
     public function feature()
     {
         return $this->belongsTo(Feature::class);
+    }
+
+    public function parentFeature()
+    {
+        return $this->belongsTo(Feature::class, 'parent_feature_id');
     }
 
     public function getId(): int
@@ -54,5 +59,15 @@ class LocalPackage extends Model
     public function getFeatureId(): int
     {
         return $this->feature_id;
+    }
+
+    public function getFeature(): Feature
+    {
+        return $this->feature;
+    }
+
+    public function getParentFeature(): Feature
+    {
+        return $this->parentFeature;
     }
 }
