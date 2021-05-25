@@ -2,10 +2,6 @@
 
 namespace OriginEngine;
 
-use OriginEngine\Commands\DepList;
-use OriginEngine\Commands\DepLocal;
-use OriginEngine\Commands\DepMake;
-use OriginEngine\Commands\DepRemote;
 use OriginEngine\Commands\FeatureDefault;
 use OriginEngine\Commands\FeatureDelete;
 use OriginEngine\Commands\FeatureList;
@@ -21,8 +17,6 @@ use OriginEngine\Commands\SitePrune;
 use OriginEngine\Commands\SiteReset;
 use OriginEngine\Commands\SiteUp;
 use OriginEngine\Commands\SiteUse;
-use OriginEngine\Commands\StubList;
-use OriginEngine\Commands\StubMake;
 use OriginEngine\Contracts\Feature\FeatureRepository as FeatureRepositoryContract;
 use OriginEngine\Contracts\Feature\FeatureResolver;
 use OriginEngine\Contracts\Helpers\Composer\OperationManager as OperationManagerContract;
@@ -43,13 +37,13 @@ use OriginEngine\Pipeline\PipelineDownRunner;
 use OriginEngine\Pipeline\PipelineManager;
 use OriginEngine\Helpers\Settings\SettingRepository;
 use OriginEngine\Pipeline\PipelineRunner;
+use OriginEngine\Plugins\Dependencies\Contracts\LocalPackageRepository as LocalPackageRepositoryContract;
+use OriginEngine\Plugins\Dependencies\LocalPackageDatabaseRepository;
 use OriginEngine\Site\SettingsSiteResolver;
 use OriginEngine\Site\SiteBlueprintStore;
 use OriginEngine\Site\SiteRepository;
-use OriginEngine\Stubs\Stubs;
-use OriginEngine\Stubs\StubStore;
+use OriginEngine\Plugins\Stubs\StubStore;
 use Illuminate\Contracts\Config\Repository as Config;
-use Illuminate\Contracts\Container\Container;
 use Illuminate\Support\ServiceProvider;
 
 class OriginEngineServiceProvider extends ServiceProvider
@@ -73,10 +67,6 @@ class OriginEngineServiceProvider extends ServiceProvider
         }
 
         $config->set('commands.add', array_merge([
-            DepList::class,
-            DepLocal::class,
-            DepMake::class,
-            DepRemote::class,
             FeatureDelete::class,
             FeatureList::class,
             FeatureNew::class,
@@ -92,8 +82,6 @@ class OriginEngineServiceProvider extends ServiceProvider
             SiteReset::class,
             SiteUp::class,
             SiteUse::class,
-            StubList::class,
-            StubMake::class
         ], $config->get('commands.add', [])));
         $config->set('commands.hidden', array_merge([
             \NunoMaduro\LaravelConsoleSummary\SummaryCommand::class,

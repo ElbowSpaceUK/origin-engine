@@ -8,10 +8,11 @@ use OriginEngine\Contracts\Feature\FeatureResolver;
 use OriginEngine\Contracts\Site\SiteResolver;
 use OriginEngine\Helpers\IO\IO;
 use OriginEngine\Helpers\Directory\Directory;
-use OriginEngine\Packages\LocalPackage;
-use OriginEngine\Packages\LocalPackageHelper;
+use OriginEngine\Plugins\Dependencies\LocalPackage;
+use OriginEngine\Plugins\Dependencies\LocalPackageHelper;
 use Cz\Git\GitException;
 use Cz\Git\GitRepository;
+use OriginEngine\Plugins\Dependencies\Contracts\LocalPackageRepository;
 
 class FeatureUse extends FeatureCommand
 {
@@ -59,7 +60,7 @@ class FeatureUse extends FeatureCommand
 
         $this->task('Install local packages', function() use ($feature, $localPackageHelper, $workingDirectory) {
             /** @var LocalPackage[] $packages */
-            $packages = $feature->getLocalPackages();
+            $packages = app(LocalPackageRepository::class)->getAllThroughFeature($feature->getId());
 
             foreach($packages as $package) {
                 $localPackageHelper->makeLocal($package, $workingDirectory);

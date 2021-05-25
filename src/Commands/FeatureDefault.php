@@ -8,8 +8,8 @@ use OriginEngine\Contracts\Feature\FeatureResolver;
 use OriginEngine\Contracts\Site\SiteResolver;
 use OriginEngine\Helpers\IO\IO;
 use OriginEngine\Helpers\Directory\Directory;
-use OriginEngine\Packages\LocalPackage;
-use OriginEngine\Packages\LocalPackageHelper;
+use OriginEngine\Plugins\Dependencies\LocalPackage;
+use OriginEngine\Plugins\Dependencies\LocalPackageHelper;
 use Cz\Git\GitException;
 use Cz\Git\GitRepository;
 

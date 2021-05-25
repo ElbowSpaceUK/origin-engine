@@ -48,14 +48,13 @@ class SiteCommand extends Command
             return $this->site;
         }
 
-        if(empty($sites) && !$this->sitesAreAvailable()) {
+        if($sites === null) {
+            $sites = $this->getSiteRepository()->all();
+        }
+
+        if(empty($sites)) {
             throw new \Exception('No sites are available');
         }
-
-        if($sites == null) {
-            $sites = $this->getAvailableSites();
-        }
-
 
         // Get the site from the default site
         if($this->getSiteResolver()->hasSite() && (
@@ -84,26 +83,12 @@ class SiteCommand extends Command
         return $this->site;
     }
 
-    private function sitesAreAvailable(): bool
-    {
-        return $this->getAvailableSites()->count() > 0;
-    }
-
     private function getSiteRepository(): SiteRepository
     {
         if(!isset($this->siteRepository)) {
             $this->siteRepository = app(SiteRepository::class);
         }
         return $this->siteRepository;
-    }
-
-    private function getAvailableSites(): Collection
-    {
-        if(!isset($this->allSites)) {
-            $this->allSites = $this->getSiteRepository()->all()->filter();
-        }
-
-        return $this->allSites;
     }
 
     private function getSiteResolver(): SiteResolver

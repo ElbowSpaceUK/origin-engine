@@ -5,7 +5,7 @@ namespace OriginEngine\Feature;
 use OriginEngine\Contracts\Feature\FeatureResolver;
 use OriginEngine\Helpers\Directory\Directory;
 use OriginEngine\Helpers\Storage\Filesystem;
-use OriginEngine\Packages\LocalPackage;
+use OriginEngine\Plugins\Dependencies\LocalPackage;
 use OriginEngine\Site\InstalledSite;
 use OriginEngine\Site\Site;
 use Illuminate\Database\Eloquent\Collection;
@@ -23,13 +23,6 @@ class Feature extends Model
     protected $fillable = [
         'name', 'description', 'type', 'site_id', 'branch'
     ];
-
-    protected static function booted()
-    {
-        static::deleting(fn(Feature $feature) => $feature->getLocalPackages()->each(function($package){
-            $package->delete();
-        }));
-    }
 
     public function site()
     {
@@ -59,16 +52,6 @@ class Feature extends Model
     public function getSite(): Site
     {
         return new Site($this->site);
-    }
-
-    public function getLocalPackages(): Collection
-    {
-        return $this->localPackages;
-    }
-
-    public function localPackages()
-    {
-        return $this->hasMany(LocalPackage::class);
     }
 
     public function getBranch()

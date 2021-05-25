@@ -7,10 +7,11 @@ use OriginEngine\Contracts\Command\SiteCommand;
 use OriginEngine\Contracts\Feature\FeatureResolver;
 use OriginEngine\Helpers\IO\IO;
 use OriginEngine\Helpers\Directory\Directory;
-use OriginEngine\Packages\LocalPackage;
-use OriginEngine\Packages\LocalPackageHelper;
+use OriginEngine\Plugins\Dependencies\LocalPackage;
+use OriginEngine\Plugins\Dependencies\LocalPackageHelper;
 use Cz\Git\GitException;
 use Cz\Git\GitRepository;
+use OriginEngine\Plugins\Dependencies\Contracts\LocalPackageRepository;
 
 class SiteReset extends SiteCommand
 {
@@ -48,7 +49,7 @@ class SiteReset extends SiteCommand
 
         if($feature !== null) {
             // Site has a feature currently checked out
-            $packages = $feature->getLocalPackages();
+            $packages = app(LocalPackageRepository::class)->getAllThroughFeature($feature->getId());
             if(count($packages) > 0) {
                 IO::progressStart($packages->count());
                 foreach($packages as $package) {

@@ -8,7 +8,7 @@ use OriginEngine\Helpers\IO\IO;
 use OriginEngine\Helpers\Storage\Filesystem;
 use OriginEngine\Helpers\Directory\Directory;
 use OriginEngine\Feature\Feature;
-use OriginEngine\Packages\LocalPackage;
+use OriginEngine\Plugins\Dependencies\LocalPackage;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 use Symfony\Component\Console\Input\InputDefinition;
@@ -16,8 +16,6 @@ use Symfony\Component\Console\Input\InputOption;
 
 class FeatureCommand extends Command
 {
-
-    protected bool $supportsDependencies = true;
 
     private Feature $feature;
 
@@ -33,9 +31,6 @@ class FeatureCommand extends Command
     {
         parent::configure();
         $this->addOption('feature', 'F', InputOption::VALUE_OPTIONAL, 'The ID of the feature', null);
-        if($this->supportsDependencies) {
-            $this->addOption('dep', 'D', InputOption::VALUE_OPTIONAL, 'The name of the local dependency to run this on', null);
-        }
     }
 
     /**
@@ -54,13 +49,14 @@ class FeatureCommand extends Command
             return $this->feature;
         }
 
-        if(empty($features) && !$this->featuresAreAvailable()) {
+        if($features === null) {
+            $features = $this->getFeatureRepository()->all();
+        }
+
+        if(empty($features)) {
             throw new \Exception('No features are available');
         }
 
-        if($features == null) {
-            $features = $this->getAvailableFeatures();
-        }
 
         // Get the feature from the default feature
         if($this->getFeatureResolver()->hasFeature() &&  (
@@ -89,22 +85,12 @@ class FeatureCommand extends Command
         return $this->feature;
     }
 
-    private function featuresAreAvailable(): bool
-    {
-        return $this->getAvailableFeatures()->count() > 0;
-    }
-
     private function getFeatureRepository(): FeatureRepository
     {
         if(!isset($this->featureRepository)) {
             $this->featureRepository = app(FeatureRepository::class);
         }
         return $this->featureRepository;
-    }
-
-    private function getAvailableFeatures(): Collection
-    {
-        return $this->getFeatureRepository()->all();
     }
 
     private function getFeatureResolver(): FeatureResolver
