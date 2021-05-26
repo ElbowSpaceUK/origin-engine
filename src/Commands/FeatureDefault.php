@@ -2,20 +2,14 @@
 
 namespace OriginEngine\Commands;
 
-use OriginEngine\Contracts\Command\Command;
+use OriginEngine\Commands\Pipelines\FeatureDefault as FeatureDefaultPipeline;
 use OriginEngine\Contracts\Command\FeatureCommand;
 use OriginEngine\Contracts\Feature\FeatureResolver;
-use OriginEngine\Contracts\Site\SiteResolver;
+use OriginEngine\Contracts\Pipeline\PipelineRunner;
 use OriginEngine\Helpers\IO\IO;
-use OriginEngine\Helpers\Directory\Directory;
-use OriginEngine\Plugins\Dependencies\LocalPackage;
-use OriginEngine\Plugins\Dependencies\LocalPackageHelper;
-use Cz\Git\GitException;
-use Cz\Git\GitRepository;
 
 class FeatureDefault extends FeatureCommand
 {
-    protected bool $supportsDependencies = false;
 
     /**
      * The signature of the command.
@@ -36,12 +30,18 @@ class FeatureDefault extends FeatureCommand
      *
      * @return mixed
      */
-    public function handle(FeatureResolver $featureResolver, SiteResolver $siteResolver, LocalPackageHelper $localPackageHelper)
+    public function handle(FeatureResolver $featureResolver, PipelineRunner $pipelineRunner)
     {
         $feature = $this->getFeature('Which feature would you like to use by default?');
 
-        $this->task(sprintf('Setting the default feature to %s', $feature->getName()), fn() => $featureResolver->setFeature($feature));
-
+        // TODO way to resolve the correct pipeline, like the pipeline manager but custom made.
+        $pipeline = new FeatureDefaultPipeline($feature);
+        $history = $pipelineRunner->run($pipeline, $this->getPipelineConfig(), $feature->getDirectory());
+        if($history->allSuccessful()) {
+            IO::success('Default feature changed');
+        } else {
+            IO::error('Could not change default feature');
+        }
     }
 
 }

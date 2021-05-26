@@ -7,7 +7,7 @@ use OriginEngine\Commands\FeatureDelete;
 use OriginEngine\Commands\FeatureList;
 use OriginEngine\Commands\FeatureNew;
 use OriginEngine\Commands\FeatureUse;
-use OriginEngine\Commands\Setup;
+use OriginEngine\Commands\PostUpdate;
 use OriginEngine\Commands\SiteClear;
 use OriginEngine\Commands\SiteDelete;
 use OriginEngine\Commands\SiteDown;
@@ -72,7 +72,7 @@ class OriginEngineServiceProvider extends ServiceProvider
             FeatureNew::class,
             FeatureUse::class,
             FeatureDefault::class,
-            Setup::class,
+            PostUpdate::class,
             SiteClear::class,
             SiteDelete::class,
             SiteDown::class,

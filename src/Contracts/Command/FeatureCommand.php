@@ -52,11 +52,11 @@ class FeatureCommand extends Command
         if($features === null) {
             $features = $this->getFeatureRepository()->all();
         }
+        $features = collect($features);
 
         if(empty($features)) {
             throw new \Exception('No features are available');
         }
-
 
         // Get the feature from the default feature
         if($this->getFeatureResolver()->hasFeature() &&  (
@@ -74,9 +74,9 @@ class FeatureCommand extends Command
                 'feature',
                 fn() => $this->choice(
                     $message,
-                    collect($features)->mapWithKeys(fn(Feature $feature) => [sprintf('feature-%u', $feature->getId()) => $feature->getName()])->toArray()
+                    $features->mapWithKeys(fn(Feature $feature) => [sprintf('feature-%u', $feature->getId()) => $feature->getName()])->toArray()
                 ),
-                fn($value) => $value && collect($features)->map(fn($feature) => $feature->getId())->contains($this->convertFeatureTextIntoId($value))
+                fn($value) => $value && $features->map(fn($feature) => $feature->getId())->contains($this->convertFeatureTextIntoId($value))
             )
         );
 

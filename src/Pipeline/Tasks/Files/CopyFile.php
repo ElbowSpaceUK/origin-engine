@@ -1,6 +1,6 @@
 <?php
 
-namespace OriginEngine\Pipeline\Tasks;
+namespace OriginEngine\Pipeline\Tasks\Files;
 
 use Illuminate\Support\Collection;
 use OriginEngine\Pipeline\Task;

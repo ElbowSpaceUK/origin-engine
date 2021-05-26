@@ -51,6 +51,7 @@ class SiteCommand extends Command
         if($sites === null) {
             $sites = $this->getSiteRepository()->all();
         }
+        $sites = collect($sites);
 
         if(empty($sites)) {
             throw new \Exception('No sites are available');
@@ -72,9 +73,9 @@ class SiteCommand extends Command
                 'site',
                 fn() => $this->choice(
                     $message,
-                    collect($sites)->mapWithKeys(fn(Site $site) => [sprintf('site-%u', $site->getId()) => $site->getName()])->toArray()
+                    $sites->mapWithKeys(fn(Site $site) => [sprintf('site-%u', $site->getId()) => $site->getName()])->toArray()
                 ),
-                fn($value) => $value && collect($sites)->map(fn($site) => $site->getId())->contains($this->convertSiteTextIntoId($value))
+                fn($value) => $value && $sites->map(fn($site) => $site->getId())->contains($this->convertSiteTextIntoId($value))
             )
         );
 

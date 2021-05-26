@@ -10,7 +10,6 @@ use OriginEngine\Helpers\IO\IO;
 use OriginEngine\Helpers\IO\Proxy;
 use OriginEngine\Helpers\Port\Port;
 use OriginEngine\Helpers\Directory\Directory;
-use OriginEngine\Pipeline\Old\ProvisionedTask;
 use Illuminate\Contracts\Config\Repository;
 use OriginEngine\Pipeline\TaskResponse;
 
