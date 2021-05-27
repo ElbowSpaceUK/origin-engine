@@ -2,11 +2,13 @@
 
 namespace OriginEngine\Commands;
 
+use OriginEngine\Commands\Pipelines\SiteReset as SiteResetPipeline;
 use OriginEngine\Contracts\Command\Command;
 use OriginEngine\Contracts\Command\SiteCommand;
 use OriginEngine\Contracts\Feature\FeatureResolver;
 use OriginEngine\Helpers\IO\IO;
 use OriginEngine\Helpers\Directory\Directory;
+use OriginEngine\Pipeline\RunsPipelines;
 use OriginEngine\Plugins\Dependencies\LocalPackage;
 use OriginEngine\Plugins\Dependencies\LocalPackageHelper;
 use Cz\Git\GitException;
@@ -15,6 +17,8 @@ use OriginEngine\Plugins\Dependencies\Contracts\LocalPackageRepository;
 
 class SiteReset extends SiteCommand
 {
+    use RunsPipelines;
+
     /**
      * The signature of the command.
      *
@@ -38,37 +42,7 @@ class SiteReset extends SiteCommand
     public function handle(FeatureResolver $featureResolver, LocalPackageHelper $localPackageHelper)
     {
         $site = $this->getSite('Which site would you like to reset?');
-        $branch = $this->getOrAskForOption(
-            'branch',
-            fn() => 'remove-module-installer',//$this->ask('What branch would you like to reset to?', 'develop'),
-            fn($value) => $value && strlen($value) > 0
-        );
-
-        $feature = $site->getCurrentFeature();
-        $workingDirectory = $site->getDirectory();
-
-        if($feature !== null) {
-            // Site has a feature currently checked out
-            $packages = app(LocalPackageRepository::class)->getAllThroughFeature($feature->getId());
-            if(count($packages) > 0) {
-                IO::progressStart($packages->count());
-                foreach($packages as $package) {
-                    $localPackageHelper->makeRemote($package, $workingDirectory);
-                    IO::progressStep(1);
-                }
-                IO::progressFinish();
-            }
-        }
-
-        $git = new GitRepository($site->getDirectory()->path());
-        try {
-            $git->checkout($branch);
-        } catch (GitException $e) {
-            $git->createBranch($branch, true);
-        }
-
-        $featureResolver->clearFeature();
-
+        $this->runPipeline(new SiteResetPipeline(), $site->getDirectory());
     }
 
 }
