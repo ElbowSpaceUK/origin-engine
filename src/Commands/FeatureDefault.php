@@ -7,9 +7,11 @@ use OriginEngine\Contracts\Command\FeatureCommand;
 use OriginEngine\Contracts\Feature\FeatureResolver;
 use OriginEngine\Contracts\Pipeline\PipelineRunner;
 use OriginEngine\Helpers\IO\IO;
+use OriginEngine\Pipeline\RunsPipelines;
 
 class FeatureDefault extends FeatureCommand
 {
+    use RunsPipelines;
 
     /**
      * The signature of the command.
@@ -30,13 +32,11 @@ class FeatureDefault extends FeatureCommand
      *
      * @return mixed
      */
-    public function handle(FeatureResolver $featureResolver, PipelineRunner $pipelineRunner)
+    public function handle()
     {
         $feature = $this->getFeature('Which feature would you like to use by default?');
 
-        // TODO way to resolve the correct pipeline, like the pipeline manager but custom made.
-        $pipeline = new FeatureDefaultPipeline($feature);
-        $history = $pipelineRunner->run($pipeline, $this->getPipelineConfig(), $feature->getDirectory());
+        $history = $this->runPipeline(new FeatureDefaultPipeline($feature), $feature->getDirectory());
         if($history->allSuccessful()) {
             IO::success('Default feature changed');
         } else {

@@ -1,10 +1,15 @@
 <?php
 
-namespace OriginEngine\Pipeline;
+namespace OriginEngine\Pipeline\Runners;
 
 use OriginEngine\Contracts\Pipeline\PipelineRunner as PipelineRunnerContract;
 use OriginEngine\Helpers\IO\IO;
 use OriginEngine\Helpers\Directory\Directory;
+use OriginEngine\Pipeline\Pipeline;
+use OriginEngine\Pipeline\PipelineConfig;
+use OriginEngine\Pipeline\PipelineHistory;
+use OriginEngine\Pipeline\Runners\NormalPipelineRunner;
+use function collect;
 
 class VerbosePipelineRunner extends NormalPipelineRunner implements PipelineRunnerContract
 {

@@ -10,7 +10,7 @@ use OriginEngine\Helpers\IO\IO;
 use OriginEngine\Helpers\Directory\Directory;
 use OriginEngine\Helpers\Storage\Filesystem;
 use OriginEngine\Pipeline\PipelineConfig;
-use OriginEngine\Pipeline\PipelineManager;
+use OriginEngine\Pipeline\PipelineModifier;
 use OriginEngine\Site\Site;
 
 class SiteDelete extends SiteCommand

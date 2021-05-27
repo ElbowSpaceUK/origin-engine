@@ -9,7 +9,7 @@ use OriginEngine\Contracts\Site\SiteRepository;
 use OriginEngine\Helpers\IO\IO;
 use OriginEngine\Helpers\Directory\Directory;
 use OriginEngine\Pipeline\PipelineConfig;
-use OriginEngine\Pipeline\PipelineManager;
+use OriginEngine\Pipeline\PipelineModifier;
 use Illuminate\Support\Str;
 use OriginEngine\Site\SiteBlueprint;
 

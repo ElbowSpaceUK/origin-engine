@@ -6,10 +6,13 @@ use OriginEngine\Commands\Pipelines\PostUpdate as PostUpdatePipeline;
 use OriginEngine\Contracts\Command\Command;
 use OriginEngine\Contracts\Pipeline\PipelineRunner;
 use OriginEngine\Helpers\Directory\Directory;
+use OriginEngine\Pipeline\RunsPipelines;
 use OriginEngine\Setup\SetupManager;
 
 class PostUpdate extends Command
 {
+    use RunsPipelines;
+
     /**
      * The signature of the command.
      *
@@ -29,10 +32,8 @@ class PostUpdate extends Command
      *
      * @return mixed
      */
-    public function handle(PipelineRunner $pipelineRunner)
+    public function handle()
     {
-        $pipeline = new PostUpdatePipeline();
-
-        $pipelineRunner->run($pipeline, $this->getPipelineConfig(), Directory::fromFullPath(sys_get_temp_dir()));
+        $this->runPipeline(new PostUpdatePipeline(), Directory::fromFullPath(sys_get_temp_dir()));
     }
 }

@@ -11,10 +11,22 @@ abstract class Pipeline
     public const BEFORE_DOWN_EVENT = 'beforeDown';
     public const AFTER_DOWN_EVENT = 'afterDown';
 
+    private string $alias = self::class;
+
     /**
      * @return array|Task[]
      */
     abstract public function getTasks(): array;
+
+    public function getAlias(): string
+    {
+        return $this->alias;
+    }
+
+    public function setAlias(string $alias)
+    {
+        $this->alias = $alias;
+    }
 
     public function getTask(string $taskAlias): Task
     {

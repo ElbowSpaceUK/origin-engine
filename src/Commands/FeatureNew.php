@@ -9,7 +9,7 @@ use OriginEngine\Contracts\Site\SiteRepository;
 use OriginEngine\Feature\Feature;
 use OriginEngine\Helpers\IO\IO;
 use OriginEngine\Helpers\Directory\Directory;
-use OriginEngine\Pipeline\PipelineManager;
+use OriginEngine\Pipeline\PipelineModifier;
 use Cz\Git\GitException;
 use Cz\Git\GitRepository;
 use Illuminate\Support\Str;

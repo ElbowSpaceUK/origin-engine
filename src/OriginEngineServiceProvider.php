@@ -31,12 +31,17 @@ use OriginEngine\Contracts\Site\SiteResolver;
 use OriginEngine\Feature\FeatureRepository;
 use OriginEngine\Feature\SiteFeatureResolver;
 use OriginEngine\Helpers\Composer\Operations\StandardOperationManager;
+use OriginEngine\Helpers\IO\IO;
 use OriginEngine\Helpers\Port\FSockOpenPortChecker;
 use OriginEngine\Helpers\Terminal\ShellExecutor;
-use OriginEngine\Pipeline\PipelineDownRunner;
-use OriginEngine\Pipeline\PipelineManager;
+use OriginEngine\Pipeline\Pipeline;
+use OriginEngine\Pipeline\PipelineConfig;
+use OriginEngine\Pipeline\PipelineHistory;
+use OriginEngine\Pipeline\Runners\ModifyPipelineRunner;
+use OriginEngine\Pipeline\Runners\PipelineDownRunner;
+use OriginEngine\Pipeline\PipelineModifier;
 use OriginEngine\Helpers\Settings\SettingRepository;
-use OriginEngine\Pipeline\PipelineRunner;
+use OriginEngine\Pipeline\Runners\PipelineRunner;
 use OriginEngine\Plugins\Dependencies\Contracts\LocalPackageRepository as LocalPackageRepositoryContract;
 use OriginEngine\Plugins\Dependencies\LocalPackageDatabaseRepository;
 use OriginEngine\Site\SettingsSiteResolver;
@@ -54,14 +59,8 @@ class OriginEngineServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    public function boot(Config $config)
+    public function boot(Config $config, PipelineModifier $pipelineManager)
     {
-        $config->set('app.setup.steps', [
-            \OriginEngine\Setup\Steps\CreateDatabaseDirectory::class,
-            \OriginEngine\Setup\Steps\CreateDatabase::class,
-            \OriginEngine\Setup\Steps\MigrateDatabase::class,
-            \OriginEngine\Setup\Steps\SetProjectDirectory::class
-        ]);
         if (!$config->has('commands.default')) {
             $config->set('commands.default', \NunoMaduro\LaravelConsoleSummary\SummaryCommand::class);
         }
@@ -135,6 +134,13 @@ class OriginEngineServiceProvider extends ServiceProvider
             ]);
         }
 
+        $this->app->extend(PipelineRunner::class, fn(PipelineRunner $pipelineRunner, $app) => new ModifyPipelineRunner($pipelineRunner));
+
+        app(PipelineModifier::class)->extend('feature:default', function(Pipeline $pipeline) {
+            $pipeline->before('set-default-feature', function(PipelineConfig $config, PipelineHistory $history) {
+                IO::success('Event has been called :)');
+            });
+        });
     }
 
     /**
@@ -149,7 +155,7 @@ class OriginEngineServiceProvider extends ServiceProvider
         $this->app->bind(PortChecker::class, FSockOpenPortChecker::class);
         $this->app->bind(Executor::class, ShellExecutor::class);
 
-        $this->app->singleton(PipelineManager::class);
+        $this->app->singleton(PipelineModifier::class);
         $this->app->singleton(StubStore::class);
 
         $this->app->bind(OperationManagerContract::class, StandardOperationManager::class);

@@ -6,10 +6,11 @@ use OriginEngine\Contracts\Command\Command;
 use OriginEngine\Contracts\Command\FeatureCommand;
 use OriginEngine\Contracts\Feature\FeatureRepository;
 use OriginEngine\Helpers\IO\IO;
+use OriginEngine\Pipeline\RunsPipelines;
 
 class FeatureDelete extends FeatureCommand
 {
-    protected bool $supportsDependencies = false;
+    use RunsPipelines;
 
     /**
      * The signature of the command.

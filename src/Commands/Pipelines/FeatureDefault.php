@@ -22,4 +22,5 @@ class FeatureDefault extends Pipeline
             'set-default-feature' => new SetDefaultFeature($this->feature)
         ];
     }
+
 }

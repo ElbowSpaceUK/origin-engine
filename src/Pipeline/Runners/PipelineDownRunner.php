@@ -1,9 +1,11 @@
 <?php
 
-namespace OriginEngine\Pipeline;
+namespace OriginEngine\Pipeline\Runners;
 
 use OriginEngine\Helpers\IO\IO;
 use OriginEngine\Helpers\Directory\Directory;
+use OriginEngine\Pipeline\Pipeline;
+use OriginEngine\Pipeline\PipelineHistory;
 
 class PipelineDownRunner implements \OriginEngine\Contracts\Pipeline\PipelineDownRunner
 {
