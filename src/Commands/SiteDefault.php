@@ -2,19 +2,20 @@
 
 namespace OriginEngine\Commands;
 
-use OriginEngine\Contracts\Command\Command;
 use OriginEngine\Contracts\Command\SiteCommand;
-use OriginEngine\Contracts\Site\SiteResolver;
 use OriginEngine\Helpers\IO\IO;
+use OriginEngine\Pipeline\RunsPipelines;
 
-class SiteUse extends SiteCommand
+class SiteDefault extends SiteCommand
 {
+    use RunsPipelines;
+
     /**
      * The signature of the command.
      *
      * @var string
      */
-    protected $signature = 'site:use';
+    protected $signature = 'site:default';
 
     /**
      * The description of the command.
@@ -28,13 +29,17 @@ class SiteUse extends SiteCommand
      *
      * @return mixed
      */
-    public function handle(SiteResolver $siteResolver)
+    public function handle()
     {
         $site = $this->getSite('Which site would you like to use by default?');
 
-        IO::info('Switching default site to ' . $site->getName() . '.');
+        $history = $this->runPipeline(new \OriginEngine\Commands\Pipelines\SetDefaultSite($site), $site->getDirectory());
 
-        $siteResolver->setSite($site);
+        if($history->allSuccessful()) {
+            IO::success('Default site changed');
+        } else {
+            IO::error('Could not change default site');
+        }
 
     }
 

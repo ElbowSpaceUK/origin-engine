@@ -2,6 +2,7 @@
 
 namespace OriginEngine\Commands;
 
+use OriginEngine\Commands\Pipelines\NewSite;
 use OriginEngine\Contracts\Command\Command;
 use OriginEngine\Contracts\Pipeline\PipelineRunner;
 use OriginEngine\Contracts\Site\SiteBlueprintStore;
@@ -11,10 +12,13 @@ use OriginEngine\Helpers\Directory\Directory;
 use OriginEngine\Pipeline\PipelineConfig;
 use OriginEngine\Pipeline\PipelineModifier;
 use Illuminate\Support\Str;
+use OriginEngine\Pipeline\RunsPipelines;
 use OriginEngine\Site\SiteBlueprint;
 
 class SiteNew extends Command
 {
+    use RunsPipelines;
+
     /**
      * The signature of the command.
      *
@@ -40,22 +44,18 @@ class SiteNew extends Command
 
     protected $directory = null;
 
-    protected bool $usePipelines = true;
-
     /**
      * Execute the console command.
      *
      * @return mixed
      */
-    public function handle(SiteBlueprintStore $blueprintStore, SiteRepository $siteRepository, PipelineRunner $runner)
+    public function handle(SiteBlueprintStore $blueprintStore, SiteRepository $siteRepository)
     {
         $this->siteRepository = $siteRepository;
-        $this->info('Creating a new site');
 
         $name = $this->getSiteName();
         $directory = $this->getDirectory($name);
         $description = $this->getSiteDescription();
-
         $workingDirectory = Directory::fromDirectory($directory);
 
         $blueprintAlias = $this->getOrAskForOption(
@@ -68,16 +68,11 @@ class SiteNew extends Command
         );
         $blueprint = $blueprintStore->get($blueprintAlias);
 
-        $response = $runner->run($blueprint->getInstallationPipeline(), $this->getPipelineConfig(), $workingDirectory);
+
+        $response = $this->runPipeline(new NewSite($name, $description, $blueprintAlias), $workingDirectory);
 
         if($response->allSuccessful()) {
             $this->getOutput()->success(sprintf('Installed a new instance of %s.', $blueprint->name()));
-            $this->siteRepository->create(
-                $directory,
-                $name,
-                $description,
-                $blueprintAlias
-            );
         } else {
             $this->getOutput()->error(sprintf('Installation of %s failed.', $blueprint->name()));
         }

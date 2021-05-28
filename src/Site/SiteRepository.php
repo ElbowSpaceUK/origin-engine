@@ -62,6 +62,12 @@ class SiteRepository implements \OriginEngine\Contracts\Site\SiteRepository
         $site->delete();
     }
 
+    public function restore(int $id): void
+    {
+        $site = InstalledSite::onlyTrashed()->findOrFail($id);
+        $site->restore();
+    }
+
     public function directoryExists(string $directory): bool
     {
         return InstalledSite::where('directory', $directory)->count() > 0;

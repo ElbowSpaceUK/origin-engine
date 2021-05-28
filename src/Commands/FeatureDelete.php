@@ -2,7 +2,7 @@
 
 namespace OriginEngine\Commands;
 
-use OriginEngine\Contracts\Command\Command;
+use OriginEngine\Commands\Pipelines\DeleteFeature;
 use OriginEngine\Contracts\Command\FeatureCommand;
 use OriginEngine\Contracts\Feature\FeatureRepository;
 use OriginEngine\Helpers\IO\IO;
@@ -35,13 +35,11 @@ class FeatureDelete extends FeatureCommand
     {
         $feature = $this->getFeature('Which feature would you like to delete?');
 
-        if($feature->getSite()->hasCurrentFeature() && $feature->getSite()->getCurrentFeature()->is($feature)) {
-            $this->call(SiteReset::class, ['--site' => $feature->getSite()->getId()]);
+        $history = $this->runPipeline(new DeleteFeature($feature), $feature->getSite()->getDirectory());
+
+        if($history->allSuccessful()) {
+            IO::success('Feature deleted');
         }
-
-        $featureRepository->delete($feature->getId());
-
-        IO::success('Feature deleted');
     }
 
 }

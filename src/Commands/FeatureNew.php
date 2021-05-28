@@ -2,21 +2,18 @@
 
 namespace OriginEngine\Commands;
 
+use OriginEngine\Commands\Pipelines\NewFeature;
 use OriginEngine\Contracts\Command\SiteCommand;
-use OriginEngine\Contracts\Feature\FeatureRepository;
-use OriginEngine\Contracts\Feature\FeatureResolver;
 use OriginEngine\Contracts\Site\SiteRepository;
 use OriginEngine\Feature\Feature;
-use OriginEngine\Helpers\IO\IO;
 use OriginEngine\Helpers\Directory\Directory;
-use OriginEngine\Pipeline\PipelineModifier;
 use Cz\Git\GitException;
 use Cz\Git\GitRepository;
-use Illuminate\Support\Str;
-use OriginEngine\Contracts\Command\Command;
+use OriginEngine\Pipeline\RunsPipelines;
 
 class FeatureNew extends SiteCommand
 {
+    use RunsPipelines;
     /**
      * The signature of the command.
      *
@@ -35,45 +32,26 @@ class FeatureNew extends SiteCommand
      */
     protected $description = 'Create a new feature in a site.';
 
-
-    /**
-     * @var SiteRepository
-     */
-    protected $siteRepository;
-
     /**
      * Execute the console command.
      *
      * @return mixed
      */
-    public function handle(FeatureRepository $featureRepository, FeatureResolver $featureResolver)
+    public function handle()
     {
-        $this->info('Creating a new feature');
-
         $site = $this->getSite('Which site would you like to create the feature on?');
+
         $featureName = trim($this->getFeatureName());
         $featureDescription = trim($this->getFeatureDescription());
         $featureType = trim($this->getFeatureChangeType());
-
         $branchName = $this->getOrAskForOption(
             'branch',
             fn() => $this->ask('What should we name the branch?', Feature::getDefaultBranchName($featureType, $featureName)),
             fn($value) => $value && strlen($value) > 0
         );
 
-        $feature = $featureRepository->create(
-            $site->getId(),
-            $featureName,
-            $featureDescription,
-            $featureType,
-            $branchName
-        );
+        $history = $this->runPipeline(new NewFeature($site, $featureName, $featureDescription, $featureType, $branchName), $site->getDirectory());
 
-        $this->info('Setting up new feature');
-
-        $this->call(FeatureUse::class, ['--feature' => $feature->getId()]);
-
-        $this->getOutput()->success(sprintf('Created feature [%s].', $featureName));
     }
 
     private function getFeatureName(): string
@@ -88,9 +66,9 @@ class FeatureNew extends SiteCommand
     private function getFeatureDescription(): string
     {
         return $this->getOrAskForOption(
-            'name',
-            fn() => $this->ask('Describe what this feature will do'),
-            fn($value) => $value && is_string($value) && strlen($value) < 250
+            'description',
+            fn() => $this->ask('Describe what this feature will do', ''),
+            fn($value) => $value === '' || ($value && is_string($value) && strlen($value) < 250)
         );
     }
 
@@ -113,17 +91,6 @@ class FeatureNew extends SiteCommand
             ),
             fn($value) => $value && in_array($value, array_keys($allowedTypes))
         );
-    }
-
-    private function checkoutBranch(string $branchName, Directory $path)
-    {
-        $git = new GitRepository($path->path());
-        try {
-            $git->checkout($branchName);
-        } catch (GitException $e) {
-            $git->createBranch($branchName, true);
-        }
-        return true;
     }
 
 }

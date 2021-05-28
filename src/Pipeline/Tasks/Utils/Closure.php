@@ -1,6 +1,6 @@
 <?php
 
-namespace OriginEngine\Pipeline\Tasks;
+namespace OriginEngine\Pipeline\Tasks\Utils;
 
 use Illuminate\Support\Collection;
 use OriginEngine\Helpers\Directory\Directory;

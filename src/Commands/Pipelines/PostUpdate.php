@@ -35,7 +35,7 @@ class PostUpdate extends Pipeline
         });
     }
 
-    public function getTasks(): array
+    public function tasks(): array
     {
         return [
             'create-database-directory' => new CreateDirectory(Filesystem::database(), false),

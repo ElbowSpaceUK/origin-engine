@@ -24,12 +24,12 @@ class NormalPipelineRunner implements PipelineRunnerContract
     {
         $pipeline->addGlobalEvent(Pipeline::BEFORE_EVENT, function(PipelineConfig $config, PipelineHistory $history, string $taskKey) use ($pipeline) {
             $task = $pipeline->getTask($taskKey);
-            IO::info('Running task ' . $task->getUpName(collect($config->getAll($taskKey))));
+            IO::task('Running task ' . $task->getUpName(collect($config->getAll($taskKey))), fn() => '');
         });
 
         $pipeline->addGlobalEvent(Pipeline::BEFORE_DOWN_EVENT, function(PipelineHistory $history, string $taskKey) use ($pipeline) {
             $task = $pipeline->getTask($taskKey);
-            IO::info(sprintf('Undoing Task: %s' , $task->getDownName($history->getConfig($taskKey))));
+            IO::task(sprintf('Undoing Task: %s' , $task->getDownName($history->getConfig($taskKey))), fn() => '');
         });
 
         return $this->baseRunner->run($pipeline, $config, $workingDirectory);

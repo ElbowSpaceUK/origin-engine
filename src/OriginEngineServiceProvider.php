@@ -2,6 +2,7 @@
 
 namespace OriginEngine;
 
+use OriginEngine\Commands\FeatureClear;
 use OriginEngine\Commands\FeatureDefault;
 use OriginEngine\Commands\FeatureDelete;
 use OriginEngine\Commands\FeatureList;
@@ -9,6 +10,7 @@ use OriginEngine\Commands\FeatureNew;
 use OriginEngine\Commands\FeatureUse;
 use OriginEngine\Commands\PostUpdate;
 use OriginEngine\Commands\SiteClear;
+use OriginEngine\Commands\SiteDefault;
 use OriginEngine\Commands\SiteDelete;
 use OriginEngine\Commands\SiteDown;
 use OriginEngine\Commands\SiteList;
@@ -42,8 +44,6 @@ use OriginEngine\Pipeline\Runners\PipelineDownRunner;
 use OriginEngine\Pipeline\PipelineModifier;
 use OriginEngine\Helpers\Settings\SettingRepository;
 use OriginEngine\Pipeline\Runners\PipelineRunner;
-use OriginEngine\Plugins\Dependencies\Contracts\LocalPackageRepository as LocalPackageRepositoryContract;
-use OriginEngine\Plugins\Dependencies\LocalPackageDatabaseRepository;
 use OriginEngine\Site\SettingsSiteResolver;
 use OriginEngine\Site\SiteBlueprintStore;
 use OriginEngine\Site\SiteRepository;
@@ -70,7 +70,6 @@ class OriginEngineServiceProvider extends ServiceProvider
             FeatureList::class,
             FeatureNew::class,
             FeatureUse::class,
-            FeatureDefault::class,
             PostUpdate::class,
             SiteClear::class,
             SiteDelete::class,
@@ -80,7 +79,7 @@ class OriginEngineServiceProvider extends ServiceProvider
             SitePrune::class,
             SiteReset::class,
             SiteUp::class,
-            SiteUse::class,
+            SiteDefault::class
         ], $config->get('commands.add', [])));
         $config->set('commands.hidden', array_merge([
             \NunoMaduro\LaravelConsoleSummary\SummaryCommand::class,

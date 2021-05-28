@@ -30,6 +30,11 @@ class Directory
         );
     }
 
+    public function getPathBasename(): string
+    {
+        return basename($this->path());
+    }
+
     /**
      * @deprecated
      * @param Site $site

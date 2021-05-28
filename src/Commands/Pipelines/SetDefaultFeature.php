@@ -4,9 +4,9 @@ namespace OriginEngine\Commands\Pipelines;
 
 use OriginEngine\Feature\Feature;
 use OriginEngine\Pipeline\Pipeline;
-use OriginEngine\Pipeline\Tasks\Feature\SetDefaultFeature;
+use OriginEngine\Pipeline\Tasks\Feature\SetDefaultFeature as SetDefaultFeatureTask;
 
-class FeatureDefault extends Pipeline
+class SetDefaultFeature extends Pipeline
 {
 
     private Feature $feature;
@@ -16,10 +16,10 @@ class FeatureDefault extends Pipeline
         $this->feature = $feature;
     }
 
-    public function getTasks(): array
+    public function tasks(): array
     {
         return [
-            'set-default-feature' => new SetDefaultFeature($this->feature)
+            'set-default-feature' => new SetDefaultFeatureTask($this->feature)
         ];
     }
 

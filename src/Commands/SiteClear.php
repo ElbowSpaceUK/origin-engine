@@ -2,12 +2,17 @@
 
 namespace OriginEngine\Commands;
 
+use OriginEngine\Commands\Pipelines\ClearDefaultSite;
 use OriginEngine\Contracts\Command\Command;
 use OriginEngine\Contracts\Site\SiteResolver;
+use OriginEngine\Helpers\Directory\Directory;
 use OriginEngine\Helpers\IO\IO;
+use OriginEngine\Pipeline\RunsPipelines;
 
 class SiteClear extends Command
 {
+    use RunsPipelines;
+
     /**
      * The signature of the command.
      *
@@ -27,13 +32,9 @@ class SiteClear extends Command
      *
      * @return mixed
      */
-    public function handle(SiteResolver $siteResolver)
+    public function handle()
     {
-        IO::info('Clearing default site.');
-
-        if($siteResolver->hasSite()) {
-            $siteResolver->clearSite();
-        }
+        $this->runPipeline(new ClearDefaultSite(), Directory::fromFullPath(sys_get_temp_dir()));
     }
 
 }

@@ -23,4 +23,7 @@ interface SiteRepository
     public function getByDirectory(string $directory): Site;
 
     public function delete(int $id): void;
+
+    public function restore(int $id): void;
+
 }

@@ -2,18 +2,11 @@
 
 namespace OriginEngine\Commands;
 
-use OriginEngine\Commands\Pipelines\SiteReset as SiteResetPipeline;
-use OriginEngine\Contracts\Command\Command;
+use OriginEngine\Commands\Pipelines\ResetSite as SiteResetPipeline;
 use OriginEngine\Contracts\Command\SiteCommand;
 use OriginEngine\Contracts\Feature\FeatureResolver;
-use OriginEngine\Helpers\IO\IO;
-use OriginEngine\Helpers\Directory\Directory;
 use OriginEngine\Pipeline\RunsPipelines;
-use OriginEngine\Plugins\Dependencies\LocalPackage;
 use OriginEngine\Plugins\Dependencies\LocalPackageHelper;
-use Cz\Git\GitException;
-use Cz\Git\GitRepository;
-use OriginEngine\Plugins\Dependencies\Contracts\LocalPackageRepository;
 
 class SiteReset extends SiteCommand
 {
@@ -24,8 +17,7 @@ class SiteReset extends SiteCommand
      *
      * @var string
      */
-    protected $signature = 'site:reset
-                            {--B|branch= : The name of the branch to check out}';
+    protected $signature = 'site:reset';
 
     /**
      * The description of the command.
@@ -42,7 +34,8 @@ class SiteReset extends SiteCommand
     public function handle(FeatureResolver $featureResolver, LocalPackageHelper $localPackageHelper)
     {
         $site = $this->getSite('Which site would you like to reset?');
-        $this->runPipeline(new SiteResetPipeline(), $site->getDirectory());
+
+        $this->runPipeline(new SiteResetPipeline($site), $site->getDirectory());
     }
 
 }

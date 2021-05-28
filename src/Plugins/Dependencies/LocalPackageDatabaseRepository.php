@@ -14,6 +14,6 @@ class LocalPackageDatabaseRepository implements LocalPackageRepository
 
     public function getAllThroughFeature(int $featureId): array
     {
-        return LocalPackage::where('parent_feature_id', $featureId)->get()->toArray();
+        return LocalPackage::where('parent_feature_id', $featureId)->get()->all();
     }
 }

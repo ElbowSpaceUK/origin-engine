@@ -16,14 +16,6 @@ class LocalPackage extends Model
         'name', 'url', 'type', 'original_version', 'feature_id', 'parent_feature_id'
     ];
 
-    protected static function booted()
-    {
-        // TODO Bind event to feature
-        static::deleting(fn(Feature $feature) => $feature->getLocalPackages()->each(function($package){
-            $package->delete();
-        }));
-    }
-
     public function feature()
     {
         return $this->belongsTo(Feature::class);

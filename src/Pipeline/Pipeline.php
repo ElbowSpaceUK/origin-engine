@@ -13,10 +13,51 @@ abstract class Pipeline
 
     private string $alias = self::class;
 
+    private array $afterTasks = [];
+
+    private array $beforeTasks = [];
+
+
     /**
      * @return array|Task[]
      */
-    abstract public function getTasks(): array;
+    abstract protected function tasks(): array;
+
+    public function getTasks(): array
+    {
+        $tasks = [];
+        $defaultTasks = $this->tasks();
+        foreach($defaultTasks as $defaultTaskKeyLoop => $taskLoop) {
+            if(array_key_exists($defaultTaskKeyLoop, $this->beforeTasks)) {
+                foreach($this->beforeTasks[$defaultTaskKeyLoop] as $newTaskKey => $newTask) {
+                    $tasks[$newTaskKey] = $newTask;
+                }
+            }
+            $tasks[$defaultTaskKeyLoop] = $taskLoop;
+            if(array_key_exists($defaultTaskKeyLoop, $this->afterTasks)) {
+                foreach($this->afterTasks[$defaultTaskKeyLoop] as $newTaskKey => $newTask) {
+                    $tasks[$newTaskKey] = $newTask;
+                }
+            }
+        }
+        return $tasks;
+    }
+
+    public function runTaskAfter(string $after, string $taskName, Task $task)
+    {
+        if(!array_key_exists($after, $this->afterTasks)) {
+            $this->afterTasks[$after] = [];
+        }
+        $this->afterTasks[$after][$taskName] = $task;
+    }
+
+    public function runTaskBefore(string $before, string $taskName, Task $task)
+    {
+        if(!array_key_exists($before, $this->beforeTasks)) {
+            $this->beforeTasks[$before] = [];
+        }
+        $this->beforeTasks[$before][$taskName] = $task;
+    }
 
     public function getAlias(): string
     {

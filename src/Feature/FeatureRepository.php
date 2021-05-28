@@ -14,7 +14,7 @@ class FeatureRepository implements FeatureRepositoryContract
         return Feature::all();
     }
 
-    public function create(int $siteId, string $name, string $description, string $type, string $branch): Feature
+    public function create(int $siteId, string $name, ?string $description, string $type, string $branch): Feature
     {
         $feature = new Feature();
 
@@ -53,6 +53,12 @@ class FeatureRepository implements FeatureRepositoryContract
     {
         $feature = $this->getById($id);
         $feature->delete();
+    }
+
+    public function restore(int $id): void
+    {
+        $feature = Feature::onlyTrashed()->findOrFail($id);
+        $feature->restore();
     }
 
 }

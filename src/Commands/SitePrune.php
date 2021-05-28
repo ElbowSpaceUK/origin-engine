@@ -2,13 +2,16 @@
 
 namespace OriginEngine\Commands;
 
+use OriginEngine\Commands\Pipelines\PruneDatabase;
 use OriginEngine\Contracts\Site\SiteRepository;
-use OriginEngine\Helpers\IO\IO;
+use OriginEngine\Helpers\Directory\Directory;
 use OriginEngine\Contracts\Command\Command;
-use OriginEngine\Site\Site;
+use OriginEngine\Pipeline\RunsPipelines;
 
 class SitePrune extends Command
 {
+    use RunsPipelines;
+
     /**
      * The signature of the command.
      *
@@ -21,7 +24,7 @@ class SitePrune extends Command
      *
      * @var string
      */
-    protected $description = 'Remove all sites that are missing in the project directory.';
+    protected $description = 'Prune your installation to tidy up any corrupted data.';
 
     /**
      * Execute the console command.
@@ -30,17 +33,9 @@ class SitePrune extends Command
      */
     public function handle(SiteRepository $siteRepository)
     {
-        $sites = $siteRepository->all();
-        if(count($sites) > 0) {
-            foreach($sites as $site) {
-                if($site->getStatus() === Site::STATUS_MISSING) {
-                    $siteRepository->delete($site->getId());
-                    IO::info(sprintf('Cleared site %s', $site->name));
-                }
-            }
-        } else {
-            IO::info('No sites need pruning.');
-        }
+        $sites = $siteRepository->all()->toArray();
+
+        $this->runPipeline(new PruneDatabase($sites), Directory::fromFullPath(sys_get_temp_dir()));
     }
 
 }

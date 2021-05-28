@@ -9,10 +9,13 @@ use OriginEngine\Contracts\Site\SiteRepository;
 use OriginEngine\Helpers\IO\IO;
 use OriginEngine\Helpers\Terminal\Executor;
 use OriginEngine\Helpers\Directory\Directory;
+use OriginEngine\Pipeline\RunsPipelines;
 use OriginEngine\Site\Site;
 
 class SiteUp extends SiteCommand
 {
+    use RunsPipelines;
+
     /**
      * The signature of the command.
      *
@@ -34,19 +37,15 @@ class SiteUp extends SiteCommand
      *
      * @return mixed
      */
-    public function handle(PipelineRunner $pipelineRunner, SiteRepository $siteRepository)
+    public function handle(SiteRepository $siteRepository)
     {
         $site = $this->getSite(
             'Which site would you like to turn on?',
             $siteRepository->all()->filter(fn(Site $site) => $site->getStatus() === Site::STATUS_DOWN)->toArray()
         );
-
-        IO::info('Turning on site.');
-
-        $history = $pipelineRunner->run($site->getBlueprint()->getSiteUpPipeline(), $this->getPipelineConfig(), $site->getDirectory());
+        $history = $this->runPipeline($site->getBlueprint()->getSiteUpPipeline(), $site->getDirectory());
 
         IO::success('Turned on site.');
-
     }
 
 }
