@@ -20,6 +20,11 @@ class PipelineRunner implements \OriginEngine\Contracts\Pipeline\PipelineRunner
         $config = $this->gatherConfiguration($pipeline, $config);
 
         foreach($tasks as $key => $task) {
+            if($task instanceof \Closure) {
+                dd('CLOSURE?');
+                $task = $task();
+            }
+
             foreach($pipeline->getBeforeEvents($key) as $event) {
                 $result = $event($config, $history, $key);
                 if($result === false) {
