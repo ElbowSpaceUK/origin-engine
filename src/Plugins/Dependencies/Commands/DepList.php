@@ -32,7 +32,7 @@ class DepList extends FeatureCommand
     public function handle()
     {
         $feature = $this->getFeature('Which feature would you like to see the local packages for?');
-        $packages = app(LocalPackageRepository::class)->getAllThroughFeature($feature->getId());
+        $packages = collect(app(LocalPackageRepository::class)->getAllThroughFeature($feature->getId()));
 
         $this->table(
             ['ID', 'Name', 'URL', 'Type', 'Version'],

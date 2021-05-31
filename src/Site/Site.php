@@ -2,6 +2,8 @@
 
 namespace OriginEngine\Site;
 
+use OriginEngine\Contracts\Feature\FeatureRepository;
+use OriginEngine\Contracts\Feature\FeatureResolver;
 use OriginEngine\Contracts\Site\SiteResolver;
 use OriginEngine\Feature\Feature;
 use OriginEngine\Helpers\Env\EnvRepository;
@@ -114,22 +116,17 @@ class Site
 
     public function hasCurrentFeature(): bool
     {
-        return $this->getCurrentFeature() !== null;
+        return app(FeatureResolver::class)->hasFeature($this);
     }
 
     public function getCurrentFeature(): ?Feature
     {
-        return $this->getModel()->currentFeature;
+        return app(FeatureResolver::class)->getFeature($this);
     }
 
     public function features()
     {
-        return $this->hasMany(Feature::class);
-    }
-
-    public function currentFeature()
-    {
-        return $this->hasOne(Feature::class, 'id', 'current_feature_id');
+        return app(FeatureRepository::class)->getFeature($this);
     }
 
 }

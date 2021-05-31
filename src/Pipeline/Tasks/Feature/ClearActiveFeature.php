@@ -4,37 +4,35 @@ namespace OriginEngine\Pipeline\Tasks\Feature;
 
 use Illuminate\Support\Collection;
 use OriginEngine\Contracts\Feature\FeatureResolver;
-use OriginEngine\Feature\Feature;
 use OriginEngine\Helpers\Directory\Directory;
 use OriginEngine\Pipeline\Task;
-use OriginEngine\Helpers\Storage\Filesystem;
 use OriginEngine\Pipeline\TaskResponse;
+use OriginEngine\Site\Site;
 
-class SetDefaultFeature extends Task
+class ClearActiveFeature extends Task
 {
 
-    public function __construct(Feature $feature)
+    public function __construct(Site $site)
     {
         parent::__construct([
-            'feature' => $feature
+            'site' => $site
         ]);
     }
 
     protected function execute(Directory $workingDirectory, Collection $config): TaskResponse
     {
-        $feature = $config->get('feature');
-        $this->writeInfo(sprintf('Setting default feature to ID %u', $feature->getId()));
+        $this->writeInfo('Clearing the active feature');
 
         $featureResolver = app(FeatureResolver::class);
-        $oldFeature = ($featureResolver->hasFeature() ? $featureResolver->getFeature() : null );
+        $oldFeature = ($featureResolver->hasFeature($config->get('site')) ? $featureResolver->getFeature($config->get('site')) : null );
         $this->export('old-feature', $oldFeature);
         if($oldFeature === null) {
-            $this->writeDebug('No feature is currently the default');
+            $this->writeDebug('No feature is currently the active');
         } else {
-            $this->writeDebug(sprintf('The default feature had an ID of %u', $oldFeature->getId()));
+            $this->writeDebug(sprintf('The active feature had an ID of %u', $oldFeature->getId()));
         }
 
-        app(FeatureResolver::class)->setFeature($feature);
+        app(FeatureResolver::class)->clearFeature($config->get('site'));
 
         return $this->succeeded();
     }
@@ -45,7 +43,7 @@ class SetDefaultFeature extends Task
         $feature = $config->get('old-feature', null);
 
         if($feature === null) {
-            $featureResolver->clearFeature();
+            $featureResolver->clearFeature($config->get('site'));
         } else {
             app(FeatureResolver::class)->setFeature($config->get('old-feature'));
         }
@@ -53,11 +51,11 @@ class SetDefaultFeature extends Task
 
     protected function upName(Collection $config): string
     {
-        return 'Changing default feature';
+        return 'Clearing active feature';
     }
 
     protected function downName(Collection $config): string
     {
-        return 'Reverting default feature';
+        return 'Clearing active feature';
     }
 }

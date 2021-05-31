@@ -4,6 +4,7 @@ namespace OriginEngine\Plugins\Dependencies\Commands;
 
 use OriginEngine\Contracts\Command\Command;
 use OriginEngine\Contracts\Command\FeatureCommand;
+use OriginEngine\Contracts\Command\SiteCommand;
 use OriginEngine\Contracts\Feature\FeatureRepository;
 use OriginEngine\Contracts\Site\SiteRepository;
 use OriginEngine\Feature\Feature;
@@ -15,14 +16,17 @@ use OriginEngine\Helpers\Composer\Schema\Schema\ComposerSchema;
 use OriginEngine\Helpers\IO\IO;
 use OriginEngine\Helpers\Storage\Filesystem;
 use OriginEngine\Helpers\Directory\Directory;
+use OriginEngine\Pipeline\RunsPipelines;
+use OriginEngine\Plugins\Dependencies\Commands\Pipelines\MakeDependencyLocal;
 use OriginEngine\Plugins\Dependencies\LocalPackage;
 use OriginEngine\Plugins\Dependencies\LocalPackageHelper;
 use OriginEngine\Site\Site;
 use Cz\Git\GitException;
 use Cz\Git\GitRepository;
 
-class DepLocal extends FeatureCommand
+class DepLocal extends SiteCommand
 {
+    use RunsPipelines;
 
     /**
      * The signature of the command.
@@ -46,10 +50,14 @@ class DepLocal extends FeatureCommand
      *
      * @return mixed
      */
-    public function handle(SiteRepository $siteRepository, FeatureRepository $featureRepository)
+    public function handle()
     {
-        $feature = $this->getFeature('Which feature should this be done against?');
-        $site = $feature->getSite();
+        $site = $this->getSite('For which site should the dependency be installed locally?');
+
+        if(!$site->hasCurrentFeature()) {
+            throw new \Exception('No feature is currently active');
+        }
+        $feature = $site->getCurrentFeature();
 
         $workingDirectory = $site->getDirectory();
 
@@ -71,59 +79,16 @@ class DepLocal extends FeatureCommand
             fn($value) => $value && strlen($value) > 0
         );
 
-        IO::info(sprintf('Converting %s into a local package.', $package));
-
-        $localPackageFeature = $featureRepository->create(
-            $site->getId(),
-            sprintf('%s (%s)', $feature->getName(), $package),
-            sprintf('%s (for %s)', $feature->getDescription(), $package),
-            $feature->getType(),
+        $history = $this->runPipeline(new MakeDependencyLocal(
+            $package,
+            $repositoryUrl,
+            $feature,
             $branchName
-        );
+        ), $workingDirectory);
 
-        $localPackage = LocalPackage::create([
-            'name' => $package,
-            'url' => $repositoryUrl,
-            'type' => $this->getDependencyType($workingDirectory, $package),
-            'original_version' => $this->getCurrentVersionConstraint($workingDirectory, $package),
-            'feature_id' => $localPackageFeature->getId(),
-            'parent_feature_id' => $feature->getId(),
-        ]);
+        dd($history);
 
-        $this->task('Storing project state', fn() => $localPackage);
         (new LocalPackageHelper())->makeLocal($localPackage, $workingDirectory);
-
-        IO::success(sprintf('Module %s is now installed.', $package));
-    }
-
-
-
-    private function getDependencyType(Directory $workingDirectory, string $package): string
-    {
-        $reader = ComposerReader::for($workingDirectory);
-        if($reader->isDependency($package, true)) {
-            return 'direct';
-        } elseif($reader->isInstalled($package)) {
-            return 'indirect';
-        }
-        return 'none';
-    }
-
-    private function getCurrentVersionConstraint(Directory $workingDirectory, string $package, string $filename = 'composer.json'): ?string
-    {
-        /** @var ComposerSchema $composer */
-        $composer = app(ComposerRepository::class)->get($workingDirectory, $filename);
-        foreach($composer->getRequire() as $packageSchema) {
-            if($packageSchema->getName() === $package) {
-                return $packageSchema->getVersion();
-            }
-        }
-        foreach($composer->getRequireDev() as $packageSchema) {
-            if($packageSchema->getName() === $package) {
-                return $packageSchema->getVersion();
-            }
-        }
-        return null;
     }
 
 }

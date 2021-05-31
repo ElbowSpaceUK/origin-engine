@@ -5,6 +5,7 @@ namespace OriginEngine\Pipeline;
 use Illuminate\Support\Collection;
 use OriginEngine\Helpers\IO\IO;
 use OriginEngine\Helpers\Directory\Directory;
+use OriginEngine\Helpers\Storage\Filesystem;
 
 abstract class Task
 {
@@ -16,6 +17,8 @@ abstract class Task
 
     private string $downName;
 
+    private string $relativeDirectory;
+
     public function __construct(array $defaultConfiguration = [])
     {
         $this->defaultConfiguration = $defaultConfiguration;
@@ -24,7 +27,10 @@ abstract class Task
     public function run(Directory $workingDirectory, Collection $config): TaskResponse
     {
         try {
-            return $this->execute($workingDirectory, $config);
+            return $this->execute(
+                $this->getWorkingDirectory($workingDirectory),
+                $config
+            );
         } catch (\Exception $e) {
             $this->writeError(sprintf('[%s] at %s, line %u', $e->getMessage(), $e->getFile(), $e->getCode()));
             $this->writeDebug($e->getTraceAsString());
@@ -35,7 +41,7 @@ abstract class Task
     public function reverse(Directory $workingDirectory, bool $status, Collection $config, Collection $output): void
     {
         try {
-            $this->undo($workingDirectory, $status, $config, $output);
+            $this->undo($this->getWorkingDirectory($workingDirectory), $status, $config, $output);
         } catch (\Exception $e) {
             IO::error($e->getMessage());
         }
@@ -82,6 +88,24 @@ abstract class Task
             return $this->downName;
         }
         return $this->downName($config);
+    }
+
+    public function inRelativeDirectory(string $path)
+    {
+        $this->relativeDirectory = $path;
+    }
+
+    private function getWorkingDirectory(Directory $workingDirectory): Directory
+    {
+        if(isset($this->relativeDirectory)) {
+            return Directory::fromFullPath(
+                Filesystem::append(
+                    $workingDirectory->path(),
+                    $this->relativeDirectory
+                )
+            );
+        }
+        return $workingDirectory;
     }
 
 }

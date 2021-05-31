@@ -31,7 +31,7 @@ use OriginEngine\Contracts\Site\SiteRepository as SiteRepositoryContract;
 use OriginEngine\Contracts\Helpers\Settings\SettingRepository as SettingRepositoryContract;
 use OriginEngine\Contracts\Site\SiteResolver;
 use OriginEngine\Feature\FeatureRepository;
-use OriginEngine\Feature\SiteFeatureResolver;
+use OriginEngine\Feature\ActiveFeatureResolver;
 use OriginEngine\Helpers\Composer\Operations\StandardOperationManager;
 use OriginEngine\Helpers\IO\IO;
 use OriginEngine\Helpers\Port\FSockOpenPortChecker;
@@ -160,7 +160,7 @@ class OriginEngineServiceProvider extends ServiceProvider
         $this->app->bind(OperationManagerContract::class, StandardOperationManager::class);
         $this->app->bind(FeatureRepositoryContract::class, FeatureRepository::class);
 
-        $this->app->bind(FeatureResolver::class, SiteFeatureResolver::class);
+        $this->app->bind(FeatureResolver::class, ActiveFeatureResolver::class);
         $this->app->bind(SiteResolver::class, SettingsSiteResolver::class);
 
         $this->app->singleton(SiteBlueprintStoreContract::class, SiteBlueprintStore::class);

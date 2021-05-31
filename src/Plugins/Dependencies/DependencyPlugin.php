@@ -43,8 +43,8 @@ class DependencyPlugin extends Plugin
                 $repo = app(LocalPackageRepositoryContract::class);
                 foreach($repo->getAllThroughFeature($pipeline->feature->getId()) as $localPackage) {
                     $pipeline->runTaskBefore('reset-site', 'set-local-dependencies-' . $localPackage->getName(), new Closure(
-                        fn(Collection $config, Directory $directory) => (new LocalPackageHelper())->makeLocal($localPackage, $directory),
-                        fn(Collection $config, Directory $directory) => (new LocalPackageHelper())->makeRemote($localPackage, $directory),
+                        fn(Directory $directory, Collection $config) => (new LocalPackageHelper())->makeLocal($localPackage, $directory),
+                        fn(Directory $directory, Collection $config) => (new LocalPackageHelper())->makeRemote($localPackage, $directory),
                     ));
                 }
             }
@@ -55,8 +55,8 @@ class DependencyPlugin extends Plugin
                 $repo = app(LocalPackageRepositoryContract::class);
                 foreach($repo->getAllThroughFeature($pipeline->site->getCurrentFeature()->getId()) as $localPackage) {
                     $pipeline->runTaskBefore('checkout-branch', 'remove-local-dependencies-' . $localPackage->getName(), new Closure(
-                        fn(Collection $config, Directory $directory) => (new LocalPackageHelper())->makeRemote($localPackage, $directory),
-                        fn(Collection $config, Directory $directory) => (new LocalPackageHelper())->makeLocal($localPackage, $directory)
+                        fn(Directory $directory, Collection $config) => (new LocalPackageHelper())->makeRemote($localPackage, $directory),
+                        fn(Directory $directory, Collection $config) => (new LocalPackageHelper())->makeLocal($localPackage, $directory)
                     ));
                 }
             }

@@ -23,9 +23,9 @@ class ComposerRunner
 
     public function update()
     {
-        $this->composer(
+        return $this->composer(
             sprintf(
-                'update --working-dir %s --quiet --no-interaction --ansi',
+                'update --working-dir %s --no-interaction --ansi',
                 $this->workingDirectory->path()
             )
         );
@@ -35,7 +35,7 @@ class ComposerRunner
     {
         return $this->composer(
             sprintf(
-                'install --working-dir %s --quiet --no-interaction --ansi',
+                'install --working-dir %s --no-interaction --ansi',
                 $this->workingDirectory->path()
             )
         );

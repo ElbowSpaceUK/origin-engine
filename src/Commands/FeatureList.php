@@ -30,13 +30,17 @@ class FeatureList extends Command
     public function handle(FeatureRepository $featureRepository)
     {
         $features = $featureRepository->all();
-        $currentFeature = Feature::current();
 
         $this->table(
             ['', 'ID', 'Name', 'Description', 'Type', 'Site'],
-            $features->map(function(Feature $feature) use ($currentFeature) {
+            $features->map(function(Feature $feature) {
+                try {
+                    $currentFeature = $feature->getSite()->getCurrentFeature();
+                } catch (\Exception $e) {
+                    $currentFeature = null;
+                }
                 return [
-                    ($currentFeature !== null && $currentFeature->is($feature) ? '*' : ''),
+                    ($currentFeature && $currentFeature->is($feature) ? '*' : ''),
                     $feature->getId(),
                     $feature->getName(),
                     $feature->getDescription(),

@@ -28,18 +28,22 @@ abstract class Pipeline
         $tasks = [];
         $defaultTasks = $this->tasks();
         foreach($defaultTasks as $defaultTaskKeyLoop => $taskLoop) {
+            // Push any tasks before this task.
             if(array_key_exists($defaultTaskKeyLoop, $this->beforeTasks)) {
                 foreach($this->beforeTasks[$defaultTaskKeyLoop] as $newTaskKey => $newTask) {
                     $tasks[$newTaskKey] = $newTask;
                 }
             }
             $tasks[$defaultTaskKeyLoop] = $taskLoop;
+
+            // Push any tasks after this task.
             if(array_key_exists($defaultTaskKeyLoop, $this->afterTasks)) {
                 foreach($this->afterTasks[$defaultTaskKeyLoop] as $newTaskKey => $newTask) {
                     $tasks[$newTaskKey] = $newTask;
                 }
             }
         }
+
         return $tasks;
     }
 

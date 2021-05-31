@@ -48,7 +48,7 @@ class InstalledSite extends Model
         return $this->blueprint;
     }
 
-    public function getCurrentFeatureId(): int
+    public function getCurrentFeatureId(): ?int
     {
         return $this->current_feature_id;
     }

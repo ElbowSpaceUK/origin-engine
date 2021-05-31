@@ -17,16 +17,11 @@ class PipelineRunner implements \OriginEngine\Contracts\Pipeline\PipelineRunner
     {
         $tasks = $pipeline->getTasks();
         $history = new PipelineHistory();
-        $config = $this->gatherConfiguration($pipeline, $config);
+        $config = $this->gatherConfiguration($config, $tasks, $pipeline->aliasedConfig());
 
         foreach($tasks as $key => $task) {
-            if($task instanceof \Closure) {
-                dd('CLOSURE?');
-                $task = $task();
-            }
-
             foreach($pipeline->getBeforeEvents($key) as $event) {
-                $result = $event($config, $history, $key);
+                $result = $event($config, $history, $key, $workingDirectory);
                 if($result === false) {
                     continue 2;
                 }
@@ -41,7 +36,7 @@ class PipelineRunner implements \OriginEngine\Contracts\Pipeline\PipelineRunner
             }
 
             foreach($pipeline->getAfterEvents($key) as $event) {
-                $event($config, $history, $key);
+                $event($config, $history, $key, $workingDirectory);
             }
         }
         return $history;
@@ -53,9 +48,9 @@ class PipelineRunner implements \OriginEngine\Contracts\Pipeline\PipelineRunner
         $downRunner->run($pipeline, $workingDirectory, $history, $startFrom);
     }
 
-    public function gatherConfiguration(Pipeline $pipeline, PipelineConfig $config): PipelineConfig
+    public function gatherConfiguration(PipelineConfig $config, array $tasks, array $aliasedConfig = []): PipelineConfig
     {
-        foreach($pipeline->getTasks() as $key => $task) {
+        foreach($tasks as $key => $task) {
             $defaultTaskConfig = $task->getDefaultConfiguration();
             foreach($defaultTaskConfig as $defaultKey => $defaultValue) {
                 if(!$config->has($key, $defaultKey)) {
@@ -63,7 +58,7 @@ class PipelineRunner implements \OriginEngine\Contracts\Pipeline\PipelineRunner
                 }
             }
         }
-        foreach($pipeline->aliasedConfig() as $alias => $realKey) {
+        foreach($aliasedConfig as $alias => $realKey) {
             foreach($config->getAliasedConfiguration() as $givenAlias => $givenValue) {
                 if($givenAlias === $alias) {
                     $config->addWithKeyInConfigName($realKey, $givenValue);

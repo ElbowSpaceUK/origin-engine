@@ -59,15 +59,15 @@ class FeatureCommand extends Command
         }
 
         // Get the feature from the default feature
-        if($this->getFeatureResolver()->hasFeature() &&  (
-                static::$confirmedFeature ||
-                IO::confirm(sprintf('This will run on feature \'%s\', is this correct?', $this->getFeatureResolver()->getFeature()->getName()), true)
-            )
-        ) {
-            $this->feature = $this->getFeatureResolver()->getFeature();
-            static::$confirmedFeature = true;
-            return $this->feature;
-        }
+//        if($this->getFeatureResolver()->hasFeature() &&  (
+//                static::$confirmedFeature ||
+//                IO::confirm(sprintf('This will run on feature \'%s\', is this correct?', $this->getFeatureResolver()->getFeature()->getName()), true)
+//            )
+//        ) {
+//            $this->feature = $this->getFeatureResolver()->getFeature();
+//            static::$confirmedFeature = true;
+//            return $this->feature;
+//        }
 
         $featureId = $this->convertFeatureTextIntoId(
             $this->getOrAskForOption(

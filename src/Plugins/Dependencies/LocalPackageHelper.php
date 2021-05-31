@@ -14,19 +14,17 @@ use Cz\Git\GitRepository;
 class LocalPackageHelper
 {
 
-    // TODO implement this properly with a pipeline
-
     public function makeLocal(LocalPackage $localPackage, Directory $workingDirectory)
     {
-        $relativeInstallPath = sprintf('repos/%s', $localPackage->getName());
-        $installPath = Filesystem::append(
-            $workingDirectory->path(),
-            $relativeInstallPath
-        );
-
-        IO::task('Clone the repository', fn() => $this->cloneRepository($installPath, $localPackage->getUrl()));
-        IO::task(sprintf('Checkout branch %s', $localPackage->getFeature()->getBranch()), fn() => $this->checkoutBranch($localPackage->getFeature()->getBranch(), $installPath));
-        IO::task('Modify composer.json', fn() => $this->composerRequireLocal($workingDirectory, $localPackage->getName(), $localPackage->getFeature()->getBranch()));
+//        $relativeInstallPath = sprintf('repos/%s', $localPackage->getName());
+//        $installPath = Filesystem::append(
+//            $workingDirectory->path(),
+//            $relativeInstallPath
+//        );
+//
+//        IO::task('Clone the repository', fn() => $this->cloneRepository($installPath, $localPackage->getUrl()));
+//        IO::task(sprintf('Checkout branch %s', $localPackage->getFeature()->getBranch()), fn() => $this->checkoutBranch($localPackage->getFeature()->getBranch(), $installPath));
+//        IO::task('Modify composer.json', fn() => $this->composerRequireLocal($workingDirectory, $localPackage->getName(), $localPackage->getFeature()->getBranch()));
         IO::task('Adding local symlink', fn() => $this->addSymlinkInComposer($workingDirectory, $relativeInstallPath));
         IO::task('Clearing stale dependencies', fn() => $this->clearStaleDependencies($workingDirectory, $localPackage->getName())); // TODO Don't clear all dependencies, just cleared ones
         IO::task('Updating composer', fn() => $this->updateComposer($workingDirectory));

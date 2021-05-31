@@ -10,23 +10,31 @@ use OriginEngine\Pipeline\Task;
 use OriginEngine\Helpers\Storage\Filesystem;
 use OriginEngine\Pipeline\TaskResponse;
 
-class ClearDefaultFeature extends Task
+class SetActiveFeature extends Task
 {
+
+    public function __construct(Feature $feature)
+    {
+        parent::__construct([
+            'feature' => $feature
+        ]);
+    }
 
     protected function execute(Directory $workingDirectory, Collection $config): TaskResponse
     {
-        $this->writeInfo('Clearing the default feature');
+        $feature = $config->get('feature');
+        $this->writeInfo(sprintf('Setting active feature to ID %u', $feature->getId()));
 
         $featureResolver = app(FeatureResolver::class);
-        $oldFeature = ($featureResolver->hasFeature() ? $featureResolver->getFeature() : null );
+        $oldFeature = ($featureResolver->hasFeature($feature->getSite()) ? $featureResolver->getFeature($feature->getSite()) : null );
         $this->export('old-feature', $oldFeature);
         if($oldFeature === null) {
-            $this->writeDebug('No feature is currently the default');
+            $this->writeDebug('No feature is currently the active');
         } else {
-            $this->writeDebug(sprintf('The default feature had an ID of %u', $oldFeature->getId()));
+            $this->writeDebug(sprintf('The active feature had an ID of %u', $oldFeature->getId()));
         }
 
-        app(FeatureResolver::class)->clearFeature();
+        app(FeatureResolver::class)->setFeature($feature);
 
         return $this->succeeded();
     }
@@ -37,7 +45,7 @@ class ClearDefaultFeature extends Task
         $feature = $config->get('old-feature', null);
 
         if($feature === null) {
-            $featureResolver->clearFeature();
+            $featureResolver->clearFeature($feature->getSite());
         } else {
             app(FeatureResolver::class)->setFeature($config->get('old-feature'));
         }
@@ -45,11 +53,11 @@ class ClearDefaultFeature extends Task
 
     protected function upName(Collection $config): string
     {
-        return 'Clearing default feature';
+        return 'Changing active feature';
     }
 
     protected function downName(Collection $config): string
     {
-        return 'Clearing default feature';
+        return 'Reverting active feature';
     }
 }

@@ -4,9 +4,12 @@ namespace OriginEngine\Contracts\Feature;
 
 use OriginEngine\Feature\Feature;
 use Illuminate\Database\Eloquent\Collection;
+use OriginEngine\Site\Site;
 
 interface FeatureRepository
 {
+
+    public function allThroughSite(Site $site);
 
     public function all(): Collection;
 

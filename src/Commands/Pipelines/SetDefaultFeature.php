@@ -4,7 +4,7 @@ namespace OriginEngine\Commands\Pipelines;
 
 use OriginEngine\Feature\Feature;
 use OriginEngine\Pipeline\Pipeline;
-use OriginEngine\Pipeline\Tasks\Feature\SetDefaultFeature as SetDefaultFeatureTask;
+use OriginEngine\Pipeline\Tasks\Feature\SetActiveFeature as SetDefaultFeatureTask;
 
 class SetDefaultFeature extends Pipeline
 {

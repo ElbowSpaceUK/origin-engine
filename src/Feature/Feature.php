@@ -68,14 +68,6 @@ class Feature extends Model
         return sprintf('%s/%s', $branchPrefix, Str::kebab($name));
     }
 
-    public static function current(): ?Feature
-    {
-        if(app(FeatureResolver::class)->hasFeature()) {
-            return app(FeatureResolver::class)->getFeature();
-        }
-        return null;
-    }
-
     public function getDirectory(): Directory
     {
         return Directory::fromDirectory(

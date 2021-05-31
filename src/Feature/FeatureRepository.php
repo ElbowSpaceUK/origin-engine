@@ -5,6 +5,7 @@ namespace OriginEngine\Feature;
 use OriginEngine\Contracts\Feature\FeatureRepository as FeatureRepositoryContract;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use OriginEngine\Site\Site;
 
 class FeatureRepository implements FeatureRepositoryContract
 {
@@ -59,6 +60,11 @@ class FeatureRepository implements FeatureRepositoryContract
     {
         $feature = Feature::onlyTrashed()->findOrFail($id);
         $feature->restore();
+    }
+
+    public function allThroughSite(Site $site): Collection
+    {
+        return Feature::where('site_id', $site->getId())->get();
     }
 
 }

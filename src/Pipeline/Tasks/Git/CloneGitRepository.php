@@ -12,11 +12,12 @@ use OriginEngine\Pipeline\TaskResponse;
 class CloneGitRepository extends Task
 {
 
-    public function __construct(string $repository, string $branch = 'develop')
+    public function __construct(string $repository, ?string $branch = null, ?string $pathOverride = null)
     {
         parent::__construct([
             'repository' => $repository,
-            'branch' => $branch
+            'branch' => $branch,
+            'pathOverride' => $pathOverride
         ]);
     }
 
@@ -24,10 +25,8 @@ class CloneGitRepository extends Task
     {
         GitRepository::cloneRepository(
             $config->get('repository'),
-            $workingDirectory->path(),
-            [
-                '--branch' => $config->get('branch')
-            ]
+            $config->get('pathOverride') !== null ? Filesystem::append($workingDirectory->path(), $config->get('pathOverride')) : $workingDirectory->path(),
+            array_merge(($config->get('branch') !== null ? ['--branch' => $config->get('branch')] : []))
         );
         $this->writeSuccess(sprintf('Cloned repository %s', $config->get('repository')));
 
@@ -37,7 +36,9 @@ class CloneGitRepository extends Task
     protected function undo(Directory $workingDirectory, bool $status, Collection $config, Collection $output): void
     {
         Filesystem::create()
-            ->remove($workingDirectory->path());
+            ->remove(
+                $config->get('pathOverride') !== null ? Filesystem::append($workingDirectory->path(), $config->get('pathOverride')) : $workingDirectory->path()
+            );
     }
 
     protected function upName(Collection $config): string

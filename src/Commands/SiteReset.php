@@ -2,7 +2,7 @@
 
 namespace OriginEngine\Commands;
 
-use OriginEngine\Commands\Pipelines\ResetSite as SiteResetPipeline;
+use OriginEngine\Commands\Pipelines\ResetSite;
 use OriginEngine\Contracts\Command\SiteCommand;
 use OriginEngine\Contracts\Feature\FeatureResolver;
 use OriginEngine\Pipeline\RunsPipelines;
@@ -35,7 +35,7 @@ class SiteReset extends SiteCommand
     {
         $site = $this->getSite('Which site would you like to reset?');
 
-        $this->runPipeline(new SiteResetPipeline($site), $site->getDirectory());
+        $this->runPipeline(new ResetSite($site), $site->getDirectory());
     }
 
 }
