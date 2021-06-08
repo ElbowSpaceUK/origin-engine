@@ -12,7 +12,6 @@ use OriginEngine\Helpers\Directory\Directory;
 use OriginEngine\Pipeline\RunsPipelines;
 use OriginEngine\Plugins\Dependencies\Pipelines\MakeDependencyRemote;
 use OriginEngine\Plugins\Dependencies\LocalPackage;
-use OriginEngine\Plugins\Dependencies\LocalPackageHelper;
 
 class DepRemote extends SiteCommand
 {

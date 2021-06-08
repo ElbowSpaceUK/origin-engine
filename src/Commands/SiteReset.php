@@ -6,7 +6,6 @@ use OriginEngine\Commands\Pipelines\ResetSite;
 use OriginEngine\Contracts\Command\SiteCommand;
 use OriginEngine\Contracts\Feature\FeatureResolver;
 use OriginEngine\Pipeline\RunsPipelines;
-use OriginEngine\Plugins\Dependencies\LocalPackageHelper;
 
 class SiteReset extends SiteCommand
 {
@@ -31,7 +30,7 @@ class SiteReset extends SiteCommand
      *
      * @return mixed
      */
-    public function handle(FeatureResolver $featureResolver, LocalPackageHelper $localPackageHelper)
+    public function handle(FeatureResolver $featureResolver)
     {
         $site = $this->getSite('Which site would you like to reset?');
 

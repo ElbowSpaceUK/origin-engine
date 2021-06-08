@@ -2,27 +2,11 @@
 
 namespace OriginEngine\Plugins\Dependencies\Commands;
 
-use OriginEngine\Contracts\Command\Command;
-use OriginEngine\Contracts\Command\FeatureCommand;
 use OriginEngine\Contracts\Command\SiteCommand;
-use OriginEngine\Contracts\Feature\FeatureRepository;
-use OriginEngine\Contracts\Site\SiteRepository;
-use OriginEngine\Feature\Feature;
-use OriginEngine\Helpers\Composer\ComposerModifier;
-use OriginEngine\Helpers\Composer\ComposerRunner;
-use OriginEngine\Helpers\Composer\ComposerReader;
-use OriginEngine\Helpers\Composer\Schema\ComposerRepository;
-use OriginEngine\Helpers\Composer\Schema\Schema\ComposerSchema;
 use OriginEngine\Helpers\IO\IO;
-use OriginEngine\Helpers\Storage\Filesystem;
-use OriginEngine\Helpers\Directory\Directory;
 use OriginEngine\Pipeline\RunsPipelines;
 use OriginEngine\Plugins\Dependencies\Pipelines\MakeDependencyLocal;
 use OriginEngine\Plugins\Dependencies\LocalPackage;
-use OriginEngine\Plugins\Dependencies\LocalPackageHelper;
-use OriginEngine\Site\Site;
-use Cz\Git\GitException;
-use Cz\Git\GitRepository;
 
 class DepLocal extends SiteCommand
 {
