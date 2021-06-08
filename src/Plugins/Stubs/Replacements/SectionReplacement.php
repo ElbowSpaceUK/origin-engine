@@ -41,11 +41,13 @@ class SectionReplacement extends BooleanReplacement
         return is_array($value);
     }
 
-    private function getReplacementValues(bool $useDefault): array
+    private function getReplacementValues(array $data, bool $useDefault): array
     {
         $sectionData = [];
         foreach($this->getReplacements() as $replacement) {
-            $sectionData = $replacement->appendData($sectionData, $useDefault);
+            if(!array_key_exists($replacement->getVariableName(), $data)) {
+                $sectionData = $replacement->appendData($sectionData, $useDefault);
+            }
         }
         return $sectionData;
     }
@@ -53,7 +55,7 @@ class SectionReplacement extends BooleanReplacement
     public function appendData(array $data = [], bool $useDefault = false): array
     {
         $useSection = $useDefault && $this->hasDefault() ? $this->getDefault() : $this->askQuestion();
-        return array_merge($data, $useSection ? $this->getReplacementValues($useDefault) : [], [$this->getVariableName() => $useSection]);
+        return array_merge($data, $useSection ? $this->getReplacementValues($data, $useDefault) : [], [$this->getVariableName() => $useSection]);
     }
 
     public function parseCommandInput(string $variable): bool

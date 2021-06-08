@@ -2,27 +2,21 @@
 
 namespace OriginEngine\Plugins\Dependencies\Commands;
 
-use OriginEngine\Contracts\Command\Command;
-use OriginEngine\Contracts\Command\FeatureCommand;
+use OriginEngine\Contracts\Command\SiteCommand;
 use OriginEngine\Contracts\Site\SiteRepository;
 use OriginEngine\Feature\Feature;
-use OriginEngine\Helpers\Composer\ComposerModifier;
 use OriginEngine\Helpers\Composer\ComposerRunner;
-use OriginEngine\Helpers\Composer\ComposerReader;
-use OriginEngine\Helpers\Composer\Schema\ComposerRepository;
-use OriginEngine\Helpers\Composer\Schema\Schema\ComposerSchema;
 use OriginEngine\Helpers\IO\IO;
 use OriginEngine\Helpers\Storage\Filesystem;
 use OriginEngine\Helpers\Directory\Directory;
+use OriginEngine\Pipeline\RunsPipelines;
+use OriginEngine\Plugins\Dependencies\Pipelines\MakeDependencyRemote;
 use OriginEngine\Plugins\Dependencies\LocalPackage;
 use OriginEngine\Plugins\Dependencies\LocalPackageHelper;
-use OriginEngine\Site\Site;
-use Cz\Git\GitException;
-use Cz\Git\GitRepository;
-use Illuminate\Database\Eloquent\Collection;
 
-class DepRemote extends FeatureCommand
+class DepRemote extends SiteCommand
 {
+    use RunsPipelines;
 
     /**
      * The signature of the command.
@@ -46,33 +40,32 @@ class DepRemote extends FeatureCommand
      */
     public function handle(SiteRepository $siteRepository)
     {
-        $feature = $this->getFeature('Which feature do you want to use?');
-        $site = $feature->getSite();
-        /** @var LocalPackage[]|Collection $localPackages */
-        $localPackages = LocalPackage::where('feature_id', $feature->getId())->get();
+        $site = $this->getSite('Which site do you want to use?');
 
-        /** @var LocalPackage $localPackage */
+        if(!$site->hasCurrentFeature()) {
+            throw new \Exception('No feature is currently active');
+        }
+        $feature = $site->getCurrentFeature();
+
         $localPackage = LocalPackage::where([
-            'name' => $this->getOrAskForOption(
-                'package',
-                fn() => $this->choice(
-                    'Which dependency would you like to make local?',
-                    $localPackages->map(fn($package) => $package->getName())->toArray()
-                ),
-                fn($value) => $localPackages->filter(fn($package) => $package->getName() === $value)->count() > 0
-            ),
-            'feature_id' => $feature->getId()
+            'name' => $this->getDependencyName($feature),
+            'parent_feature_id' => $feature->getId()
         ])->firstOrFail();
 
         $workingDirectory = $site->getDirectory();
 
         IO::info(sprintf('Converting %s into a remote package.', $localPackage->getName()));
 
+        $history = $this->runPipeline(
+            new MakeDependencyRemote($localPackage),
+            $workingDirectory
+        );
 
-        (new LocalPackageHelper())->makeRemote($localPackage, $workingDirectory);
-        $this->task('Updating project state', fn() => $localPackage->delete());
-
-        IO::success(sprintf('Module %s has been made remote.', $localPackage->getName()));
+        if($history->allSuccessful()) {
+            IO::success(sprintf('Module %s has been made remote.', $localPackage->getName()));
+        } else {
+            IO::error(sprintf('Could not make module %s remote.', $localPackage->getName()));
+        }
     }
 
 
@@ -92,6 +85,23 @@ class DepRemote extends FeatureCommand
         return true;
     }
 
+    private function getDependencyName(Feature $feature): string
+    {
+        $localPackages = LocalPackage::where('parent_feature_id', $feature->getId())->get();
+
+        if(count($localPackages) === 0) {
+            throw new \Exception('No dependencies are checked out for this site');
+        }
+
+        return $this->getOrAskForOption(
+            'package',
+            fn() => $this->choice(
+                'Which dependency would you like to make local?',
+                $localPackages->map(fn($package) => $package->getName())->toArray()
+            ),
+            fn($value) => $localPackages->filter(fn($package) => $package->getName() === $value)->count() > 0
+        );
+    }
 
 
 }

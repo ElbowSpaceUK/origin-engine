@@ -21,6 +21,7 @@ class StubDataCollector
             } else {
                 continue;
             }
+
             foreach($stubFile->getReplacements() as $replacement) {
                 if(!array_key_exists($replacement->getVariableName(), $data)) {
                     $data = $replacement->appendData($data, $useDefault);
@@ -28,6 +29,7 @@ class StubDataCollector
             }
         }
 
+        // Set the stub file filenames if using a callback
         $stubFiles = array_map(function($stubFile) use ($data) {
             if(is_callable($stubFile->getFileName())) {
                 $stubFile->setFileName($stubFile->getFileName()($data));

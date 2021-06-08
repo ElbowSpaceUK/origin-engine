@@ -16,7 +16,7 @@ trait RunsPipelines
         if(!is_callable([$this, 'addOption'])) {
             throw new \Exception('Could not configure the pipeline. Please use this trait in the context of a command.');
         }
-        $this->addOption('config', 'C', InputOption::VALUE_IS_ARRAY|InputOption::VALUE_OPTIONAL, 'Data to pass to the installation pipeline. Separate the variable and value with an equals.', []);
+        $this->addOption('config', 'C', InputOption::VALUE_IS_ARRAY|InputOption::VALUE_OPTIONAL, 'Data to pass to the pipeline. Separate the variable and value with an equals.', []);
     }
 
     /**
@@ -36,20 +36,33 @@ trait RunsPipelines
 
     private function getConfig(): PipelineConfig
     {
+        return new PipelineConfig($this->getConfigInput());
+    }
+
+    public function getConfigInput(): array
+    {
         if(!method_exists($this, 'option')) {
             throw new \Exception('Could not determine the pipeline config. Please use this trait in the context of a command.');
         }
 
-        $config = $this->option('config', []);
-        return new PipelineConfig(collect()->mapWithKeys(function($data) {
+        return collect($this->option('config', []))->mapWithKeys(function($data) {
             $parts = explode('=', $data);
             if(count($parts) !== 2) {
                 throw new \Exception(sprintf('Data [%s] could not be parsed, please ensure you include both the variable name and value separated with an =.', $data));
             }
             return [$parts[0] => $parts[1]];
-        })->toArray());
+        })->toArray();
     }
 
+    /**
+     * @param Pipeline $pipeline The pipeline to run
+     * @param Directory $directory The directory to run the pipeline in
+     * @param string|null $pipelineId A unique ID for the pipeline. Defaults to the command name if being used in a command.
+     * @param \Closure|null $modifyConfig A callback to modify any configuration before the pipeline is ran
+     *
+     * @return PipelineHistory
+     * @throws \Exception
+     */
     public function runPipeline(Pipeline $pipeline, Directory $directory, ?string $pipelineId = null, \Closure $modifyConfig = null): PipelineHistory
     {
         $pipeline->setAlias($pipelineId ?? $this->getPipelineRunId());

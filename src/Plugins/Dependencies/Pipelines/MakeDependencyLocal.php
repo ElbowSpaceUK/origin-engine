@@ -1,6 +1,6 @@
 <?php
 
-namespace OriginEngine\Plugins\Dependencies\Commands\Pipelines;
+namespace OriginEngine\Plugins\Dependencies\Pipelines;
 
 use OriginEngine\Feature\Feature;
 use OriginEngine\Pipeline\Pipeline;

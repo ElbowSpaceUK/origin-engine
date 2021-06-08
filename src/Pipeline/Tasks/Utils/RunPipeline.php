@@ -14,6 +14,10 @@ use OriginEngine\Pipeline\TaskResponse;
 class RunPipeline extends Task
 {
 
+    /**
+     * @param Pipeline $pipeline The pipeline class to run
+     * @param array $configuration An array of configuration to pass to the pipeline. By default, no extra config is passed in.
+     */
     public function __construct(Pipeline $pipeline, array $configuration = [])
     {
         parent::__construct([

@@ -11,11 +11,14 @@ use OriginEngine\Helpers\Directory\Directory;
 use OriginEngine\Pipeline\Pipeline;
 use OriginEngine\Pipeline\PipelineModifier;
 use OriginEngine\Pipeline\Tasks\Utils\Closure;
+use OriginEngine\Pipeline\Tasks\Utils\RunPipeline;
 use OriginEngine\Plugins\Dependencies\Commands\DepList;
 use OriginEngine\Plugins\Dependencies\Commands\DepLocal;
 use OriginEngine\Plugins\Dependencies\Commands\DepMake;
 use OriginEngine\Plugins\Dependencies\Commands\DepRemote;
 use OriginEngine\Plugins\Dependencies\Contracts\LocalPackageRepository as LocalPackageRepositoryContract;
+use OriginEngine\Plugins\Dependencies\Pipelines\MakeDependencyRemote;
+use OriginEngine\Plugins\Dependencies\Pipelines\MakeExistingDependencyLocal;
 
 class DependencyPlugin extends Plugin
 {
@@ -23,7 +26,6 @@ class DependencyPlugin extends Plugin
     protected array $commands = [
         DepList::class,
         DepLocal::class,
-        DepMake::class,
         DepRemote::class,
     ];
 
@@ -42,10 +44,7 @@ class DependencyPlugin extends Plugin
             if(isset($pipeline->feature)) {
                 $repo = app(LocalPackageRepositoryContract::class);
                 foreach($repo->getAllThroughFeature($pipeline->feature->getId()) as $localPackage) {
-                    $pipeline->runTaskBefore('reset-site', 'set-local-dependencies-' . $localPackage->getName(), new Closure(
-                        fn(Directory $directory, Collection $config) => (new LocalPackageHelper())->makeLocal($localPackage, $directory),
-                        fn(Directory $directory, Collection $config) => (new LocalPackageHelper())->makeRemote($localPackage, $directory),
-                    ));
+                    $pipeline->runTaskBefore('reset-site', 'set-local-dependencies-' . $localPackage->getName(), new RunPipeline(new MakeExistingDependencyLocal($localPackage)));
                 }
             }
         });
@@ -54,10 +53,7 @@ class DependencyPlugin extends Plugin
             if(isset($pipeline->site) && $pipeline->site->hasCurrentFeature()) {
                 $repo = app(LocalPackageRepositoryContract::class);
                 foreach($repo->getAllThroughFeature($pipeline->site->getCurrentFeature()->getId()) as $localPackage) {
-                    $pipeline->runTaskBefore('checkout-branch', 'remove-local-dependencies-' . $localPackage->getName(), new Closure(
-                        fn(Directory $directory, Collection $config) => (new LocalPackageHelper())->makeRemote($localPackage, $directory),
-                        fn(Directory $directory, Collection $config) => (new LocalPackageHelper())->makeLocal($localPackage, $directory)
-                    ));
+                    $pipeline->runTaskBefore('checkout-branch', 'remove-local-dependencies-' . $localPackage->getName(), new RunPipeline(new MakeDependencyRemote($localPackage)));
                 }
             }
         });

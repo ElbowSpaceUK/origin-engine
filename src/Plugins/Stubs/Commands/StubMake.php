@@ -2,13 +2,17 @@
 
 namespace OriginEngine\Plugins\Stubs\Commands;
 
+use Illuminate\Support\Collection;
 use OriginEngine\Contracts\Command\Command;
 use OriginEngine\Contracts\Command\FeatureCommand;
 use OriginEngine\Helpers\IO\IO;
 use OriginEngine\Helpers\Storage\Filesystem;
 use OriginEngine\Helpers\Directory\Directory;
+use OriginEngine\Pipeline\PipelineConfig;
+use OriginEngine\Pipeline\RunsPipelines;
 use OriginEngine\Plugins\Stubs\Entities\Stub;
 use OriginEngine\Plugins\Stubs\Entities\StubFile;
+use OriginEngine\Plugins\Stubs\Pipelines\PublishStub;
 use OriginEngine\Plugins\Stubs\StubMigrator;
 use OriginEngine\Plugins\Stubs\StubDataCollector;
 use OriginEngine\Plugins\Stubs\StubSaver;
@@ -16,6 +20,8 @@ use OriginEngine\Plugins\Stubs\StubStore;
 
 class StubMake extends FeatureCommand
 {
+    use RunsPipelines;
+
     /**
      * The signature of the command.
      *
@@ -24,10 +30,9 @@ class StubMake extends FeatureCommand
     protected $signature = 'stub:make
                             {--S|stub= : The name of the stub to make}
                             {--L|location= : The directory relative to the project to save the stubs in}
-                            {--O|overwrite : Overwrite any files that already exist}
+                            {--force : Overwrite any files that already exist}
                             {--U|use-default : Use the default settings for the stub}
-                            {--R|dry-run : Do not save any stub files, just output them to the terminal}
-                            {--W|with=* : Data to pass to the stub. Separate the variable and value with an equals}';
+                            {--R|dry-run : Do not save any stub files, just output them to the terminal}';
 
     /**
      * The description of the command.
@@ -52,38 +57,32 @@ class StubMake extends FeatureCommand
             fn($value) => $value && $stubStore->hasStub($value)
         );
 
-        $workingDirectory = $this->getFeature('Which feature should we copy the stub to?')->getDirectory();
+        $feature = $this->getFeature('Which feature should we copy the stub to?');
 
         $stub = $stubStore->getStub($stubName);
 
-        $compiledStubs = $stubCreator->create($stub, $this->getStubData($stub), $this->option('use-default'));
-
-        IO::info('Stubs compiled');
-
-        $saver = StubSaver::in(Directory::fromFullPath(
-            Filesystem::append(
-                $workingDirectory->path(),
-                $this->option('location') ?? $stub->getDefaultLocation()
-            )
-        ))->force($this->option('overwrite'));
-
-        foreach($compiledStubs as $stub) {
-            $saver->save($stub, $this->option('dry-run'));
-        }
+        $this->runPipeline(
+            new PublishStub($stub),
+            $feature->getSite()->getDirectory(),
+            null,
+            function(PipelineConfig $config) use ($stub) {
+                $config->add('compile-stubs', 'data', $this->extractStubData($stub));
+                $config->add('compile-stubs', 'use-default', $this->option('use-default'));
+                $config->add('save-compiled-stubs', 'configuration', [
+                    'location' => $this->option('location'),
+                    'dry-run' => $this->option('dry-run'),
+                    'force' => $this->option('force')
+                ]);
+            }
+        );
 
         IO::success('Stubs saved');
 
     }
 
-    private function getStubData(Stub $stub): array
+    private function extractStubData(Stub $stub): array
     {
-        $stubData = collect($this->option('with'))->mapWithKeys(function($data) {
-            $parts = explode('=', $data);
-            if(count($parts) !== 2) {
-                throw new \Exception(sprintf('Data [%s] could not be parsed, please ensure you include both the variable name and value separated with an =.', $data));
-            }
-            return [$parts[0] => $parts[1]];
-        })->toArray();
+        $stubData = $this->getConfigInput();
 
         foreach($stub->getStubFiles() as $stubFile) {
             foreach($stubFile->getReplacements() as $replacement) {
@@ -95,5 +94,6 @@ class StubMake extends FeatureCommand
 
         return $stubData;
     }
+
 
 }

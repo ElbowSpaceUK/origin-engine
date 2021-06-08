@@ -28,6 +28,7 @@ class PipelineRunner implements \OriginEngine\Contracts\Pipeline\PipelineRunner
             }
 
             $taskConfig = collect($config->getAll($key));
+
             $response = $task->run($workingDirectory, $taskConfig);
             $history->add($key, $response->isSuccess(), $response->getMessages(), $response->getData(), $taskConfig->toArray());
             if($response->isSuccess() === false) {

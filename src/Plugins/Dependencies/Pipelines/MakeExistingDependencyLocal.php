@@ -1,6 +1,6 @@
 <?php
 
-namespace OriginEngine\Plugins\Dependencies\Commands\Pipelines;
+namespace OriginEngine\Plugins\Dependencies\Pipelines;
 
 use OriginEngine\Helpers\Composer\ComposerRunner;
 use OriginEngine\Pipeline\Pipeline;

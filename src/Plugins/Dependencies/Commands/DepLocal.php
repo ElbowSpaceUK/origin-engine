@@ -17,7 +17,7 @@ use OriginEngine\Helpers\IO\IO;
 use OriginEngine\Helpers\Storage\Filesystem;
 use OriginEngine\Helpers\Directory\Directory;
 use OriginEngine\Pipeline\RunsPipelines;
-use OriginEngine\Plugins\Dependencies\Commands\Pipelines\MakeDependencyLocal;
+use OriginEngine\Plugins\Dependencies\Pipelines\MakeDependencyLocal;
 use OriginEngine\Plugins\Dependencies\LocalPackage;
 use OriginEngine\Plugins\Dependencies\LocalPackageHelper;
 use OriginEngine\Site\Site;
@@ -86,9 +86,12 @@ class DepLocal extends SiteCommand
             $branchName
         ), $workingDirectory);
 
-        dd($history);
+        if($history->allSuccessful()) {
+            IO::success('Dependency installed locally');
+        } else {
+            IO::error('Dependency could not be installed locally');
+        }
 
-        (new LocalPackageHelper())->makeLocal($localPackage, $workingDirectory);
     }
 
 }

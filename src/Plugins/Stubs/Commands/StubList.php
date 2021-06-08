@@ -49,25 +49,4 @@ class StubList extends Command
         );
     }
 
-    private function getStubData(Stub $stub): array
-    {
-        $stubData = collect($this->option('with'))->mapWithKeys(function($data) {
-            $parts = explode('=', $data);
-            if(count($parts) !== 2) {
-                throw new \Exception(sprintf('Data [%s] could not be parsed, please ensure you include both the variable name and value separated with an =.', $data));
-            }
-            return [$parts[0] => $parts[1]];
-        })->toArray();;
-
-        foreach($stub->getStubFiles() as $stubFile) {
-            foreach($stubFile->getReplacements() as $replacement) {
-                if(array_key_exists($replacement->getVariableName(), $stubData)) {
-                    $stubData[$replacement->getVariableName()] = $replacement->parseCommandInput($stubData[$replacement->getVariableName()]);
-                }
-            }
-        }
-
-        return $stubData;
-    }
-
 }

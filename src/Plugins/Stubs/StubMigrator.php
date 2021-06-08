@@ -2,6 +2,8 @@
 
 namespace OriginEngine\Plugins\Stubs;
 
+use OriginEngine\Plugins\Stubs\Entities\CompiledStub;
+
 class StubMigrator
 {
 
@@ -20,6 +22,12 @@ class StubMigrator
         $this->stubDataCollector = $stubDataCollector;
     }
 
+    /**
+     * @param Entities\Stub $stub
+     * @param array $data
+     * @param bool $useDefault
+     * @return array|CompiledStub[]
+     */
     public function create(Entities\Stub $stub, array $data = [], bool $useDefault = false): array
     {
         $data = $this->stubDataCollector->collect($stub, $data, $useDefault);
