@@ -3,13 +3,12 @@
 namespace OriginEngine\Commands;
 
 use OriginEngine\Commands\Pipelines\CheckoutFeature;
-use OriginEngine\Contracts\Command\Command;
-use OriginEngine\Contracts\Command\FeatureCommand;
+use OriginEngine\Contracts\Command\SiteCommand;
 use OriginEngine\Contracts\Feature\FeatureResolver;
 use OriginEngine\Contracts\Site\SiteResolver;
 use OriginEngine\Pipeline\RunsPipelines;
 
-class FeatureUse extends FeatureCommand
+class FeatureUse extends SiteCommand
 {
     use RunsPipelines;
 

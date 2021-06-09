@@ -48,7 +48,8 @@ class MakeDependencyLocal extends Pipeline
                 sprintf('%s (%s)', $this->feature->getName(), $this->name),
                 sprintf('%s (for %s)', $this->feature->getDescription(), $this->name),
                 $this->feature->getType(),
-                $this->branch
+                $this->branch,
+                true
             ),
             'create-local-dependency-model' => new CreateAndRunTask(
                 fn() => new CreateLocalDependencyModel($this->name, $this->url, $this->dependencyFeature, $this->feature),

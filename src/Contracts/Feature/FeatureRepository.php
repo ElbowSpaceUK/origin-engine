@@ -13,7 +13,7 @@ interface FeatureRepository
 
     public function all(): Collection;
 
-    public function create(int $siteId, string $name, ?string $description, string $type, string $branch): Feature;
+    public function create(int $siteId, string $name, ?string $description, string $type, string $branch, bool $isDependency = false): Feature;
 
     public function exists(string $id): bool;
 

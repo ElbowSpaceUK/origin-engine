@@ -51,7 +51,7 @@ class DepRemote extends SiteCommand
             'parent_feature_id' => $feature->getId()
         ])->firstOrFail();
 
-        $workingDirectory = $site->getDirectory();
+        $workingDirectory = $feature->getDirectory();
 
         IO::info(sprintf('Converting %s into a remote package.', $localPackage->getName()));
 

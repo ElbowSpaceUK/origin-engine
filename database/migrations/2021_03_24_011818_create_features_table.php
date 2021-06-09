@@ -20,6 +20,7 @@ class CreateFeaturesTable extends Migration
             $table->string('description')->nullable();
             $table->string('type');
             $table->string('branch');
+            $table->boolean('is_dependency')->default(false);
             $table->timestamps();
             $table->softDeletes();
         });

@@ -43,7 +43,7 @@ class DepLocal extends SiteCommand
         }
         $feature = $site->getCurrentFeature();
 
-        $workingDirectory = $site->getDirectory();
+        $workingDirectory = $feature->getDirectory();
 
         $package = $this->getOrAskForOption(
             'package',

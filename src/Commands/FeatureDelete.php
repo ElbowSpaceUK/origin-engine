@@ -3,12 +3,12 @@
 namespace OriginEngine\Commands;
 
 use OriginEngine\Commands\Pipelines\DeleteFeature;
-use OriginEngine\Contracts\Command\FeatureCommand;
+use OriginEngine\Contracts\Command\SiteCommand;
 use OriginEngine\Contracts\Feature\FeatureRepository;
 use OriginEngine\Helpers\IO\IO;
 use OriginEngine\Pipeline\RunsPipelines;
 
-class FeatureDelete extends FeatureCommand
+class FeatureDelete extends SiteCommand
 {
     use RunsPipelines;
 
@@ -31,7 +31,7 @@ class FeatureDelete extends FeatureCommand
      *
      * @return mixed
      */
-    public function handle(FeatureRepository $featureRepository)
+    public function handle()
     {
         $feature = $this->getFeature('Which feature would you like to delete?');
 

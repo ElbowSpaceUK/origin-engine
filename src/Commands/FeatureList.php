@@ -33,7 +33,9 @@ class FeatureList extends Command
 
         $this->table(
             ['', 'ID', 'Name', 'Description', 'Type', 'Site'],
-            $features->map(function(Feature $feature) {
+            $features
+                ->filter(fn(Feature $feature) => !$feature->isDependency())
+                ->map(function(Feature $feature) {
                 try {
                     $currentFeature = $feature->getSite()->getCurrentFeature();
                 } catch (\Exception $e) {

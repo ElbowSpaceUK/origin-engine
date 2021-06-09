@@ -14,14 +14,15 @@ use OriginEngine\Pipeline\TaskResponse;
 class CreateFeature extends Task
 {
 
-    public function __construct(int $siteId, string $featureName, ?string $featureDescription, string $featureType, ?string $branchName = null)
+    public function __construct(int $siteId, string $featureName, ?string $featureDescription, string $featureType, ?string $branchName = null, bool $isDependency = false)
     {
         parent::__construct([
             'site-id' => $siteId,
             'name' => $featureName,
             'description' => $featureDescription,
             'type' => $featureType,
-            'branch' => $branchName
+            'branch' => $branchName,
+            'is-dependency' => $isDependency
         ]);
     }
 
@@ -33,6 +34,7 @@ class CreateFeature extends Task
             $config->get('description'),
             $config->get('type'),
             $config->get('branch') ?? Feature::getDefaultBranchName($config->get('type'), $config->get('name')),
+            $config->get('is-dependency', false)
         );
 
         $this->writeSuccess(sprintf('Created feature %u', $feature->getId()));

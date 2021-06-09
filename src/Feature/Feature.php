@@ -21,7 +21,11 @@ class Feature extends Model
     protected $table = 'features';
 
     protected $fillable = [
-        'name', 'description', 'type', 'site_id', 'branch'
+        'name', 'description', 'type', 'site_id', 'branch', 'is_dependency'
+    ];
+
+    protected $casts = [
+        'is_dependency' => 'boolean'
     ];
 
     public function site()
@@ -59,6 +63,11 @@ class Feature extends Model
         return $this->branch;
     }
 
+    public function isDependency(): bool
+    {
+        return $this->is_dependency;
+    }
+
     public static function getDefaultBranchName(string $type, string $name): string
     {
         $branchPrefix = 'feature';
@@ -70,11 +79,15 @@ class Feature extends Model
 
     public function getDirectory(): Directory
     {
-        return Directory::fromDirectory(
-            Filesystem::append(
-                $this->getSite()->getDirectory()->path(),
-                sprintf('repos/%s', $this->getName())
-            )
-        );
+        $path = $this->getSite()->getDirectory()->path();
+
+        if($this->isDependency()) {
+            $path = Filesystem::append(
+                $path,
+                sprintf('repos/%s', LocalPackage::where('feature_id', $this->getId())->firstOrFail()->getName())
+            );
+        }
+
+        return Directory::fromFullPath($path);
     }
 }

@@ -5,6 +5,7 @@ namespace OriginEngine\Plugins\Stubs\Commands;
 use Illuminate\Support\Collection;
 use OriginEngine\Contracts\Command\Command;
 use OriginEngine\Contracts\Command\FeatureCommand;
+use OriginEngine\Contracts\Command\SiteCommand;
 use OriginEngine\Helpers\IO\IO;
 use OriginEngine\Helpers\Storage\Filesystem;
 use OriginEngine\Helpers\Directory\Directory;
@@ -18,7 +19,7 @@ use OriginEngine\Plugins\Stubs\StubDataCollector;
 use OriginEngine\Plugins\Stubs\StubSaver;
 use OriginEngine\Plugins\Stubs\StubStore;
 
-class StubMake extends FeatureCommand
+class StubMake extends SiteCommand
 {
     use RunsPipelines;
 
@@ -28,7 +29,7 @@ class StubMake extends FeatureCommand
      * @var string
      */
     protected $signature = 'stub:make
-                            {--S|stub= : The name of the stub to make}
+                            {--stub= : The name of the stub to make}
                             {--L|location= : The directory relative to the project to save the stubs in}
                             {--force : Overwrite any files that already exist}
                             {--U|use-default : Use the default settings for the stub}
@@ -63,7 +64,7 @@ class StubMake extends FeatureCommand
 
         $this->runPipeline(
             new PublishStub($stub),
-            $feature->getSite()->getDirectory(),
+            $feature->getDirectory(),
             null,
             function(PipelineConfig $config) use ($stub) {
                 $config->add('compile-stubs', 'data', $this->extractStubData($stub));
