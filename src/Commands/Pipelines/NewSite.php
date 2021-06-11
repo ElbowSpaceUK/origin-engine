@@ -31,8 +31,12 @@ class NewSite extends Pipeline
     public function tasks(): array
     {
         return [
-            'install-site' => new RunPipeline(app(SiteBlueprintStore::class)->get($this->alias)->getInstallationPipeline()),
-            'create-site' => new CreateSite($this->name, $this->description, $this->alias),
+            'install-site' => (new RunPipeline(app(SiteBlueprintStore::class)->get($this->alias)->getInstallationPipeline()))
+                ->setUpName('Installing the site')
+                ->setDownName('Removing the site'),
+            'create-site' => (new CreateSite($this->name, $this->description, $this->alias))
+                ->setUpName('Saving site meta data')
+                ->setDownName('Removing site meta data'),
         ];
     }
 
