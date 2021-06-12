@@ -19,7 +19,7 @@ class EnvRepository
         $this->workingDirectory = $workingDirectory;
     }
 
-    public function get(string $type = null)
+    public function get(string $type = null): Env
     {
         $envRetriever = new EnvRetriever($this->workingDirectory->path());
         $env = $envRetriever->get($type ?? '.env');

@@ -2,21 +2,24 @@
 
 namespace OriginEngine\Helpers\Storage;
 
+use Illuminate\Support\Traits\ForwardsCalls;
 use OriginEngine\Helpers\Settings\Settings;
 use OriginEngine\Helpers\Directory\ConfigDirectoryLocator;
 use Illuminate\Support\Str;
 use Symfony\Component\Filesystem\Filesystem as SymfonyFilesystem;
 
-class Filesystem
+class Filesystem extends SymfonyFilesystem
 {
+    use ForwardsCalls;
 
-    // TODO Decorator around filesystem to append on the working directory, so we can just work in the working directory.
-
-    public static function create(): SymfonyFilesystem
-    {
-        return new SymfonyFilesystem();
-    }
-
+    /**
+     * Get the path to the directory where the database is saved
+     *
+     * @param string $append Append this string to the database root path
+     * @return string The path to the database directory, with the additional string if given
+     *
+     * @throws \Exception
+     */
     public static function database(string $append = ''): string
     {
         return static::append(
@@ -25,6 +28,14 @@ class Filesystem
         );
     }
 
+    /**
+     * Get the path to the project directory, where sites are stored
+     *
+     * @param string $append Append this string to the project root path
+     * @return string The path to the project directory, with the additional string if given
+     *
+     * @throws \Exception
+     */
     public static function project(string $append = ''): string
     {
         if(!Settings::has('project-directory')) {
@@ -36,6 +47,13 @@ class Filesystem
         );
     }
 
+    /**
+     * Append multiple paths together.
+     *
+     * @param string ...$paths Any number of paths to append.
+     * @return string The paths in a coherent file structure
+     * @throws \Exception
+     */
     public static function append(...$paths)
     {
         if(count($paths) === 0) {
@@ -52,9 +70,26 @@ class Filesystem
         return $finalPath;
     }
 
-    public static function read(string $path)
+    /**
+     * Get the contents of a file
+     *
+     * @param string $path The path of the file to read
+     * @return string The contents of the file
+     *
+     * @throws \Exception If the file could not be read
+     */
+    public function read(string $path): string
     {
-        return file_get_contents($path);
+        $fileContents = file_get_contents($path);
+        if($fileContents === false) {
+            throw new \Exception(sprintf('Could not read the given file [%s]', $path));
+        }
+        return $fileContents;
+    }
+
+    public static function create()
+    {
+        return new static();
     }
 
 }

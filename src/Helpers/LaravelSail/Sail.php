@@ -10,7 +10,6 @@ class Sail
 
     public static function isRunning(Site $site): bool
     {
-        // TODO Make parallel to calculate?
         try {
             Executor::cd(
                 $site->getDirectory()
