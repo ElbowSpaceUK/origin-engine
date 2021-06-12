@@ -71,6 +71,8 @@ class SiteNew extends Command
 
         $response = $this->runPipeline(new NewSite($name, $description, $blueprintAlias), $workingDirectory);
 
+        dd($response);
+
         if($response->allSuccessful()) {
             $this->getOutput()->success(sprintf('Installed a new instance of %s.', $blueprint->name()));
         } else {

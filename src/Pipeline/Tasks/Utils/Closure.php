@@ -55,7 +55,7 @@ class Closure extends Task
     protected function undo(Directory $workingDirectory, bool $status, Collection $config, Collection $output): void
     {
         if($config->get('revert') !== null) {
-            $config->get('revert')($config, $output);
+            $config->get('revert')($config, $output, $workingDirectory);
         }
     }
 

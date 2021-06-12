@@ -2,6 +2,7 @@
 
 namespace OriginEngine\Helpers\Directory;
 
+use Illuminate\Support\Str;
 use OriginEngine\Site\Site;
 
 class Directory
@@ -33,6 +34,16 @@ class Directory
     public function getPathBasename(): string
     {
         return basename($this->path());
+    }
+
+    /**
+     * Get the full path without the final directory
+     *
+     * @return string
+     */
+    public function getPathWithoutBasename(): string
+    {
+        return Str::substr($this->path(), 0, -strlen($this->getPathBasename()));
     }
 
     /**

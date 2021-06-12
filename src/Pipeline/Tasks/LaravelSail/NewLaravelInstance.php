@@ -14,9 +14,15 @@ class NewLaravelInstance extends Task
 
     protected function execute(Directory $workingDirectory, Collection $config): TaskResponse
     {
-        Executor::cd($workingDirectory)->execute(
+        $output = Executor::cd(Directory::fromFullPath($workingDirectory->getPathWithoutBasename()))->execute(
             sprintf('curl -s https://laravel.build/%s | bash', $workingDirectory->getPathBasename())
         );
+
+        if($output) {
+            $this->writeDebug($output);
+        }
+
+        return $this->succeeded();
     }
 
     protected function undo(Directory $workingDirectory, bool $status, Collection $config, Collection $output): void

@@ -114,7 +114,16 @@ class Proxy
 
     public function ask(string $question, $default = null, \Closure $validator = null)
     {
-        return $this->output->ask($question, $default, $validator);
+        $validationWrapper = null;
+        if($validator !== null) {
+            $validationWrapper = function($answer) use ($validator) {
+                if($validator($answer) === false) {
+                    throw new \Exception('Parameter validation failed');
+                }
+                return $answer;
+            };
+        }
+        return $this->output->ask($question, $default, $validationWrapper);
     }
 
     public function progressStart(int $count)

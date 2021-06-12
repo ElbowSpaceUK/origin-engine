@@ -17,6 +17,8 @@ use OriginEngine\Pipeline\Tasks\Origin\SetSetting;
 class PostUpdate extends Pipeline
 {
 
+    protected string $alias = 'post-update';
+
     public function __construct()
     {
         $this->before('set-project-directory', function(PipelineConfig $config, PipelineHistory $history) {

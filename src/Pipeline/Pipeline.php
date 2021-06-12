@@ -11,7 +11,7 @@ abstract class Pipeline
     public const BEFORE_DOWN_EVENT = 'beforeDown';
     public const AFTER_DOWN_EVENT = 'afterDown';
 
-    private string $alias = self::class;
+    protected string $alias = self::class;
 
     private array $afterTasks = [];
 

@@ -19,22 +19,22 @@ class NewSite extends Pipeline
 
     private string $name;
     private ?string $description;
-    private string $alias;
+    protected string $siteAlias;
 
-    public function __construct(string $name, ?string $description, string $alias)
+    public function __construct(string $name, ?string $description, string $siteAlias)
     {
         $this->name = $name;
         $this->description = $description;
-        $this->alias = $alias;
+        $this->siteAlias = $siteAlias;
     }
 
     public function tasks(): array
     {
         return [
-            'install-site' => (new RunPipeline(app(SiteBlueprintStore::class)->get($this->alias)->getInstallationPipeline()))
+            'install-site' => (new RunPipeline(app(SiteBlueprintStore::class)->get($this->siteAlias)->getInstallationPipeline()))
                 ->setUpName('Installing the site')
                 ->setDownName('Removing the site'),
-            'create-site' => (new CreateSite($this->name, $this->description, $this->alias))
+            'create-site' => (new CreateSite($this->name, $this->description, $this->siteAlias))
                 ->setUpName('Saving site meta data')
                 ->setDownName('Removing site meta data'),
         ];
