@@ -22,7 +22,7 @@ class ComposerAddLocalSymlink extends Task
 
     protected function execute(Directory $workingDirectory, Collection $config): TaskResponse
     {
-        $this->export('backup', Filesystem::read(Filesystem::append($workingDirectory->path(), 'composer.json')));
+        $this->export('backup', Filesystem::create()->read(Filesystem::append($workingDirectory->path(), 'composer.json')));
 
         ComposerModifier::for($workingDirectory)->addRepository(
             'path',

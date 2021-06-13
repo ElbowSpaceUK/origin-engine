@@ -17,7 +17,7 @@ class ComposerFilesystem
 
         if(Filesystem::create()->exists($path)) {
             return json_decode(
-                Filesystem::read($path), true
+                Filesystem::create()->read($path), true
             );
         }
 

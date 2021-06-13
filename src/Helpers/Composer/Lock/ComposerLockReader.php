@@ -31,7 +31,7 @@ class ComposerLockReader
                 sprintf('The %s file does not exist. Please install composer dependencies.', $this->lockName)
             );
         }
-        $composerLock = Filesystem::read(
+        $composerLock = Filesystem::create()->read(
             $composerLockPath
         );
 
