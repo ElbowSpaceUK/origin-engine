@@ -28,7 +28,7 @@ class CreateEmptyFile extends Task
 
     private function path(): string
     {
-        return Filesystem::database('atlas-cli.sqlite');
+        return Filesystem::database(sprintf('%s.sqlite', config()->get('database.name', 'origin')));
     }
 
     protected function execute(Directory $workingDirectory, Collection $config): TaskResponse

@@ -12,7 +12,7 @@ class ConfigDirectoryLocator
     {
         $home = Executor::cd(Directory::fromFullPath('~'))->execute('pwd');
 
-        return Filesystem::append($home, '.atlas-cli');
+        return Filesystem::append($home, '.origin');
     }
 
 }

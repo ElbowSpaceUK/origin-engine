@@ -35,6 +35,7 @@ use OriginEngine\Feature\ActiveFeatureResolver;
 use OriginEngine\Helpers\Composer\Operations\StandardOperationManager;
 use OriginEngine\Helpers\IO\IO;
 use OriginEngine\Helpers\Port\FSockOpenPortChecker;
+use OriginEngine\Helpers\Storage\Filesystem;
 use OriginEngine\Helpers\Terminal\ShellExecutor;
 use OriginEngine\Pipeline\Pipeline;
 use OriginEngine\Pipeline\PipelineConfig;
@@ -116,7 +117,7 @@ class OriginEngineServiceProvider extends ServiceProvider
             $config->set('database.connections.sqlite', [
                 'driver' => 'sqlite',
                 'url' => env('DATABASE_URL'),
-                'database' => $_SERVER['HOME'] . '/.atlas-cli/atlas-cli.sqlite',
+                'database' => Filesystem::append(Filesystem::database(), $config->get('database.name', 'origin') . '.sqlite'),
                 'prefix' => '',
                 'foreign_key_constraints' => env('DB_FOREIGN_KEYS', true),
             ]);
@@ -129,7 +130,7 @@ class OriginEngineServiceProvider extends ServiceProvider
             $config->set('filesystems.default', 'config');
             $config->set('filesystems.connections.disks.config', [
                 'driver' => 'local',
-                'root' => $_SERVER['HOME'] . '/.atlas-cli'
+                'root' => Filesystem::database()
             ]);
         }
 

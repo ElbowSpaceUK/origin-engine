@@ -1,5 +1,9 @@
 # Documentation Notes
 
+## Customising the CLI
+
+- How to create your own atlas-cli repository and add sites etc.
+
 ## Adding Stubs
 
 Stubs allow you to quickly scaffold repeated code in your app. Define the skeleton of the
