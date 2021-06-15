@@ -20,8 +20,8 @@ abstract class Plugin extends ServiceProvider
         return $this->commands;
     }
 
-    public function boot(Config $config)
+    public function boot()
     {
-        $config->set('commands.add', array_merge($this->getCommands(), $config->get('commands.add', [])));
+        $this->app['config']->set('commands.add', array_merge($this->getCommands(), $this->app['config']->get('commands.add', [])));
     }
 }

@@ -15,7 +15,7 @@ use OriginEngine\Commands\SiteDelete;
 use OriginEngine\Commands\SiteDown;
 use OriginEngine\Commands\SiteList;
 use OriginEngine\Commands\SiteNew;
-use OriginEngine\Commands\SitePrune;
+use OriginEngine\Commands\HealthCheckCommand;
 use OriginEngine\Commands\SiteReset;
 use OriginEngine\Commands\SiteUp;
 use OriginEngine\Commands\SiteUse;
@@ -77,7 +77,6 @@ class OriginEngineServiceProvider extends ServiceProvider
             SiteDown::class,
             SiteList::class,
             SiteNew::class,
-            SitePrune::class,
             SiteReset::class,
             SiteUp::class,
             SiteDefault::class

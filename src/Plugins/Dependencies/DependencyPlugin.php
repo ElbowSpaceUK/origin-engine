@@ -35,10 +35,8 @@ class DependencyPlugin extends Plugin
         parent::register();
     }
 
-    public function boot(Config $config)
+    public function boot()
     {
-        parent::boot($config);
-
         $pipelineModifier = app(PipelineModifier::class);
         $pipelineModifier->extend('feature:use', function(Pipeline $pipeline) {
             if(isset($pipeline->feature)) {

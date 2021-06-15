@@ -68,4 +68,12 @@ class FeatureRepository implements FeatureRepositoryContract
         return Feature::where('site_id', $site->getId())->get();
     }
 
+    public function getByBranchAndSite(Site $site, string $branch): Feature
+    {
+        return Feature::where([
+            'branch' => $branch,
+            'site_id' => $site->getId()
+        ])->firstOrFail();
+    }
+
 }

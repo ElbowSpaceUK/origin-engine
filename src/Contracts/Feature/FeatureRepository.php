@@ -25,4 +25,6 @@ interface FeatureRepository
 
     public function restore(int $id): void;
 
+    public function getByBranchAndSite(Site $site, string $branch): Feature;
+
 }
