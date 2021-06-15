@@ -4,13 +4,17 @@
     "type": "library",
     "license": "MIT",
     "support": {
-        "issues": "https://github.com/ElbowSpaceUK/origin/issues",
-        "source": "https://github.com/ElbowSpaceUK/origin"
+        "issues": "https://github.com/ElbowSpaceUK/origin-engine/issues",
+        "source": "https://github.com/ElbowSpaceUK/origin-engine"
     },
     "authors": [
         {
             "name": "Toby Twigger",
             "email": "tobytwigger1@gmail.com"
+        },
+        {
+            "name": "Aidan Laycock",
+            "email": "aidan@elbowspace.co.uk"
         }
     ],
     "require": {
