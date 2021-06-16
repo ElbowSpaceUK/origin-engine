@@ -2,11 +2,14 @@
 
 namespace OriginEngine\Plugins\HealthCheck\Checkers;
 
+use Cz\Git\GitRepository;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\Artisan;
 use OriginEngine\Contracts\Feature\FeatureRepository;
 use OriginEngine\Contracts\Feature\FeatureResolver;
 use OriginEngine\Contracts\Site\SiteRepository;
+use OriginEngine\Helpers\IO\IO;
+use OriginEngine\Helpers\Storage\Filesystem;
 use OriginEngine\Plugins\HealthCheck\Checker;
 use OriginEngine\Plugins\HealthCheck\CheckerStatus;
 use OriginEngine\Site\Site;
@@ -25,83 +28,33 @@ class ActiveFeatureIsSet extends Checker
      */
     public function check(Site $site): CheckerStatus
     {
+        $currentBranch = (new GitRepository(Filesystem::project($site->getDirectoryPath())))->getCurrentBranchName();
 
-        // If a feature is not checked out, and the branch = site default branch
-            // All good. No feature checked out
-        // If a feature is checked out, branch equal checked out feature
-            // All good. Right feature checked out
+        $hasFeature = app(FeatureResolver::class)->hasFeature($site);
 
-        // If the branch does not equal site default branch
-            // Need to check out the right feature. If doesn't exist, create.
-        // If a feature is checked out, and the branch = site default branch
-            // Clear the feature
-
-
-
-
-        // Change the used feature to match what it actually is, if that feature is in the db.
-        // If it isn't (by branch), will either say they need to create a feature with the branch x or reset the site.
-        // Can call those commands for them, ask what they want or nothing.
-
-        $currentBranch = 'develop';
-        $hasFeature = app(FeatureRepository::class)->hasFeature($site);
-
-        // If no feature is checked out in the file system...
+        // If the site should not have a feature set as active
         if($currentBranch === $site->getBlueprint()->getDefaultBranch()) {
-            if (!$hasFeature) {
-                return $this->succeededDueTo('no feature being checked out');
+            if(app(FeatureResolver::class)->hasFeature($site)) {
+                return $this->failedDueTo('A feature being used but not checked out');
             }
-            return $this->failedDueTo('a feature being checked out when the feature is not in use');
-        }
-
-        // If a feature is checked out in the filesystem
-
-        // If the saved feature in the db is the one checked out in the filesystem
-        if ($hasFeature && $currentBranch === app(FeatureResolver::class)->getFeature($site)->getBranch()) {
-            return $this->succeededDueTo('correct feature being checked out');
-        }
-
-        // If the feature is not checked out in the db, but is in the filesystem
-        if(!$hasFeature) {
+            return $this->succeededDueTo('No feature checked out or being used');
+        } else {
             try {
-                $checkedOutFeature = app(FeatureRepository::class)->getByBranchAndSite($site, $currentBranch);
+                $feature = app(FeatureRepository::class)->getByBranchAndSite($site, $currentBranch);
             } catch (ModelNotFoundException $e) {
-                return $this->failedDueTo('the feature checked out in the filesystem does not exist.');
-
-                Artisan::call('feature:new', [
-                    '--branch' => $currentBranch,
-                    '--site' => $site->getId()
-                ]);
-                $checkedOutFeature = app(FeatureRepository::class)->getByBranchAndSite($site, $currentBranch);
-                app(FeatureResolver::class)->setFeature($checkedOutFeature);
-                // Handle the case of the feature does not exist, so must create it or reset the site. Unless the branch is the same as the default branch?
+                return $this->failedDueTo('A non-existent feature being checked out');
             }
-            // Get the feature for the branch $currentBranch, and set the current feature.
+            if(!$hasFeature) {
+                return $this->failedDueTo('A feature being checked out but not used');
+            } else {
+                if(app(FeatureResolver::class)->getFeature($site)->getBranch() === $currentBranch) {
+                    return $this->succeededDueTo('The same feature being checked out and used');
+                } else {
+                    return $this->failedDueTo('A different feature being checked out than used');
+                }
+            }
         }
 
-        return $this->failedDueTo('origin thinking the wrong feature was checked out.');
-//          app(FeatureResolver::class)->clearFeature($site);
-        // If current branch the same as default branch, and feature not set, fine.
-
-        // If current branch the same as default branch, but feature set, clear the feature.
-
-        try {
-            $checkedOutFeature = app(FeatureRepository::class)->getByBranchAndSite($site, $currentBranch);
-        } catch (ModelNotFoundException $e) {
-            // Handle the case of the feature does not exist, so must create it or reset the site. Unless the branch is the same as the default branch?
-        }
-
-        $currentFeature = app(FeatureResolver::class)->getFeature();
-
-        // If a feature is the one in the db
-        if (!app(FeatureResolver::class)->hasFeature($site)) {
-            return $this->failedDueTo('no feature being checked out in origins records');
-        }
-        // If the feature is the same as the checked out feature
-        if (app(FeatureResolver::class)->getFeature($site)->getId() === $currentFeature->getId()) {
-            return $this->succeededDueTo('the correct feature being checked out');
-        }
-        return $this->failedDueTo('the checked out feature was different to origins records.');
     }
 
     /**
@@ -111,74 +64,55 @@ class ActiveFeatureIsSet extends Checker
      */
     public function fix(Site $site): void
     {
-        $currentBranch = 'develop';
-        $hasFeature = app(FeatureRepository::class)->hasFeature($site);
-
-        if ($hasFeature && $currentBranch === $site->getBlueprint()->getDefaultBranch()) {
-            app(FeatureResolver::class)->clearFeature($site);
-        }
-
-        if($currentBranch !== $site->getBlueprint()->getDefaultBranch()) {
-            // If the saved feature in the db is the one checked out in the filesystem
-            if ($hasFeature && $currentBranch === app(FeatureResolver::class)->getFeature($site)->getBranch()) {
-//                return $this->succeededDueTo('correct feature being checked out');
+        $currentBranch = (new GitRepository(Filesystem::project($site->getDirectoryPath())))->getCurrentBranchName();
+        /** @var FeatureResolver $featureResolver */
+        $featureResolver = app(FeatureResolver::class);
+        $hasFeature = $featureResolver->hasFeature($site);
+        // If the site should not have a feature set as active
+        if($currentBranch === $site->getBlueprint()->getDefaultBranch()) {
+            if($hasFeature) {
+                $featureResolver->clearFeature($site);
             }
-
-            if($hasFeature)
+        } else {
             try {
                 $checkedOutFeature = app(FeatureRepository::class)->getByBranchAndSite($site, $currentBranch);
+                if($hasFeature) {
+                    if($currentBranch !== $featureResolver->getFeature($site)->getBranch()) {
+                        $featureResolver->clearFeature($site);
+                        $featureResolver->setFeature($checkedOutFeature);
+                    }
+                } else {
+                    $featureResolver->setFeature($checkedOutFeature);
+                }
             } catch (ModelNotFoundException $e) {
-                Artisan::call('feature:new', [
-                    '--branch' => $currentBranch,
-                    '--site' => $site->getId()
-                ]);
-                $checkedOutFeature = app(FeatureRepository::class)->getByBranchAndSite($site, $currentBranch);
-                app(FeatureResolver::class)->setFeature($checkedOutFeature);
-                // Handle the case of the feature does not exist, so must create it or reset the site. Unless the branch is the same as the default branch?
+                $type = IO::choice(
+                    sprintf(
+                        'The checked out feature does not currently exist in Origin. Would you like to set the [%s] branch up as a feature, or reset the site to remove the branch?',
+                        $currentBranch
+                    ),
+                    [
+                        'create' => sprintf('Create a new feature using the [%s] branch', $currentBranch),
+                        'reset' => sprintf('Reset the site to [%s]', $site->getBlueprint()->getDefaultBranch()),
+                        'cancel' => 'Do not fix this now'
+                    ]
+                );
+                switch($type) {
+                    case 'create':
+                        Artisan::call('feature:new', [
+                            '--branch' => $currentBranch,
+                            '--site' => $site->getId()
+                        ]);
+                        $checkedOutFeature = app(FeatureRepository::class)->getByBranchAndSite($site, $currentBranch);
+                        break;
+                    case 'reset':
+                        Artisan::call('site:reset', [
+                            '--site' => $site->getId()
+                        ]);
+                    default:
+                        break;
+                }
             }
-
-            if(!$hasFeature) {
-
-                // Get the feature for the branch $currentBranch, and set the current feature.
-            }
-
         }
-
-
-        // If the feature is not checked out in the db, but is in the filesystem
-        // Check out the right feature.
-
-
-
-
-
-
-
-
-
-        $currentBranch = 'develop';
-
-        if ($currentBranch === $site->getBlueprint()->getDefaultBranch() && app(FeatureResolver::class)->hasFeature($site)) {
-            app(FeatureResolver::class)->clearFeature($site);
-        }
-
-        try {
-            $checkedOutFeature = app(FeatureRepository::class)->getByBranchAndSite($site, $currentBranch);
-        } catch (ModelNotFoundException $e) {
-            // Handle the case of the feature does not exist, so must create it or reset the site. Unless the branch is the same as the default branch?
-        }
-
-        $currentFeature = app(FeatureResolver::class)->getFeature();
-
-        // If a feature is the one in the db
-        if (!app(FeatureResolver::class)->hasFeature($site)) {
-            return $this->failedDueTo('no feature being checked out in origins records');
-        }
-        // If the feature is the same as the checked out feature
-        if (app(FeatureResolver::class)->getFeature($site)->getId() === $currentFeature->getId()) {
-            return $this->succeededDueTo('the correct feature being checked out');
-        }
-        return $this->failedDueTo('the checked out feature was different to origins records.');
     }
 
     /**

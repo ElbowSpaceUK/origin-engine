@@ -9,6 +9,7 @@ use OriginEngine\Feature\Feature;
 use OriginEngine\Helpers\Directory\Directory;
 use Cz\Git\GitException;
 use Cz\Git\GitRepository;
+use OriginEngine\Helpers\IO\IO;
 use OriginEngine\Pipeline\RunsPipelines;
 
 class FeatureNew extends SiteCommand
@@ -46,7 +47,7 @@ class FeatureNew extends SiteCommand
         $featureType = trim($this->getFeatureChangeType());
         $branchName = $this->getOrAskForOption(
             'branch',
-            fn() => $this->ask('What should we name the branch?', Feature::getDefaultBranchName($featureType, $featureName)),
+            fn() => IO::ask('What should we name the branch?', Feature::getDefaultBranchName($featureType, $featureName)),
             fn($value) => $value && strlen($value) > 0
         );
 
@@ -58,7 +59,7 @@ class FeatureNew extends SiteCommand
     {
         return $this->getOrAskForOption(
             'name',
-            fn() => $this->ask('Name this feature in a couple of words'),
+            fn() => IO::ask('Name this feature in a couple of words'),
             fn($value) => $value && is_string($value)
         );
     }
@@ -67,7 +68,7 @@ class FeatureNew extends SiteCommand
     {
         return $this->getOrAskForOption(
             'description',
-            fn() => $this->ask('Describe what this feature will do', ''),
+            fn() => IO::ask('Describe what this feature will do', ''),
             fn($value) => $value === '' || ($value && is_string($value) && strlen($value) < 250)
         );
     }
@@ -86,7 +87,7 @@ class FeatureNew extends SiteCommand
         return $this->getOrAskForOption(
             'type',
             fn() => array_search(
-                $this->choice('What kind of change is this?', array_values($allowedTypes)),
+                IO::choice('What kind of change is this?', array_values($allowedTypes)),
                 $allowedTypes
             ),
             fn($value) => $value && in_array($value, array_keys($allowedTypes))

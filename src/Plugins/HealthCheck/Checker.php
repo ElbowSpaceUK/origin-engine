@@ -6,6 +6,7 @@ use OriginEngine\Site\Site;
 
 abstract class Checker
 {
+    protected bool $isQuickCheck = true;
 
     /**
      * Determine if the site passes the check
@@ -53,5 +54,10 @@ abstract class Checker
     protected function succeededDueTo(string $message = 'the check passing'): CheckerStatus
     {
         return CheckerStatus::succeededDueTo($message);
+    }
+
+    public function isQuickCheck(): bool
+    {
+        return $this->isQuickCheck;
     }
 }

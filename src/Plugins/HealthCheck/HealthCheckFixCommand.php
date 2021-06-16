@@ -36,6 +36,7 @@ class HealthCheckFixCommand extends Command
     {
         if(!IO::confirm('This is a potentially destructive action, so it is recommended to ensure your work is saved and backed up/on git. Would you like to continue?', false)) {
             IO::warning('Health check did not run.');
+            return 1;
         }
 
         foreach($this->getCheckers() as $checker) {

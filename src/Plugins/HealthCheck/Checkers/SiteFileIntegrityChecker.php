@@ -10,6 +10,8 @@ use OriginEngine\Site\Site;
 class SiteFileIntegrityChecker extends Checker
 {
 
+    protected bool $isQuickCheck = false;
+
     /**
      * Determine if the site passes the check
      *

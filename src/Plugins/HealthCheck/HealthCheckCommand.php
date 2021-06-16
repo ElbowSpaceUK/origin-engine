@@ -19,7 +19,7 @@ class HealthCheckCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'healthcheck';
+    protected $signature = 'healthcheck {--quick : Only run quick checks}';
 
     /**
      * The description of the command.
@@ -37,6 +37,9 @@ class HealthCheckCommand extends Command
     {
         $failedChecks = [];
         foreach($this->getCheckers() as $checker) {
+            if(!$checker->isQuickCheck() && $this->option('quick')) {
+                continue;
+            }
             IO::task('Checking ' . $checker->checking(), function() use ($checker, $siteRepository, &$failedChecks) {
                 $checkResult = true;
                 foreach($siteRepository->all() as $site) {
