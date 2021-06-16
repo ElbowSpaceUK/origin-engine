@@ -3,10 +3,10 @@
 <p align="center">
 Your local development environment in a single command
 <br />
-<a href="https://github.com/ElbowSpaceUK/origin-engine/blob/develop/developer-notes.md"><strong>Explore the docs »</strong></a>
+<a href="https://github.com/ElbowSpaceUK/origin-engine/blob/develop/user-notes.md"><strong>Explore the docs »</strong></a>
 <br />
 <br />
-<a href="https://github.com/ElbowSpaceUK/origin-engine">Developer Documentation</a>
+<a href="https://github.com/ElbowSpaceUK/origin-engine/blob/develop/developer-notes.md">Developer Documentation</a>
 ·
 <a href="https://github.com/ElbowSpaceUK/origin-engine/issues/new">Report Bug</a>
 ·
