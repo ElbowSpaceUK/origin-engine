@@ -1,4 +1,4 @@
-<h3 align="center">Origin Engine</h3>
+<h1 align="center">Origin Engine</h3>
 
 <p align="center">
 Your local development environment in a single command
@@ -30,7 +30,7 @@ It works predominantly with PHP based applications, using `composer` for depende
 
 Implemented features
 - Local site management. Spin up a new instance of any site with a single command.
-- Local dependency tools. Quickly clone and symlink a dependency using php, making working on dependencies seamless.
+- Local dependency tools. Quickly clone and symlink a dependency using composer, making working on dependencies seamless.
 - Create and publish code stubs to quickly scaffold repetitive structures
 - Work on many branches in the same local site, and easily switch between features.
 
