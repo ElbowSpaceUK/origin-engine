@@ -25,7 +25,7 @@ Your local development environment in a single command
 
 ## About The Project
 
-Origin is a customisable local development tool. It can help you manage everything from locally running your apps and working on their dependencies to managing your git workflow and ticketing system.
+Origin is a customisable local development tool for Windows WSL2, macOS & Linux. It can help you manage everything from locally running your apps and working on their dependencies to managing your git workflow and ticketing system.
 It works predominantly with PHP based applications, using `composer` for dependency management.
 
 Implemented features
