@@ -13,12 +13,21 @@ class LocalPackage extends Model
     use HasFactory, SoftDeletes;
 
     protected $fillable = [
-        'name', 'url', 'type', 'original_version', 'feature_id', 'parent_feature_id'
+        'name', 'url', 'type', 'original_version', 'feature_id', 'parent_feature_id', 'is_local'
+    ];
+
+    protected $casts = [
+        'is_local' => 'boolean'
     ];
 
     public function feature()
     {
         return $this->belongsTo(Feature::class);
+    }
+
+    public function isLocal(): bool
+    {
+        return $this->is_local;
     }
 
     public function parentFeature()
@@ -64,5 +73,10 @@ class LocalPackage extends Model
     public function getParentFeature(): Feature
     {
         return $this->parentFeature;
+    }
+
+    public function getPathRelativeToRoot(): string
+    {
+        return sprintf('repos/%s', $this->getName());
     }
 }

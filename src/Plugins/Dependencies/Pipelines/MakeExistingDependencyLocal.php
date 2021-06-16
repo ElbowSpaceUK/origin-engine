@@ -13,6 +13,7 @@ use OriginEngine\Plugins\Dependencies\LocalPackage;
 use OriginEngine\Plugins\Dependencies\Tasks\ComposerAddLocalSymlink;
 use OriginEngine\Plugins\Dependencies\Tasks\ComposerRequirePackageLocally;
 use OriginEngine\Plugins\Dependencies\Tasks\DeleteDependencyFromVendor;
+use OriginEngine\Plugins\Dependencies\Tasks\MarkDependencyAsLocallyInstalled;
 
 class MakeExistingDependencyLocal extends Pipeline
 {
@@ -27,8 +28,7 @@ class MakeExistingDependencyLocal extends Pipeline
 
     protected function tasks(): array
     {
-        $path = sprintf('repos/%s', $this->localPackage->getName());
-
+        $path = $this->localPackage->getPathRelativeToRoot();
         $checkoutBranch = new CheckoutBranch($this->localPackage->getFeature()->getBranch(), true);
         $checkoutBranch->inRelativeDirectory($path);
 
@@ -42,6 +42,7 @@ class MakeExistingDependencyLocal extends Pipeline
             'checkout-branch' => $checkoutBranch,
             'modify-composer-json' => new ComposerRequirePackageLocally($this->localPackage->getName(), $this->localPackage->getFeature()->getBranch()),
             'add-local-symlink' => new ComposerAddLocalSymlink(sprintf('./%s', $path)),
+            'mark-dependency-as-local' => new MarkDependencyAsLocallyInstalled($this->localPackage),
             'update-composer' => new ComposerUpdate()
         ];
     }

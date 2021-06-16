@@ -46,7 +46,7 @@ class DepList extends SiteCommand
                     $dep->getUrl(),
                     $dep->getType(),
                     $dep->getOriginalVersion(),
-                    Filesystem::create()->exists($dep->getFeature()->getDirectory()->path()) ? 'Y' : 'N'
+                    $dep->isLocal() ? 'Y' : 'N'
                 ];
             })
         );

@@ -84,7 +84,7 @@ class Feature extends Model
         if($this->isDependency()) {
             $path = Filesystem::append(
                 $path,
-                sprintf('repos/%s', LocalPackage::where('feature_id', $this->getId())->firstOrFail()->getName())
+                LocalPackage::where('feature_id', $this->getId())->firstOrFail()->getPathRelativeToRoot()
             );
         }
 

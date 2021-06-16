@@ -12,6 +12,7 @@ use OriginEngine\Pipeline\Pipeline;
 use OriginEngine\Pipeline\PipelineModifier;
 use OriginEngine\Pipeline\Tasks\Utils\Closure;
 use OriginEngine\Pipeline\Tasks\Utils\RunPipeline;
+use OriginEngine\Plugins\Dependencies\Checkers\LocalDependenciesInstalledChecker;
 use OriginEngine\Plugins\Dependencies\Commands\DepList;
 use OriginEngine\Plugins\Dependencies\Commands\DepLocal;
 use OriginEngine\Plugins\Dependencies\Commands\DepMake;
@@ -32,6 +33,7 @@ class DependencyPlugin extends Plugin
     public function register()
     {
         $this->app->bind(LocalPackageRepositoryContract::class, LocalPackageDatabaseRepository::class);
+        $this->app->tag([LocalDependenciesInstalledChecker::class], 'healthcheck');
         parent::register();
     }
 
@@ -55,6 +57,7 @@ class DependencyPlugin extends Plugin
                 }
             }
         });
+        parent::boot();
     }
 
 }

@@ -12,8 +12,13 @@ class LocalPackageDatabaseRepository implements LocalPackageRepository
         return LocalPackage::findOrFail($id);
     }
 
+    /**
+     * @param int $featureId
+     * @return LocalPackage[]|array
+     */
     public function getAllThroughFeature(int $featureId): array
     {
         return LocalPackage::where('parent_feature_id', $featureId)->get()->all();
     }
+
 }

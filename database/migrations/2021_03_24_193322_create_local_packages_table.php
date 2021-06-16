@@ -21,6 +21,7 @@ class CreateLocalPackagesTable extends Migration
             $table->string('original_version')->nullable();
             $table->unsignedBigInteger('parent_feature_id');
             $table->unsignedBigInteger('feature_id');
+            $table->boolean('is_local')->default(false);
             $table->timestamps();
             $table->softDeletes();
         });
