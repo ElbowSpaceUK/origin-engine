@@ -7,6 +7,8 @@ See developer documentation [here](./developer-notes.md).
 
 ## Command Reference
 
+- Run after an update: `atlas post-update`
+
 ### Sites
 
 - Create a site: `atlas site:new`
@@ -36,3 +38,7 @@ See developer documentation [here](./developer-notes.md).
 
 - Create a new stub: `atlas stub:make`
 - List all available stubs: `atlas stub:list`
+
+### Health Check
+- Check the health of origin: `atlas healthcheck`
+- Fix origin: `atlas healthcheck:fix`

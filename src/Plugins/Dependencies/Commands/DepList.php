@@ -17,7 +17,7 @@ class DepList extends SiteCommand
      *
      * @var string
      */
-    protected $signature = 'dependency:list';
+    protected $signature = 'dep:list';
 
     /**
      * The description of the command.
