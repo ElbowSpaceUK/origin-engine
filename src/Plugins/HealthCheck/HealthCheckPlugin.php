@@ -10,8 +10,8 @@ class HealthCheckPlugin extends Plugin
 {
 
     protected array $commands = [
-        HealthCheckCommand::class,
-        HealthCheckFixCommand::class,
+        \OriginEngine\Plugins\HealthCheck\Commands\HealthCheckCommand::class,
+        \OriginEngine\Plugins\HealthCheck\Commands\HealthCheckFixCommand::class,
     ];
 
     protected array $checkers = [

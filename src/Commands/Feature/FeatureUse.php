@@ -1,6 +1,6 @@
 <?php
 
-namespace OriginEngine\Commands;
+namespace OriginEngine\Commands\Feature;
 
 use OriginEngine\Commands\Pipelines\CheckoutFeature;
 use OriginEngine\Contracts\Command\SiteCommand;

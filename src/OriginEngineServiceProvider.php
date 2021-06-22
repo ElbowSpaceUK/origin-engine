@@ -2,23 +2,19 @@
 
 namespace OriginEngine;
 
-use OriginEngine\Commands\FeatureClear;
-use OriginEngine\Commands\FeatureDefault;
-use OriginEngine\Commands\FeatureDelete;
-use OriginEngine\Commands\FeatureList;
-use OriginEngine\Commands\FeatureNew;
-use OriginEngine\Commands\FeatureUse;
+use OriginEngine\Commands\Feature\FeatureDelete;
+use OriginEngine\Commands\Feature\FeatureList;
+use OriginEngine\Commands\Feature\FeatureNew;
+use OriginEngine\Commands\Feature\FeatureUse;
 use OriginEngine\Commands\PostUpdate;
-use OriginEngine\Commands\SiteClear;
-use OriginEngine\Commands\SiteDefault;
-use OriginEngine\Commands\SiteDelete;
-use OriginEngine\Commands\SiteDown;
-use OriginEngine\Commands\SiteList;
-use OriginEngine\Commands\SiteNew;
-use OriginEngine\Commands\HealthCheckCommand;
-use OriginEngine\Commands\SiteReset;
-use OriginEngine\Commands\SiteUp;
-use OriginEngine\Commands\SiteUse;
+use OriginEngine\Commands\Site\SiteClear;
+use OriginEngine\Commands\Site\SiteDefault;
+use OriginEngine\Commands\Site\SiteDelete;
+use OriginEngine\Commands\Site\SiteDown;
+use OriginEngine\Commands\Site\SiteList;
+use OriginEngine\Commands\Site\SiteNew;
+use OriginEngine\Commands\Site\SiteReset;
+use OriginEngine\Commands\Site\SiteUp;
 use OriginEngine\Contracts\Feature\FeatureRepository as FeatureRepositoryContract;
 use OriginEngine\Contracts\Feature\FeatureResolver;
 use OriginEngine\Contracts\Helpers\Composer\OperationManager as OperationManagerContract;

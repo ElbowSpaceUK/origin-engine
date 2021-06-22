@@ -119,7 +119,7 @@ class SiteCommand extends Command
                 IO::confirm(sprintf('This will run on feature \'%s\', is this correct?', app(SiteResolver::class)->getSite()->getCurrentFeature()->getName()), true)
             )
         ) {
-            $this->cachedFeature = app(SiteResolver::class)->getSite();
+            $this->cachedFeature = app(SiteResolver::class)->getSite()->getCurrentFeature();
             static::$confirmedFeature = true;
             return $this->cachedFeature;
         }

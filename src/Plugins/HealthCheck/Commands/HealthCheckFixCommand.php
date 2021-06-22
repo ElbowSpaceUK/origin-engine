@@ -1,6 +1,6 @@
 <?php
 
-namespace OriginEngine\Plugins\HealthCheck;
+namespace OriginEngine\Plugins\HealthCheck\Commands;
 
 use Illuminate\Container\RewindableGenerator;
 use OriginEngine\Commands\Pipelines\HealthCheckPipeline;

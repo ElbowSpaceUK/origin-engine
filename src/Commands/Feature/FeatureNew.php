@@ -1,6 +1,6 @@
 <?php
 
-namespace OriginEngine\Commands;
+namespace OriginEngine\Commands\Feature;
 
 use OriginEngine\Commands\Pipelines\NewFeature;
 use OriginEngine\Contracts\Command\SiteCommand;

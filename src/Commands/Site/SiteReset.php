@@ -1,6 +1,6 @@
 <?php
 
-namespace OriginEngine\Commands;
+namespace OriginEngine\Commands\Site;
 
 use OriginEngine\Commands\Pipelines\ResetSite;
 use OriginEngine\Contracts\Command\SiteCommand;

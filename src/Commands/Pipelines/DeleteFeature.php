@@ -27,9 +27,6 @@ class DeleteFeature extends Pipeline
             }
         });
 
-        $this->before('delete-feature', function(PipelineConfig $config, PipelineHistory $history, string $key) {
-            IO::warning('Should remove local dependencies here');
-        });
     }
 
     public function tasks(): array

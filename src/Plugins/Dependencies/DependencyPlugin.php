@@ -57,6 +57,16 @@ class DependencyPlugin extends Plugin
                 }
             }
         });
+
+        $pipelineModifier->extend('feature:delete', function(Pipeline $pipeline) {
+            if(isset($pipeline->site) && $pipeline->site->hasCurrentFeature()) {
+                $repo = app(LocalPackageRepositoryContract::class);
+                foreach($repo->getAllThroughFeature($pipeline->site->getCurrentFeature()->getId()) as $localPackage) {
+                    $pipeline->runTaskBefore('delete-feature', 'remove-local-dependencies-' . $localPackage->getName(), new RunPipeline(new MakeDependencyRemote($localPackage)));
+                }
+            }
+        });
+
         parent::boot();
     }
 

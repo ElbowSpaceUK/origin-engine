@@ -1,6 +1,6 @@
 <?php
 
-namespace OriginEngine\Commands;
+namespace OriginEngine\Commands\Site;
 
 use OriginEngine\Contracts\Command\Command;
 use OriginEngine\Contracts\Command\SiteCommand;
