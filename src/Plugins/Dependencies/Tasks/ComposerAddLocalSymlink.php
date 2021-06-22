@@ -26,7 +26,7 @@ class ComposerAddLocalSymlink extends Task
 
         ComposerModifier::for($workingDirectory)->addRepository(
             'path',
-            sprintf('./%s', $config->get('path')),
+            $config->get('path'),
             ['symlink' => true]
         );
 
