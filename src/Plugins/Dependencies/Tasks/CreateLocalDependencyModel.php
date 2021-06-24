@@ -34,6 +34,7 @@ class CreateLocalDependencyModel extends Task
             'original_version' => $this->getCurrentVersionConstraint($workingDirectory, $config->get('name')),
             'feature_id' => $config->get('dependency-feature')->getId(),
             'parent_feature_id' => $config->get('site-feature')->getId(),
+            'is_local' => false
         ]);
 
         $this->export('package', $localPackage);
