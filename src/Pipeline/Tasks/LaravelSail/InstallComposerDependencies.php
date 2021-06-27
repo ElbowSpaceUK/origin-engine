@@ -12,10 +12,21 @@ use OriginEngine\Pipeline\TaskResponse;
 class InstallComposerDependencies extends Task
 {
 
+    /**
+     * ComposerUpdate constructor.
+     * @param string $phpVersion One of '74' or '80'
+     */
+    public function __construct(string $phpVersion = '74')
+    {
+        parent::__construct([
+            'php-version' => $phpVersion
+        ]);
+    }
+
     protected function execute(Directory $workingDirectory, Collection $config): TaskResponse
     {
         $composer = new ComposerRunner($workingDirectory);
-        $output = $composer->install();
+        $output = $composer->withPhp($config->get('php-version', '74'))->install();
 
         $this->writeSuccess('Ran composer install');
         $this->writeDebug('Composer install output: ' . $output);
