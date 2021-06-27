@@ -31,6 +31,11 @@ class VeryVerbosePipelineRunner extends VerbosePipelineRunner implements Pipelin
                 IO::success($message);
             }
         });
-        return parent::run($pipeline, $config, $workingDirectory);
+
+        $history = parent::run($pipeline, $config, $workingDirectory);
+
+        dump($history);
+
+        return $history;
     }
 }
