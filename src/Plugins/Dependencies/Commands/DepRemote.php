@@ -2,7 +2,7 @@
 
 namespace OriginEngine\Plugins\Dependencies\Commands;
 
-use OriginEngine\Contracts\Command\SiteCommand;
+use OriginEngine\Command\SiteCommand;
 use OriginEngine\Contracts\Site\SiteRepository;
 use OriginEngine\Feature\Feature;
 use OriginEngine\Helpers\Composer\ComposerRunner;

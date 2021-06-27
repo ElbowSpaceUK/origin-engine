@@ -6,7 +6,7 @@ use Illuminate\Container\RewindableGenerator;
 use OriginEngine\Commands\Pipelines\HealthCheckPipeline;
 use OriginEngine\Contracts\Site\SiteRepository;
 use OriginEngine\Helpers\Directory\Directory;
-use OriginEngine\Contracts\Command\Command;
+use OriginEngine\Command\Command;
 use OriginEngine\Helpers\IO\IO;
 use OriginEngine\Pipeline\RunsPipelines;
 use OriginEngine\Site\Site;

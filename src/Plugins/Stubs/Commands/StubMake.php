@@ -3,9 +3,9 @@
 namespace OriginEngine\Plugins\Stubs\Commands;
 
 use Illuminate\Support\Collection;
-use OriginEngine\Contracts\Command\Command;
-use OriginEngine\Contracts\Command\FeatureCommand;
-use OriginEngine\Contracts\Command\SiteCommand;
+use OriginEngine\Command\Command;
+use OriginEngine\Command\FeatureCommand;
+use OriginEngine\Command\SiteCommand;
 use OriginEngine\Helpers\IO\IO;
 use OriginEngine\Helpers\Storage\Filesystem;
 use OriginEngine\Helpers\Directory\Directory;

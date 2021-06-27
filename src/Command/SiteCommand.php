@@ -1,6 +1,6 @@
 <?php
 
-namespace OriginEngine\Contracts\Command;
+namespace OriginEngine\Command;
 
 use OriginEngine\Contracts\Feature\FeatureRepository;
 use OriginEngine\Contracts\Site\SiteRepository;

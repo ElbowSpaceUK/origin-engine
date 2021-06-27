@@ -4,7 +4,7 @@ namespace OriginEngine\Commands\Site;
 
 use OriginEngine\Contracts\Site\SiteRepository;
 use OriginEngine\Site\Site;
-use OriginEngine\Contracts\Command\Command;
+use OriginEngine\Command\Command;
 
 class SiteList extends Command
 {

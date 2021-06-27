@@ -4,7 +4,7 @@ namespace OriginEngine\Commands\Feature;
 
 use OriginEngine\Contracts\Feature\FeatureRepository;
 use OriginEngine\Feature\Feature;
-use OriginEngine\Contracts\Command\Command;
+use OriginEngine\Command\Command;
 
 class FeatureList extends Command
 {

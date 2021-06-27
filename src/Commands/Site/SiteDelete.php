@@ -3,8 +3,8 @@
 namespace OriginEngine\Commands\Site;
 
 use OriginEngine\Commands\Pipelines\DeleteSite;
-use OriginEngine\Contracts\Command\Command;
-use OriginEngine\Contracts\Command\SiteCommand;
+use OriginEngine\Command\Command;
+use OriginEngine\Command\SiteCommand;
 use OriginEngine\Contracts\Pipeline\PipelineRunner;
 use OriginEngine\Contracts\Site\SiteRepository;
 use OriginEngine\Helpers\IO\IO;
