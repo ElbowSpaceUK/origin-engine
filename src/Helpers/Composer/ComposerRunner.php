@@ -60,6 +60,8 @@ class ComposerRunner
             sprintf('echo $GITHUB_KEYSCAN >> ~/.ssh/known_hosts && composer %s', $command)
         );
 
+        dd((string) $docker);
+
         return Executor::cd($this->workingDirectory)
             ->execute($docker);
     }
