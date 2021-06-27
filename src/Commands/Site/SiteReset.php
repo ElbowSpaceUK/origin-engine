@@ -3,7 +3,7 @@
 namespace OriginEngine\Commands\Site;
 
 use OriginEngine\Commands\Pipelines\ResetSite;
-use OriginEngine\Contracts\Command\SiteCommand;
+use OriginEngine\Command\SiteCommand;
 use OriginEngine\Contracts\Feature\FeatureResolver;
 use OriginEngine\Pipeline\RunsPipelines;
 

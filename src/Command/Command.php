@@ -1,6 +1,6 @@
 <?php
 
-namespace OriginEngine\Contracts\Command;
+namespace OriginEngine\Command;
 
 use OriginEngine\Contracts\Feature\FeatureRepository;
 use OriginEngine\Contracts\Feature\FeatureResolver;
@@ -19,11 +19,12 @@ use OriginEngine\Pipeline\Runners\VeryVerbosePipelineRunner;
 use OriginEngine\Site\Site;
 use Illuminate\Console\OutputStyle;
 use Illuminate\Support\Str;
+use Symfony\Component\Console\Command\SignalableCommandInterface;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
-abstract class Command extends \LaravelZero\Framework\Commands\Command
+abstract class Command extends \LaravelZero\Framework\Commands\Command implements SignalableCommandInterface
 {
 
     protected function configure()
@@ -73,6 +74,16 @@ abstract class Command extends \LaravelZero\Framework\Commands\Command
         }
 
         return parent::execute($input, $output);
+    }
+
+    public function getSubscribedSignals(): array
+    {
+        return [SIGINT, SIGTERM];
+    }
+
+    public function handleSignal(int $signal): void
+    {
+        event(new SignalReceived($signal));
     }
 
 }

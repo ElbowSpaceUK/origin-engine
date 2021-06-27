@@ -3,7 +3,7 @@
 namespace OriginEngine\Commands\Site;
 
 use OriginEngine\Commands\Pipelines\NewSite;
-use OriginEngine\Contracts\Command\Command;
+use OriginEngine\Command\Command;
 use OriginEngine\Contracts\Pipeline\PipelineRunner;
 use OriginEngine\Contracts\Site\SiteBlueprintStore;
 use OriginEngine\Contracts\Site\SiteRepository;

@@ -2,7 +2,7 @@
 
 namespace OriginEngine\Commands\Site;
 
-use OriginEngine\Contracts\Command\SiteCommand;
+use OriginEngine\Command\SiteCommand;
 use OriginEngine\Helpers\IO\IO;
 use OriginEngine\Pipeline\RunsPipelines;
 

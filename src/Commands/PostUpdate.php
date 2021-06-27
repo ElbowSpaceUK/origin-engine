@@ -3,7 +3,7 @@
 namespace OriginEngine\Commands;
 
 use OriginEngine\Commands\Pipelines\PostUpdate as PostUpdatePipeline;
-use OriginEngine\Contracts\Command\Command;
+use OriginEngine\Command\Command;
 use OriginEngine\Helpers\Directory\Directory;
 use OriginEngine\Pipeline\RunsPipelines;
 

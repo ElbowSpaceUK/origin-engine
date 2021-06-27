@@ -2,9 +2,9 @@
 
 namespace OriginEngine\Plugins\Dependencies\Commands;
 
-use OriginEngine\Contracts\Command\Command;
-use OriginEngine\Contracts\Command\FeatureCommand;
-use OriginEngine\Contracts\Command\SiteCommand;
+use OriginEngine\Command\Command;
+use OriginEngine\Command\FeatureCommand;
+use OriginEngine\Command\SiteCommand;
 use OriginEngine\Helpers\Storage\Filesystem;
 use OriginEngine\Plugins\Dependencies\LocalPackage;
 use OriginEngine\Plugins\Dependencies\Contracts\LocalPackageRepository;

@@ -3,7 +3,7 @@
 namespace OriginEngine\Commands\Feature;
 
 use OriginEngine\Commands\Pipelines\CheckoutFeature;
-use OriginEngine\Contracts\Command\SiteCommand;
+use OriginEngine\Command\SiteCommand;
 use OriginEngine\Contracts\Feature\FeatureResolver;
 use OriginEngine\Contracts\Site\SiteResolver;
 use OriginEngine\Pipeline\RunsPipelines;

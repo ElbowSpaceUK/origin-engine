@@ -2,7 +2,7 @@
 
 namespace OriginEngine\Plugins\Stubs\Commands;
 
-use OriginEngine\Contracts\Command\Command;
+use OriginEngine\Command\Command;
 use OriginEngine\Helpers\IO\IO;
 use OriginEngine\Helpers\Storage\Filesystem;
 use OriginEngine\Helpers\Directory\Directory;

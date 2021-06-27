@@ -3,7 +3,7 @@
 namespace OriginEngine\Commands\Feature;
 
 use OriginEngine\Commands\Pipelines\DeleteFeature;
-use OriginEngine\Contracts\Command\SiteCommand;
+use OriginEngine\Command\SiteCommand;
 use OriginEngine\Contracts\Feature\FeatureRepository;
 use OriginEngine\Helpers\IO\IO;
 use OriginEngine\Pipeline\RunsPipelines;

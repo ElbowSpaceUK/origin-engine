@@ -3,7 +3,7 @@
 namespace OriginEngine\Commands\Site;
 
 use OriginEngine\Commands\Pipelines\ClearDefaultSite;
-use OriginEngine\Contracts\Command\Command;
+use OriginEngine\Command\Command;
 use OriginEngine\Contracts\Site\SiteResolver;
 use OriginEngine\Helpers\Directory\Directory;
 use OriginEngine\Helpers\IO\IO;
