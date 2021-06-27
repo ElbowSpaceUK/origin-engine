@@ -11,6 +11,11 @@ class ComposerRunner
 
     private Directory $workingDirectory;
 
+    private string $phpVersion = '74';
+
+    /**
+     * @param Directory $workingDirectory
+     */
     public function __construct(Directory $workingDirectory)
     {
         $this->workingDirectory = $workingDirectory;
@@ -21,23 +26,20 @@ class ComposerRunner
         return new static($workingDirectory);
     }
 
+    /**
+     * @param string $phpVersion One of '74' or '80'
+     */
+    public function withPhp(string $phpVersion = '74'): ComposerRunner
+    {
+        $this->phpVersion = $phpVersion;
+
+        return $this;
+    }
+
     public function update()
     {
         return $this->composer(
-            sprintf(
-                'update --working-dir %s --no-interaction --ansi',
-                $this->workingDirectory->path()
-            )
-        );
-    }
-
-    public function install(): string
-    {
-        return $this->composer(
-            sprintf(
-                'install --working-dir %s --no-interaction --ansi',
-                $this->workingDirectory->path()
-            )
+            'update --working-dir /opt --no-interaction --ansi',
         );
     }
 
@@ -54,14 +56,21 @@ class ComposerRunner
 
         $docker->setWorkingDirectory('/opt');
 
-        $docker->image('laravelsail/php74-composer:latest');
+        $docker->image(sprintf('laravelsail/php%s-composer:latest', $this->phpVersion));
 
         $docker->run(
-            sprintf('echo $GITHUB_KEYSCAN >> ~/.ssh/known_hosts && composer %s', $command)
+            sprintf('mkdir ~/.ssh; touch ~/.ssh/known_hosts; echo $GITHUB_KEYSCAN >> ~/.ssh/known_hosts && composer %s', $command)
         );
 
         return Executor::cd($this->workingDirectory)
             ->execute($docker);
+    }
+
+    public function install(): string
+    {
+        return $this->composer(
+            'install --working-dir /opt --no-interaction --ansi',
+        );
     }
 
 }
