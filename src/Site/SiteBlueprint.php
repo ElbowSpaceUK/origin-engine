@@ -17,11 +17,11 @@ abstract class SiteBlueprint
 
     abstract public function getInstallationPipeline(): Pipeline;
 
-    abstract public function getUninstallationPipeline(): Pipeline;
-
     abstract public function getSiteUpPipeline(): Pipeline;
 
     abstract public function getSiteDownPipeline(): Pipeline;
+
+    abstract public function getUninstallationPipeline(): Pipeline;
 
     public function getDefaultBranch(): string
     {
