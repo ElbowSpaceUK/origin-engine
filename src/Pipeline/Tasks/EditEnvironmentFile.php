@@ -5,9 +5,7 @@ namespace OriginEngine\Pipeline\Tasks;
 use Illuminate\Support\Collection;
 use OriginEngine\Pipeline\Task;
 use OriginEngine\Helpers\Env\EnvRepository;
-use OriginEngine\Helpers\Storage\Filesystem;
 use OriginEngine\Helpers\Directory\Directory;
-use OriginEngine\Pipeline\Old\ProvisionedTask;
 use OriginEngine\Pipeline\TaskResponse;
 
 class EditEnvironmentFile extends Task
@@ -15,10 +13,10 @@ class EditEnvironmentFile extends Task
 
     /**
      * CopyEnvironmentFile constructor.
-     * @param array $replace A key-pair array of environment variables to update or add, and the new values.
      * @param string $fileName The name of the environment file within the working directory
+     * @param array $replace A key-pair array of environment variables to update or add, and the new values.
      */
-    public function __construct(array $replace, string $fileName = '.env')
+    public function __construct(string $fileName = '.env', array $replace = [])
     {
         parent::__construct([
             'replace' => $replace,
