@@ -39,7 +39,7 @@ class ComposerRunner
     public function update()
     {
         return $this->composer(
-            'update --working-dir /opt --no-interaction --ansi',
+            'update --working-dir ' . $this->workingDirectory->path() . ' --no-interaction --ansi',
         );
     }
 
@@ -59,7 +59,7 @@ class ComposerRunner
         $docker->image(sprintf('laravelsail/php%s-composer:latest', $this->phpVersion));
 
         $docker->run(
-            sprintf('mkdir ~/.ssh; touch ~/.ssh/known_hosts; echo $GITHUB_KEYSCAN >> ~/.ssh/known_hosts && composer %s', $command)
+            sprintf('pwd && composer %s', $command)
         );
 
         return Executor::cd($this->workingDirectory)
@@ -69,7 +69,7 @@ class ComposerRunner
     public function install(): string
     {
         return $this->composer(
-            'install --working-dir /opt --no-interaction --ansi',
+            'install --working-dir ' . $this->workingDirectory->path() . ' --no-interaction --ansi',
         );
     }
 

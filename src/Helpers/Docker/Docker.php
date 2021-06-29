@@ -57,7 +57,7 @@ class Docker
                 ['docker run --rm'],
                 $this->options,
                 [$this->image],
-                [sprintf('/bin/bash -c "%s"', $this->command)]
+                [sprintf('%s', $this->command)]
             )
         );
     }
