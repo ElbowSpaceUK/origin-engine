@@ -26,7 +26,7 @@ class ComposerRemoveLocalSymlink extends Task
 
         ComposerModifier::for($workingDirectory)->removeRepository(
             'path',
-            sprintf('./%s', $config->get('path')),
+            $config->get('path'),
             ['symlink' => true]
         );
 
