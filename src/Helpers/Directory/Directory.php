@@ -46,9 +46,16 @@ class Directory
         return Str::substr($this->path(), 0, -strlen($this->getPathBasename()));
     }
 
-    public function getPath(): string
+    /**
+     * Get the name of the folder the site is situated in. This is the same as the path basename.
+     *
+     * For example, if the path was /tmp/code/sites/my-site, this function would return my-site
+     *
+     * @return string
+     */
+    public function getSiteFolderName(): string
     {
-        return Str::substr($this->path(), (strlen($this->path()) - strlen($this->getPathBasename())));
+        return $this->getPathBasename();
     }
 
     /**
