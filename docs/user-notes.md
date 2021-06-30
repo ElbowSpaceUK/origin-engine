@@ -8,8 +8,7 @@ You should always run `origin post-update` after any updates to the origin comma
 
 ### What does Origin do?
 
-- Normally a step by step on how to run a site locally. That is the same whenever ran on the same environment, therefore
-can be automated.
+- Local development normally involves a step by step guide (or more likely lots of trial and error) on how to run a site locally. That is the same whenever ran on the same environment when using tools like docker or Valet, and therefore can be automated.
 - Origin allows you to do just that. Once it knows how to set up any site locally, it can do it with 1 command, meaning it takes
 the hastle out of managing multiple instances or features.
 - As well as that, has additional features for managing development environments, such as local dependency management, workflows for managing your development process, quick scaffolding of boilerplate code with stubs and extensive plugin and pipeline systems which allows you to customise as much as is needed.
