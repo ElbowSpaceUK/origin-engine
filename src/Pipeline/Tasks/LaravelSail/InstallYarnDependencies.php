@@ -15,10 +15,11 @@ class InstallYarnDependencies extends Task
     /**
      * @param string|null $cwd The directory to run the command in
      */
-    public function __construct(?string $cwd = null)
+    public function __construct(?string $cwd = null, ?bool $valet = null)
     {
         parent::__construct([
-            'cwd' => $cwd
+            'cwd' => $cwd,
+            'valet' => $valet
         ]);
     }
 
@@ -26,7 +27,11 @@ class InstallYarnDependencies extends Task
     {
         $command = './vendor/bin/sail yarn';
 
-        if($config->get('cwd')) {
+        if ($config->get('valet')) {
+            $command = 'yarn';
+        }
+
+        if ($config->get('cwd')) {
             $command .= sprintf(' --cwd %s', $config->get('cwd'));
         }
 

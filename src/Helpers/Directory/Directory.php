@@ -47,6 +47,18 @@ class Directory
     }
 
     /**
+     * Get the name of the folder the site is situated in. This is the same as the path basename.
+     *
+     * For example, if the path was /tmp/code/sites/my-site, this function would return my-site
+     *
+     * @return string
+     */
+    public function getSiteFolderName(): string
+    {
+        return $this->getPathBasename();
+    }
+
+    /**
      * @deprecated
      * @param Site $site
      * @return Directory

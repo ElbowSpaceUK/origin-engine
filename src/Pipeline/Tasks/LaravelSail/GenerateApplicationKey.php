@@ -12,11 +12,12 @@ use OriginEngine\Pipeline\TaskResponse;
 class GenerateApplicationKey extends Task
 {
 
-    public function __construct(string $environment, string $environmentFile = '.env')
+    public function __construct(string $environment, string $environmentFile = '.env', ?bool $valet = null)
     {
         parent::__construct([
             'environment' => $environment,
-            'environmentFile' => $environmentFile
+            'environmentFile' => $environmentFile,
+            'valet' => $valet
         ]);
     }
 
@@ -31,8 +32,14 @@ class GenerateApplicationKey extends Task
         $this->export('old_app_key', $env->getVariable('APP_KEY'));
         $this->writeInfo('Old app key backed up');
 
+        $command = './vendor/bin/sail';
+
+        if($config->get('valet')) {
+            $command = 'php';
+        }
+
         $output = Executor::cd($workingDirectory)->execute(
-            sprintf('./vendor/bin/sail artisan key:generate --env=%s', $config->get('environment'))
+            sprintf('%s artisan key:generate --env=%s', $command, $config->get('environment'))
         );
 
         $this->writeSuccess('Generated a new key');

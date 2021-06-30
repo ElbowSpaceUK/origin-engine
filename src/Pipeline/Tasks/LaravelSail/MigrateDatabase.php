@@ -15,17 +15,24 @@ class MigrateDatabase extends Task
     /**
      * @param string $environment The environment to migrate
      */
-    public function __construct(string $environment)
+    public function __construct(string $environment, ?bool $valet = null)
     {
         parent::__construct([
-            'environment' => $environment
+            'environment' => $environment,
+            'valet' => $valet
         ]);
     }
 
     protected function execute(Directory $workingDirectory, Collection $config): TaskResponse
     {
+        $command = './vendor/bin/sail artisan migrate';
+
+        if($config->get('valet')) {
+            $command = 'php artisan migrate:fresh';
+        }
+
         $output = Executor::cd($workingDirectory)->execute(
-            sprintf('./vendor/bin/sail artisan migrate --env=%s', $config->get('environment'))
+            sprintf('%s --env=%s',$command, $config->get('environment'))
         );
 
         $this->writeDebug('artisan migrate output: ' . $output);
@@ -37,8 +44,13 @@ class MigrateDatabase extends Task
 
     protected function undo(Directory $workingDirectory, bool $status, Collection $config, Collection $output): void
     {
+        $command = './vendor/bin/sail artisan migrate:rollback';
+        if($config->get('valet')) {
+            $command = 'php artisan migrate:rollback';
+        }
+
         Executor::cd($workingDirectory)->execute(
-            sprintf('./vendor/bin/sail artisan migrate:rollback --env=%s', $config->get('environment'))
+            sprintf('%s --env=%s',$command, $config->get('environment'))
         );
 
     }
