@@ -46,6 +46,11 @@ class Directory
         return Str::substr($this->path(), 0, -strlen($this->getPathBasename()));
     }
 
+    public function getPath(): string
+    {
+        return Str::substr($this->path(), (strlen($this->path()) - strlen($this->getPathBasename())));
+    }
+
     /**
      * @deprecated
      * @param Site $site

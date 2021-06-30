@@ -14,17 +14,22 @@ class RunYarnScript extends Task
     /**
      * @param string|null $cwd The directory to run the command in
      */
-    public function __construct(string $script, ?string $cwd = null)
+    public function __construct(string $script, ?string $cwd = null, ?bool $valet = null)
     {
         parent::__construct([
             'script' => $script,
-            'cwd' => $cwd
+            'cwd' => $cwd,
+            'valet' => $valet
         ]);
     }
 
     protected function execute(Directory $workingDirectory, Collection $config): TaskResponse
     {
         $command = './vendor/bin/sail yarn';
+
+        if ($config->get('valet')) {
+            $command = 'yarn';
+        }
 
         if ($config->get('cwd')) {
             $command .= sprintf(' --cwd %s', $config->get('cwd'));
