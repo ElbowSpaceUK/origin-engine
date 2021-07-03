@@ -22,8 +22,11 @@
         "ext-json": "*",
         "ext-pcntl": "*",
         "czproject/git-php": "^3.18",
+        "guzzlehttp/guzzle": "^7.0.1",
+        "http-interop/http-factory-guzzle": "^1.0",
         "illuminate/database": "^8.0",
         "intonate/tinker-zero": "^1.2",
+        "knplabs/github-api": "^3.0",
         "laravel-zero/framework": "^8.4",
         "laravel-zero/phar-updater": "^1.1",
         "symfony/filesystem": "^5.2"

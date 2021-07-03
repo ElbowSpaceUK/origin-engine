@@ -2,6 +2,7 @@
 
 namespace OriginEngine\Update;
 
+use Github\Client;
 use Humbug\SelfUpdate\Strategy\GithubStrategy;
 use Humbug\SelfUpdate\Updater;
 use Humbug\SelfUpdate\VersionParser;
@@ -34,6 +35,9 @@ class GithubPrivateReleaseStrategy extends GithubStrategy implements StrategyInt
 
     public function getCurrentRemoteVersion(Updater $updater)
     {
+        $client = Client::createWithHttpClient(new \GuzzleHttp\Client());
+        $releases = $client->repo()->releases()->latest('ElbowSpaceUK', 'atlas-cli');
+        dd($releases);
         dump('remote-version');
         dd($updater);
 
