@@ -7,6 +7,7 @@ use Humbug\SelfUpdate\Strategy\GithubStrategy;
 use Humbug\SelfUpdate\Updater;
 use Humbug\SelfUpdate\VersionParser;
 use LaravelZero\Framework\Components\Updater\Strategy\StrategyInterface;
+use OriginEngine\Contracts\Helpers\Settings\SettingRepository;
 
 class GithubPrivateReleaseStrategy extends GithubStrategy implements StrategyInterface
 {
@@ -35,7 +36,13 @@ class GithubPrivateReleaseStrategy extends GithubStrategy implements StrategyInt
 
     public function getCurrentRemoteVersion(Updater $updater)
     {
+        $settings = app(SettingRepository::class);
+        if(!$settings->has('github-release-token')) {
+            throw new \Exception('A github token must be set first');
+        }
+
         $client = Client::createWithHttpClient(new \GuzzleHttp\Client());
+        $client->authenticate($settings->get('github-release-token'));
         $releases = $client->repo()->releases()->latest('ElbowSpaceUK', 'atlas-cli');
         dd($releases);
         dump('remote-version');
