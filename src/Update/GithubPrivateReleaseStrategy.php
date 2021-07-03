@@ -2,24 +2,42 @@
 
 namespace OriginEngine\Update;
 
+use Humbug\SelfUpdate\Strategy\GithubStrategy;
 use Humbug\SelfUpdate\Updater;
+use Humbug\SelfUpdate\VersionParser;
 use LaravelZero\Framework\Components\Updater\Strategy\StrategyInterface;
 
-class GithubPrivateReleaseStrategy implements StrategyInterface
+class GithubPrivateReleaseStrategy extends GithubStrategy implements StrategyInterface
 {
 
     public function download(Updater $updater)
     {
-        // TODO: Implement download() method.
+        dump('download');
+        dd($updater);
+
+        parent::download($updater);
+    }
+
+    /**
+     * Retrieve the current version of the local phar file.
+     *
+     * @param Updater $updater
+     * @return string
+     */
+    public function getCurrentLocalVersion(Updater $updater)
+    {
+        dump('local-version');
+        dd($updater);
+
+        return parent::getCurrentLocalVersion($updater);
     }
 
     public function getCurrentRemoteVersion(Updater $updater)
     {
-        // TODO: Implement getCurrentRemoteVersion() method.
-    }
+        dump('remote-version');
+        dd($updater);
 
-    public function getCurrentLocalVersion(Updater $updater)
-    {
-        // TODO: Implement getCurrentLocalVersion() method.
+        return parent::getCurrentRemoteVersion($updater);
+
     }
 }
