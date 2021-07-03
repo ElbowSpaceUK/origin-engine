@@ -20,12 +20,13 @@
     "require": {
         "php": "^7.4|^8.0",
         "ext-json": "*",
+        "ext-pcntl": "*",
         "czproject/git-php": "^3.18",
         "illuminate/database": "^8.0",
         "intonate/tinker-zero": "^1.2",
         "laravel-zero/framework": "^8.4",
-        "symfony/filesystem": "^5.2",
-        "ext-pcntl": "*"
+        "laravel-zero/phar-updater": "^1.1",
+        "symfony/filesystem": "^5.2"
     },
     "autoload": {
         "psr-4": {

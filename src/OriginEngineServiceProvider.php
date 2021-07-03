@@ -2,6 +2,7 @@
 
 namespace OriginEngine;
 
+use LaravelZero\Framework\Components\Updater\Provider as SelfUpdateCommandProvider;
 use OriginEngine\Commands\Feature\FeatureDelete;
 use OriginEngine\Commands\Feature\FeatureList;
 use OriginEngine\Commands\Feature\FeatureNew;
@@ -41,12 +42,14 @@ use OriginEngine\Pipeline\Runners\PipelineDownRunner;
 use OriginEngine\Pipeline\PipelineModifier;
 use OriginEngine\Helpers\Settings\SettingRepository;
 use OriginEngine\Pipeline\Runners\PipelineRunner;
+use OriginEngine\Pipeline\Tasks\Origin\SetSetting;
 use OriginEngine\Site\SettingsSiteResolver;
 use OriginEngine\Site\SiteBlueprintStore;
 use OriginEngine\Site\SiteRepository;
 use OriginEngine\Plugins\Stubs\StubStore;
 use Illuminate\Contracts\Config\Repository as Config;
 use Illuminate\Support\ServiceProvider;
+use OriginEngine\Update\GithubPrivateReleaseStrategy;
 
 class OriginEngineServiceProvider extends ServiceProvider
 {
@@ -61,6 +64,8 @@ class OriginEngineServiceProvider extends ServiceProvider
         if (!$config->has('commands.default')) {
             $config->set('commands.default', \NunoMaduro\LaravelConsoleSummary\SummaryCommand::class);
         }
+
+        $this->app->register(SelfUpdateCommandProvider::class);
 
         $config->set('commands.add', array_merge([
             FeatureDelete::class,
@@ -131,11 +136,25 @@ class OriginEngineServiceProvider extends ServiceProvider
 
         $this->app->extend(PipelineRunner::class, fn(PipelineRunner $pipelineRunner, $app) => new ModifyPipelineRunner($pipelineRunner));
 
-        app(PipelineModifier::class)->extend('feature:default', function(Pipeline $pipeline) {
-            $pipeline->before('set-default-feature', function(PipelineConfig $config, PipelineHistory $history) {
-                IO::success('Event has been called :)');
+        if(config('updater.strategy') === GithubPrivateReleaseStrategy::class) {
+            $pipelineModifier = app(PipelineModifier::class);
+            $pipelineModifier->extend('post-update', function(Pipeline $pipeline) {
+                $pipeline->runTaskAfter('set-project-directory', 'save-release-token', new SetSetting('github-release-token', ''));
+
+                $pipeline->before('save-release-token', function(PipelineConfig $config, PipelineHistory $history) {
+                    if(!app(SettingRepository::class)->has('github-release-token')) {
+                        $authToken = IO::ask(
+                            'Provide a github personal access token with the read:packages scope',
+                            null,
+                            fn($token) => $token && is_string($token) && strlen($token) > 5
+                        );
+                        $config->add('save-release-token', 'value', $authToken);
+                    } else {
+                        return false;
+                    }
+                });
             });
-        });
+        }
     }
 
     /**
