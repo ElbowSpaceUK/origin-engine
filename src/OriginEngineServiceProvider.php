@@ -91,14 +91,14 @@ class OriginEngineServiceProvider extends ServiceProvider
             \Illuminate\Database\Console\Migrations\RollbackCommand::class,
             \Illuminate\Database\Console\Migrations\StatusCommand::class,
             \Illuminate\Database\Console\Seeds\SeedCommand::class,
-            \Laravel\Tinker\Console\TinkerCommand::class
-        ], $config->get('commands.hidden', [])));
-
-        $config->set('commands.remove', array_merge((\Phar::running() ? [ // Commands to remove
+            \Laravel\Tinker\Console\TinkerCommand::class,
             \Illuminate\Database\Console\Migrations\FreshCommand::class,
             \Illuminate\Database\Console\Migrations\InstallCommand::class,
             \Illuminate\Database\Console\Migrations\RefreshCommand::class,
-            \Illuminate\Database\Console\Migrations\ResetCommand::class,
+            \Illuminate\Database\Console\Migrations\ResetCommand::class
+        ], $config->get('commands.hidden', [])));
+
+        $config->set('commands.remove', array_merge((\Phar::running() ? [ // Commands to remove
             \Illuminate\Foundation\Console\VendorPublishCommand::class,
             \Illuminate\Database\Console\Migrations\MigrateMakeCommand::class,
             \Illuminate\Database\Console\WipeCommand::class,
