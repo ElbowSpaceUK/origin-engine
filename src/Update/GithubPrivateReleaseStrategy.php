@@ -12,26 +12,32 @@ use OriginEngine\Contracts\Helpers\Settings\SettingRepository;
 class GithubPrivateReleaseStrategy extends GithubStrategy implements StrategyInterface
 {
 
+    /**
+     * @var array
+     */
+    private $release;
+
     public function download(Updater $updater)
     {
-        dump('download');
-        dd($updater);
+        if(count($this->release['assets']) === 0) {
+            throw new \Exception('No assets uploaded to release');
+        }
+        $assetId = $this->release['assets'][0]['id'];
 
-        parent::download($updater);
-    }
+        $settings = app(SettingRepository::class);
+        if(!$settings->has('github-release-token')) {
+            throw new \Exception('A github token must be set first');
+        }
 
-    /**
-     * Retrieve the current version of the local phar file.
-     *
-     * @param Updater $updater
-     * @return string
-     */
-    public function getCurrentLocalVersion(Updater $updater)
-    {
-        dump('local-version');
-        dd($updater);
+        $client = Client::createWithHttpClient(new \GuzzleHttp\Client());
+        $client->authenticate($settings->get('github-release-token'), null, \Github\Client::AUTH_ACCESS_TOKEN);
 
-        return parent::getCurrentLocalVersion($updater);
+        $githubUsername = config('updater.github.username');
+        $githubRepository = config('updater.github.repository');
+
+        $content = $client->repo()->releases()->assets()->show($githubUsername, $githubRepository, $assetId, true);
+
+        file_put_contents($updater->getTempPharFile(), $content);
     }
 
     public function getCurrentRemoteVersion(Updater $updater)
@@ -42,13 +48,16 @@ class GithubPrivateReleaseStrategy extends GithubStrategy implements StrategyInt
         }
 
         $client = Client::createWithHttpClient(new \GuzzleHttp\Client());
-        $client->authenticate($settings->get('github-release-token'));
-        $releases = $client->repo()->releases()->latest('ElbowSpaceUK', 'atlas-cli');
-        dd($releases);
-        dump('remote-version');
-        dd($updater);
+        $client->authenticate($settings->get('github-release-token'), null, \Github\Client::AUTH_ACCESS_TOKEN);
 
-        return parent::getCurrentRemoteVersion($updater);
+        $githubUsername = config('updater.github.username');
+        $githubRepository = config('updater.github.repository');
+
+        $release = $client->repository()->releases()->latest($githubUsername, $githubRepository);
+
+        $this->release = $release;
+
+        return $this->release['tag_name'];
 
     }
 }
