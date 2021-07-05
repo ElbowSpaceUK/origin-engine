@@ -41,12 +41,14 @@ use OriginEngine\Pipeline\Runners\PipelineDownRunner;
 use OriginEngine\Pipeline\PipelineModifier;
 use OriginEngine\Helpers\Settings\SettingRepository;
 use OriginEngine\Pipeline\Runners\PipelineRunner;
+use OriginEngine\Pipeline\Tasks\Origin\SetSetting;
 use OriginEngine\Site\SettingsSiteResolver;
 use OriginEngine\Site\SiteBlueprintStore;
 use OriginEngine\Site\SiteRepository;
 use OriginEngine\Plugins\Stubs\StubStore;
 use Illuminate\Contracts\Config\Repository as Config;
 use Illuminate\Support\ServiceProvider;
+use OriginEngine\Update\GithubPrivateReleaseStrategy;
 
 class OriginEngineServiceProvider extends ServiceProvider
 {
@@ -86,14 +88,14 @@ class OriginEngineServiceProvider extends ServiceProvider
             \Illuminate\Database\Console\Migrations\RollbackCommand::class,
             \Illuminate\Database\Console\Migrations\StatusCommand::class,
             \Illuminate\Database\Console\Seeds\SeedCommand::class,
-            \Laravel\Tinker\Console\TinkerCommand::class
-        ], $config->get('commands.hidden', [])));
-
-        $config->set('commands.remove', array_merge((\Phar::running() ? [ // Commands to remove
+            \Laravel\Tinker\Console\TinkerCommand::class,
             \Illuminate\Database\Console\Migrations\FreshCommand::class,
             \Illuminate\Database\Console\Migrations\InstallCommand::class,
             \Illuminate\Database\Console\Migrations\RefreshCommand::class,
-            \Illuminate\Database\Console\Migrations\ResetCommand::class,
+            \Illuminate\Database\Console\Migrations\ResetCommand::class
+        ], $config->get('commands.hidden', [])));
+
+        $config->set('commands.remove', array_merge((\Phar::running() ? [ // Commands to remove
             \Illuminate\Foundation\Console\VendorPublishCommand::class,
             \Illuminate\Database\Console\Migrations\MigrateMakeCommand::class,
             \Illuminate\Database\Console\WipeCommand::class,
@@ -106,6 +108,12 @@ class OriginEngineServiceProvider extends ServiceProvider
             \LaravelZero\Framework\Commands\BuildCommand::class,
             \LaravelZero\Framework\Commands\InstallCommand::class,
         ] : []), $config->get('commands.remove', [])));
+
+        if($this->app->environment() !== 'production') {
+            $config->set('database.name',
+                sprintf('%s_dev', $config->get('database.name', ''))
+            );
+        }
 
         if (!$config->has('database.default')) {
             $config->set('database.default', 'sqlite');
@@ -131,11 +139,25 @@ class OriginEngineServiceProvider extends ServiceProvider
 
         $this->app->extend(PipelineRunner::class, fn(PipelineRunner $pipelineRunner, $app) => new ModifyPipelineRunner($pipelineRunner));
 
-        app(PipelineModifier::class)->extend('feature:default', function(Pipeline $pipeline) {
-            $pipeline->before('set-default-feature', function(PipelineConfig $config, PipelineHistory $history) {
-                IO::success('Event has been called :)');
+        if($config->get('updater.strategy') === GithubPrivateReleaseStrategy::class) {
+            $pipelineModifier = app(PipelineModifier::class);
+            $pipelineModifier->extend('post-update', function(Pipeline $pipeline) {
+                $pipeline->runTaskAfter('set-project-directory', 'save-release-token', new SetSetting('github-release-token', ''));
+
+                $pipeline->before('save-release-token', function(PipelineConfig $config, PipelineHistory $history) {
+                    if(!app(SettingRepository::class)->has('github-release-token')) {
+                        $authToken = IO::ask(
+                            'Provide a github personal access token with the read:packages scope',
+                            null,
+                            fn($token) => $token && is_string($token) && strlen($token) > 5
+                        );
+                        $config->add('save-release-token', 'value', $authToken);
+                    } else {
+                        return false;
+                    }
+                });
             });
-        });
+        }
     }
 
     /**
