@@ -2,7 +2,6 @@
 
 namespace OriginEngine;
 
-use LaravelZero\Framework\Components\Updater\Provider as SelfUpdateCommandProvider;
 use OriginEngine\Commands\Feature\FeatureDelete;
 use OriginEngine\Commands\Feature\FeatureList;
 use OriginEngine\Commands\Feature\FeatureNew;
@@ -140,10 +139,6 @@ class OriginEngineServiceProvider extends ServiceProvider
 
         $this->app->extend(PipelineRunner::class, fn(PipelineRunner $pipelineRunner, $app) => new ModifyPipelineRunner($pipelineRunner));
 
-        if($config->has('updater')) {
-            $this->app->register(SelfUpdateCommandProvider::class);
-        }
-        
         if($config->get('updater.strategy') === GithubPrivateReleaseStrategy::class) {
             $pipelineModifier = app(PipelineModifier::class);
             $pipelineModifier->extend('post-update', function(Pipeline $pipeline) {
