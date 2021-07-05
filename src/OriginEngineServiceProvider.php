@@ -65,8 +65,6 @@ class OriginEngineServiceProvider extends ServiceProvider
             $config->set('commands.default', \NunoMaduro\LaravelConsoleSummary\SummaryCommand::class);
         }
 
-        $this->app->register(SelfUpdateCommandProvider::class);
-
         $config->set('commands.add', array_merge([
             FeatureDelete::class,
             FeatureList::class,
@@ -142,7 +140,11 @@ class OriginEngineServiceProvider extends ServiceProvider
 
         $this->app->extend(PipelineRunner::class, fn(PipelineRunner $pipelineRunner, $app) => new ModifyPipelineRunner($pipelineRunner));
 
-        if(config('updater.strategy') === GithubPrivateReleaseStrategy::class) {
+        if($config->has('updater')) {
+            $this->app->register(SelfUpdateCommandProvider::class);
+        }
+        
+        if($config->get('updater.strategy') === GithubPrivateReleaseStrategy::class) {
             $pipelineModifier = app(PipelineModifier::class);
             $pipelineModifier->extend('post-update', function(Pipeline $pipeline) {
                 $pipeline->runTaskAfter('set-project-directory', 'save-release-token', new SetSetting('github-release-token', ''));
