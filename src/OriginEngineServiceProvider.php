@@ -134,6 +134,10 @@ class OriginEngineServiceProvider extends ServiceProvider
             ]);
         }
 
+        if($this->app->environment() !== 'production') {
+            $config->set('database.name', $config->get('database.name', '') . '_dev');
+        }
+
         $this->app->extend(PipelineRunner::class, fn(PipelineRunner $pipelineRunner, $app) => new ModifyPipelineRunner($pipelineRunner));
 
         if(config('updater.strategy') === GithubPrivateReleaseStrategy::class) {
