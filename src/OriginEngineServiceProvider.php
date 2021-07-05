@@ -112,6 +112,12 @@ class OriginEngineServiceProvider extends ServiceProvider
             \LaravelZero\Framework\Commands\InstallCommand::class,
         ] : []), $config->get('commands.remove', [])));
 
+        if($this->app->environment() !== 'production') {
+            $config->set('database.name',
+                sprintf('%s_dev', $config->get('database.name', ''))
+            );
+        }
+
         if (!$config->has('database.default')) {
             $config->set('database.default', 'sqlite');
             $config->set('database.connections.sqlite', [
@@ -132,10 +138,6 @@ class OriginEngineServiceProvider extends ServiceProvider
                 'driver' => 'local',
                 'root' => Filesystem::database()
             ]);
-        }
-
-        if($this->app->environment() !== 'production') {
-            $config->set('database.name', $config->get('database.name', '') . '_dev');
         }
 
         $this->app->extend(PipelineRunner::class, fn(PipelineRunner $pipelineRunner, $app) => new ModifyPipelineRunner($pipelineRunner));
