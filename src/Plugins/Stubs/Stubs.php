@@ -40,7 +40,7 @@ class Stubs
         return $replacement;
     }
 
-    public function newArrayReplacement(string $variableName, string $questionText, $default = null, ?\Closure $validator = null, StubReplacement $replacement): ArrayReplacement
+    public function newArrayReplacement(string $variableName, string $questionText, StubReplacement $replacement, $default = null, ?\Closure $validator = null): ArrayReplacement
     {
         $arrayReplacement = ArrayReplacement::new($variableName, $questionText, $default, $validator);
         $arrayReplacement->setReplacement($replacement);
