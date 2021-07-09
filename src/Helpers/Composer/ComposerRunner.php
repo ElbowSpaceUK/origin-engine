@@ -39,7 +39,7 @@ class ComposerRunner
     public function update()
     {
         return $this->composer(
-            'update --working-dir ' . $this->workingDirectory->path() . ' --no-interaction --ansi',
+            'update --working-dir /opt --no-interaction --ansi',
         );
     }
 
@@ -49,17 +49,14 @@ class ComposerRunner
         $docker = new Docker();
         $docker->addVolume($this->workingDirectory->path(), '/opt');
 
-        $docker->addVolume('$SSH_AUTH_SOCK', '/ssh-auth.sock');
-        $docker->setEnvironmentVariable('SSH_AUTH_SOCK', '/ssh-auth.sock');
-
-        $docker->setEnvironmentVariable('GITHUB_KEYSCAN', '"$(ssh-keyscan github.com 2> /dev/null)"');
+        $docker->setEnvironmentVariable('SSH_KEY_PRIVATE', '"$(cat ~/.ssh/id_rsa)"');
 
         $docker->setWorkingDirectory('/opt');
 
         $docker->image(sprintf('laravelsail/php%s-composer:latest', $this->phpVersion));
 
         $docker->run(
-            sprintf('pwd && composer %s', $command)
+            sprintf('mkdir -p ~/.ssh && printenv SSH_KEY_PRIVATE >> ~/.ssh/id_rsa && chmod 600 ~/.ssh/id_rsa && ssh-keyscan github.com >> ~/.ssh/known_hosts && composer %s', $command)
         );
 
         return Executor::cd($this->workingDirectory)
@@ -69,7 +66,7 @@ class ComposerRunner
     public function install(): string
     {
         return $this->composer(
-            'install --working-dir ' . $this->workingDirectory->path() . ' --no-interaction --ansi',
+            'install --working-dir /opt --no-interaction --ansi',
         );
     }
 
