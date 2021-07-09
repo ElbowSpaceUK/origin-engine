@@ -49,7 +49,7 @@ class ComposerRunner
         $docker = new Docker();
         $docker->addVolume($this->workingDirectory->path(), '/opt');
 
-        $docker->setEnvironmentVariable('SSH_KEY_PRIVATE', '"$(cat /home/toby/.ssh/id_rsa)"');
+        $docker->setEnvironmentVariable('SSH_KEY_PRIVATE', '"$(cat ~/.ssh/id_rsa)"');
 
         $docker->setWorkingDirectory('/opt');
 
