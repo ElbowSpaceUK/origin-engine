@@ -49,14 +49,16 @@ class ComposerRunner
         $docker = new Docker();
         $docker->addVolume($this->workingDirectory->path(), '/opt');
 
-        $docker->setEnvironmentVariable('SSH_KEY_PRIVATE', '"$(cat ~/.ssh/id_rsa)"');
+        $docker->withOption('-u "$(id -u):$(id -g)"');
+
+        $docker->setEnvironmentVariable('SSH_KEY_PRIVATE', '"$(cat $HOME/.ssh/id_rsa)"');
 
         $docker->setWorkingDirectory('/opt');
 
         $docker->image(sprintf('laravelsail/php%s-composer:latest', $this->phpVersion));
 
         $docker->run(
-            sprintf('mkdir -p ~/.ssh && printenv SSH_KEY_PRIVATE >> ~/.ssh/id_rsa && chmod 600 ~/.ssh/id_rsa && ssh-keyscan github.com >> ~/.ssh/known_hosts && composer %s', $command)
+            sprintf('mkdir -p $HOME/.ssh && printenv SSH_KEY_PRIVATE >> $HOME/.ssh/id_rsa && chmod 600 $HOME/.ssh/id_rsa && ssh-keyscan github.com >> $HOME/.ssh/known_hosts && composer %s', $command)
         );
 
         return Executor::cd($this->workingDirectory)
