@@ -9,6 +9,8 @@ abstract class SiteBlueprint
 
     protected string $defaultBranch;
 
+    protected string $phpVersion;
+
     abstract public function name(): string;
 
     abstract public function getUrls(Site $site): array;
@@ -29,6 +31,14 @@ abstract class SiteBlueprint
             return $this->defaultBranch;
         }
         throw new \Exception(sprintf('The site [%s] does not support features', $this->name()));
+    }
+
+    public function getPhpVersion(): string
+    {
+        if(isset($this->phpVersion)) {
+            return $this->phpVersion;
+        }
+        return '74';
     }
 
 }
