@@ -30,7 +30,7 @@ class Closure extends Task
             return $this->failed();
         }
 
-        if(method_exists($output, '__toString') || $output === null || is_scalar($output)) {
+        if((is_object($output) && method_exists($output, '__toString')) || $output === null || is_scalar($output)) {
             $this->writeDebug('Closure returns ' . $output);
         }
 
