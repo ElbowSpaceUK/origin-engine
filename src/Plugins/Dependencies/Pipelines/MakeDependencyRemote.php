@@ -31,7 +31,7 @@ class MakeDependencyRemote extends Pipeline
             'remove-local-repository' => new DeleteFiles($path),
             'mark-dependency-as-remote' => new MarkDependencyAsRemote($this->localPackage),
             'clear-stale-dependencies' => new DeleteDependencyFromVendor($this->localPackage->getName()),
-            'update-composer' => new ComposerUpdate()
+            'update-composer' => new ComposerUpdate($this->localPackage->getParentFeature()->getSite()->getBlueprint()->getPhpVersion())
         ];
     }
 }

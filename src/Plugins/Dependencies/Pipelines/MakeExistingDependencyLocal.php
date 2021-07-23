@@ -43,7 +43,7 @@ class MakeExistingDependencyLocal extends Pipeline
             'modify-composer-json' => new ComposerRequirePackageLocally($this->localPackage->getName(), $this->localPackage->getFeature()->getBranch()),
             'add-local-symlink' => new ComposerAddLocalSymlink(sprintf('./%s', $path)),
             'mark-dependency-as-local' => new MarkDependencyAsLocallyInstalled($this->localPackage),
-            'update-composer' => new ComposerUpdate()
+            'update-composer' => new ComposerUpdate($this->localPackage->getParentFeature()->getSite()->getBlueprint()->getPhpVersion())
         ];
     }
 }
