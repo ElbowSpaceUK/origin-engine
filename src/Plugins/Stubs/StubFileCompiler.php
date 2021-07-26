@@ -42,7 +42,13 @@ class StubFileCompiler
         $content = preg_replace('/{{(.*?)}}/', 'echo $1;', $content);
 
         // Make the variables available to the scope and eval the stub.
-        $output = $this->doGeneration($data, $content);
+        try {
+            $output = $this->doGeneration($data, $content);
+        } catch (\ParseError $e) {
+            IO::error('Content could not be parsed');
+            IO::writeln($content);
+            throw $e;
+        }
 
         // Convert temp php tags back to normal.
         $output = str_replace(
