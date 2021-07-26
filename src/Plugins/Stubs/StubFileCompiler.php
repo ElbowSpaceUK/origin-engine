@@ -2,6 +2,7 @@
 
 namespace OriginEngine\Plugins\Stubs;
 
+use OriginEngine\Helpers\IO\IO;
 use OriginEngine\Helpers\Storage\Filesystem;
 use OriginEngine\Plugins\Stubs\Entities\CompiledStub;
 use Faker\Provider\File;
