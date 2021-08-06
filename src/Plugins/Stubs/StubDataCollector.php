@@ -17,7 +17,7 @@ class StubDataCollector
         $stubFiles = [];
         foreach($stub->getStubFiles() as $stubFile) {
             if($useDefault === true || $stubFile->showIf($data)) {
-                $stubFiles[] = $stubFile;
+                $stubFiles[] = clone $stubFile;
             } else {
                 continue;
             }
