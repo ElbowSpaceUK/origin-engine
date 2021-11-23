@@ -39,7 +39,7 @@ class ComposerRunner
     public function update()
     {
         return $this->composer(
-            'update --working-dir /opt --no-interaction --ansi',
+            'update --working-dir /opt --no-interaction --ansi --ignore-platform-reqs',
         );
     }
 
