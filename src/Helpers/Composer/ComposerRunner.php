@@ -66,7 +66,7 @@ class ComposerRunner
     public function install(): string
     {
         return $this->composer(
-            'install --working-dir /opt --no-interaction --ansi',
+            'install --working-dir /opt --no-interaction --ansi --ignore-platform-reqs',
         );
     }
 
