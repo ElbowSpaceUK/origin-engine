@@ -2,6 +2,7 @@
 
 namespace OriginEngine\Command;
 
+use Illuminate\Support\Facades\Event;
 use OriginEngine\Contracts\Feature\FeatureRepository;
 use OriginEngine\Contracts\Feature\FeatureResolver;
 use OriginEngine\Contracts\Pipeline\PipelineRunner;
@@ -84,6 +85,10 @@ abstract class Command extends \LaravelZero\Framework\Commands\Command implement
     public function handleSignal(int $signal): void
     {
         event(new SignalReceived($signal));
+
+        if(!Event::hasListeners(SignalReceived::class)) {
+            throw new \Exception(sprintf('Signal %u encountered, stopping.', $signal));
+        }
     }
 
 }
